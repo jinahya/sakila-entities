@@ -227,6 +227,10 @@ public class Film extends BaseEntity {
         ADULTS_ONLY("NC-17");
 
         // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * An attribute converter for converting constants to database values and vice versa.
+         */
         public static class RatingAttributeConverter implements AttributeConverter<Rating, String> {
 
             @Override

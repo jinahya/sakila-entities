@@ -13,6 +13,17 @@ import static com.github.jinahya.mysql.sakila.persistence.Actor.COLUMN_NAME_ACTO
 import static com.github.jinahya.mysql.sakila.persistence.Actor.TABLE_NAME;
 import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 
+/**
+ * An entity class for binding {@value TABLE_NAME} table.
+ * <blockquote>
+ * The {@code actor} table lists information for all actors.
+ * <p>
+ * The {@code actor} table is joined to the {@link Film film} table by means of the {@link FilmActor film_actor} table.
+ * </blockquote>
+ *
+ * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
+ * Database)</a>
+ */
 @AttributeOverrides(value = {
         @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
 })
