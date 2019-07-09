@@ -35,6 +35,9 @@ import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_N
 import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
 import static com.github.jinahya.mysql.sakila.persistence.FilmActor.TABLE_NAME;
 
+/**
+ * An entity class for {@value #TABLE_NAME} table.
+ */
 @IdClass(FilmActorId.class)
 @Entity
 @Table(name = TABLE_NAME)
@@ -63,6 +66,17 @@ public class FilmActor implements Serializable {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return super.toString() + "{" +
+               "actorId=" + actorId
+               + ",filmId=" + filmId
+               + ",lastUpdate=" + lastUpdate
+               + '}';
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     public int getActorId() {
         return actorId;
     }
@@ -80,13 +94,9 @@ public class FilmActor implements Serializable {
         this.filmId = filmId;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------ lastUpdate
     public Date getLastUpdate() {
         return lastUpdate;
-    }
-
-    public void setLastUpdate(final Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -26,6 +26,11 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * An embeddable id class for {@link FilmCategory}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 @Embeddable
 public class FilmCategoryId implements Serializable {
 

@@ -23,6 +23,11 @@ package com.github.jinahya.mysql.sakila.persistence;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * An id class for {@link FilmActor}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 public class FilmActorId implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -61,8 +66,7 @@ public class FilmActorId implements Serializable {
         return Objects.hash(getActorId(), getFilmId());
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
+    // --------------------------------------------------------------------------------------------------------- actorId
     public int getActorId() {
         return actorId;
     }
@@ -71,7 +75,7 @@ public class FilmActorId implements Serializable {
         this.actorId = actorId;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------- filmId
     public int getFilmId() {
         return filmId;
     }
