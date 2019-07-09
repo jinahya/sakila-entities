@@ -20,86 +20,96 @@ package com.github.jinahya.mysql.sakila.persistence;
  * #L%
  */
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.github.jinahya.mysql.sakila.persistence.Actor.COLUMN_NAME_ACTOR_ID;
-import static com.github.jinahya.mysql.sakila.persistence.Actor.TABLE_NAME;
-import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
- * An entity class for binding {@value TABLE_NAME} table.
- * <blockquote>
- * The {@code actor} table lists information for all actors.
- * <p>
- * The {@code actor} table is joined to the {@link Film film} table by means of the {@link FilmActor film_actor} table.
- * </blockquote>
- *
- * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
- * Database)</a>
+ * An embeddable for those entities which each has two attributes for {@value #COLUMN_NAME_FIRST_NAME} column and
+ * {@value #COLUMN_NAME_LAST_NAME} column.
  */
-@AttributeOverrides(value = {
-        @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
-})
-@Entity
-@Table(name = TABLE_NAME)
-public class Actor extends BaseEntity {
+@Embeddable
+public class FullName implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The target table name of {@link Actor} entity. The value is {@value}.
+     * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
      */
-    public static final String TABLE_NAME = "actor";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
-
-    // -----------------------------------------------------------------------------------------------------------------
     public static final String COLUMN_NAME_FIRST_NAME = "first_name";
 
+    /**
+     * The attribute name for {@value #COLUMN_NAME_FIRST_NAME} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
 
+    /**
+     * The maximum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     */
     public static final int SIZE_MAX_FIRST_NAME = 45;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The table column name for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
     public static final String COLUMN_NAME_LAST_NAME = "last_name";
 
+    /**
+     * The object attribute name for {@value #COLUMN_NAME_LAST_NAME} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_LAST_NAME = "lastName";
 
+    /**
+     * The maximum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
     public static final int SIZE_MAX_LAST_NAME = 45;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    @Deprecated
-    public static final String ATTRIBUTE_NAME_FILMS = "films";
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a new instance.
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
      */
-    public Actor() {
-        super();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
     @Override
     public String toString() {
         return super.toString() + "{"
                + "firstName=" + firstName
                + ",lastName=" + lastName
                + "}";
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this one..
+     *
+     * @param obj the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof FullName)) {
+            return false;
+        }
+        final FullName that = (FullName) obj;
+        return Objects.equals(getFirstName(), that.getFirstName()) && Objects.equals(getLastName(), that.getLastName());
+    }
+
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFirstName(), getLastName());
     }
 
     // ------------------------------------------------------------------------------------------------------- firstName
@@ -123,33 +133,23 @@ public class Actor extends BaseEntity {
     }
 
     // -------------------------------------------------------------------------------------------------------- lastName
+
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute with specified value.
+     *
+     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     */
     public void setLastName(final String lastName) {
         this.lastName = lastName;
-    }
-
-    // ----------------------------------------------------------------------------------------------------------- films
-    @Deprecated
-    public Set<Film> getFilms() {
-        if (films == null) {
-            films = new HashSet<>();
-        }
-        return films;
-    }
-
-    @Deprecated
-    public boolean addFilm(final Film film) {
-        if (film == null) {
-            throw new NullPointerException("film is null");
-        }
-        final boolean filmAdded = getFilms().add(film);
-        if (!film.getActors().contains(this)) {
-            final boolean addedToFilm = film.addActor(this);
-        }
-        return filmAdded;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -166,15 +166,4 @@ public class Actor extends BaseEntity {
     @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
     private String lastName;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    @Deprecated
-    @OneToMany(cascade = {/* ??? */}, orphanRemoval = true)
-    @JoinTable(name = FilmActor.TABLE_NAME,
-               joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
-                                          referencedColumnName = COLUMN_NAME_ACTOR_ID)},
-               inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
-                                                 referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
-    @NamedAttribute(ATTRIBUTE_NAME_FILMS)
-    private Set<Film> films;
 }

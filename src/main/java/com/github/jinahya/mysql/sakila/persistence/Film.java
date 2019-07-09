@@ -1,5 +1,25 @@
 package com.github.jinahya.mysql.sakila.persistence;
 
+/*-
+ * #%L
+ * sakila-entities
+ * %%
+ * Copyright (C) 2019 Jinahya, Inc.
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
@@ -7,6 +27,8 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,6 +43,8 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static com.github.jinahya.mysql.sakila.persistence.Film.COLUMN_NAME_FILM_ID;
@@ -29,6 +53,12 @@ import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
+/**
+ * An entity class for {@value #TABLE_NAME} table.
+ *
+ * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-film.html">The film Table (Sakila Sample
+ * Database)</a>
+ */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_FILM_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
@@ -45,14 +75,22 @@ public class Film extends BaseEntity {
 
     /**
      * The primary key column name of this entity. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each film in the table.
+     * </blockquote>
+     * {@code SMALLINT(5) PK NN UN AI}
      */
-    // A surrogate primary key used to uniquely identify each film in the table.
-    // film_id SMALLINT(5) PK NN UN AI
     public static final String COLUMN_NAME_FILM_ID = "film_id";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The title of the film.
-    // title VARCHAR(255) NN
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_TITLE} attribute. The value is {@value}.
+     * <blockquote>
+     * The title of the film.
+     * </blockquote>
+     * {@code title VARCHAR(255) NN}
+     **/
     public static final String COLUMN_NAME_TITLE = "title";
 
     public static final String ATTRIBUTE_NAME_TITLE = "title";
@@ -60,8 +98,14 @@ public class Film extends BaseEntity {
     public static final int SIZE_MAX_TITLE = 255;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // A short description or plot summary of the film
-    // description VARCHAR(255) NULL
+
+    /**
+     * The database table column name for {@value #ATTRIBUTE_NAME_DESCRIPTION} attribute. The value is {@value}.
+     * <blockquote>
+     * A short description or plot summary of the film
+     * </blockquote>
+     * {@code VARCHAR(255) NULL}
+     **/
     public static final String COLUMN_NAME_DESCRIPTION = "description";
 
     public static final String ATTRIBUTE_NAME_DESCRIPTION = "description";
@@ -69,9 +113,16 @@ public class Film extends BaseEntity {
     public static final int SIZE_MAX_DESCRIPTION = 65535; // TEXT
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The year in which the movie was released.
-    // release_year YEAR NULL
-    // https://dev.mysql.com/doc/refman/8.0/en/year.html
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_RELEASE_YEAR} attribute. The value is {@value}.
+     * <blockquote>
+     * The year in which the movie was released.
+     * </blockquote>
+     * {@code YEAR NULL}
+     *
+     * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/year.html">The YEAR Type (MySQL Reference Manual)</a>
+     **/
     public static final String COLUMN_NAME_RELEASE_YEAR = "release_year";
 
     public static final String ATTRIBUTE_NAME_RELEASE_YEAR = "releaseYear";
@@ -81,23 +132,41 @@ public class Film extends BaseEntity {
     public static final int MAX_RELEASE_YEAR = 2155;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // A foreign key pointing at the language table; identifies the language of the film.
-    // language_id TINYINT(3) NN UN
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_LANGUAGE} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key pointing at the {@link Language language} table; identifies the language of the film.
+     * </blockquote>
+     * {@code TINYINT(3) NN UN}
+     */
     public static final String COLUMN_NAME_LANGUAGE_ID = "language_id";
 
     public static final String ATTRIBUTE_NAME_LANGUAGE = "language";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // A foreign key pointing at the language table; identifies the original language of the film.
-    // Used when a film has been dubbed into a new language.
-    // original_language_id TINYINT(3) UN NULL
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_ORIGINAL_LANGUAGE} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key pointing at the {@link Language language} table; identifies the original language of the film. Used
+     * when a film has been dubbed into a new language.
+     * </blockquote>
+     * {@code TINYINT(3) UN NULL}
+     **/
     public static final String COLUMN_NAME_ORIGINAL_LANGUAGE_ID = "original_language_id";
 
     public static final String ATTRIBUTE_NAME_ORIGINAL_LANGUAGE = "originalLanguage";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The length of the rental period, in days.
-    // TINYINT(3) NN UN '3'
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_RENTAL_DURATION} attribute. The value is {@value}.
+     * <blockquote>
+     * The length of the rental period, in days.
+     * </blockquote>
+     * {@code TINYINT(3) NN UN '3'}
+     **/
     public static final String COLUMN_NAME_RENTAL_DURATION = "rental_duration";
 
     public static final String ATTRIBUTE_NAME_RENTAL_DURATION = "rentalDuration";
@@ -107,8 +176,14 @@ public class Film extends BaseEntity {
     public static final int MAX_RENTAL_DURATION = 255;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The cost to rent the film for the period specified in the rental_duration column.
-    // DECIMAL(4,2) NN '4.99'
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_RENTAL_RATE} attribute. The value is {@value}.
+     * <blockquote>
+     * The cost to rent the film for the period specified in the rental_duration column.
+     * </blockquote>
+     * {@code DECIMAL(4,2) NN '4.99'}
+     **/
     public static final String COLUMN_NAME_RENTAL_RATE = "rental_rate";
 
     public static final String ATTRIBUTE_NAME_RENTAL_RATE = "rentalRate";
@@ -122,8 +197,14 @@ public class Film extends BaseEntity {
     public static final String DECIMAL_MAX_RENTAL_RATE = "9999.99"; // really?
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The duration of the film, in minutes.
-    // SMALLINT(5) UN NULL
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_LENGTH} attribute. The value is {@value}.
+     * <blockquote>
+     * The duration of the film, in minutes.
+     * </blockquote>
+     * {@code SMALLINT(5) UN NULL}
+     */
     public static final String COLUMN_NAME_LENGTH = "length";
 
     public static final String ATTRIBUTE_NAME_LENGTH = "length";
@@ -133,8 +214,14 @@ public class Film extends BaseEntity {
     public static final int MAX_LENGTH = 65535; // 1092.25 hours?
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The amount charged to the customer if the film is not returned or is returned in a damaged state.
-    // DECIMAL(5,2) NN '19.99'
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_REPLACEMENT_COST} attribute. The value is {@value}.
+     * <blockquote>
+     * The amount charged to the customer if the film is not returned or is returned in a damaged state.
+     * </blockquote>
+     * {@code DECIMAL(5,2) NN '19.99'}
+     **/
     public static final String COLUMN_NAME_REPLACEMENT_COST = "replacement_cost";
 
     public static final String ATTRIBUTE_NAME_REPLACEMENT_COST = "replacementCost";
@@ -148,10 +235,19 @@ public class Film extends BaseEntity {
     public static final String DECIMAL_MAX_REPLACEMENT_COST = "99999.99"; // seriously?
 
     // -----------------------------------------------------------------------------------------------------------------
-    // The rating assigned to the film. Can be one of: G, PG, PG-13, R, or NC-17.
-    // ENUM('G', 'PG', 'PG-13', 'R', 'NC-17') 'G'
+
+    /**
+     * The database column name name for {@value #ATTRIBUTE_NAME_RATING} attribute. The value is {@value}.
+     * <blockquote>
+     * The rating assigned to the film. Can be one of: G, PG, PG-13, R, or NC-17.
+     * </blockquote>
+     * {@code ENUM('G', 'PG', 'PG-13', 'R', 'NC-17') 'G'}
+     */
     public static final String COLUMN_NAME_RATING = "rating";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_RATING} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_RATING = "rating";
 
     /**
@@ -261,7 +357,7 @@ public class Film extends BaseEntity {
                     return value;
                 }
             }
-            throw new IllegalArgumentException("unknown dbData: " + dbData);
+            throw new IllegalArgumentException("no value for dbData: " + dbData);
         }
 
         // -------------------------------------------------------------------------------------------------------------
@@ -291,9 +387,16 @@ public class Film extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Lists which common special features are included on the DVD.
-    // Can be zero or more of: Trailers, Commentaries, Deleted Scenes, Behind the Scenes.
-    // SET('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')
+
+    /**
+     * The column name for {@value #ATTRIBUTE_NAME_SPECIAL_FEATURES} attribute. The value is {@value}.
+     * <blockquote>
+     * Lists which common special features are included on the DVD.
+     * <p>
+     * Can be zero or more of: Trailers, Commentaries, Deleted Scenes, Behind the Scenes.
+     * </blockquote>
+     * {@code SET('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')}
+     **/
     public static final String COLUMN_NAME_SPECIAL_FEATURES = "special_features";
 
     public static final String ATTRIBUTE_NAME_SPECIAL_FEATURES = "specialFeatures";
@@ -370,7 +473,7 @@ public class Film extends BaseEntity {
                     return value;
                 }
             }
-            throw new IllegalArgumentException("unknown dbData: " + dbData);
+            throw new IllegalArgumentException("no value for dbData: " + dbData);
         }
 
         // -------------------------------------------------------------------------------------------------------------
@@ -400,6 +503,14 @@ public class Film extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    @Deprecated
+    public static final String ATTRIBUTE_NAME_CATEGORIES = "categories";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Deprecated
+    public static final String ATTRIBUTE_NAME_ACTORS = "actors";
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Creates a new instance.
@@ -410,6 +521,39 @@ public class Film extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "title=" + title
+               + ",description=" + description
+               + ",releaseYear=" + releaseYear
+               + ",language=" + language
+               + ",originalLanguage=" + originalLanguage
+               + ",rentalDuration=" + rentalDuration
+               + ",rentalRate=" + rentalRate
+               + ",length=" + length
+               + ",replacementCost=" + replacementCost
+               + ",rating=" + rating
+               + ",specialFeatures=" + specialFeatures
+               + "}";
+    }
+
+    // TODO: 2019-07-09 implement equals/hashCode, if it's believed to be required.
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Indicates whether this film's current value of {@value #ATTRIBUTE_NAME_LANGUAGE} attribute is different from the
+     * value of {@value #ATTRIBUTE_NAME_ORIGINAL_LANGUAGE} attribute.
+     *
+     * @return {@code true} if this film is dubbed; {@code false} otherwise.
+     */
+    public boolean isDubbed() {
+        // TODO: 2019-07-09 implement
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- title
     public String getTitle() {
         return title;
     }
@@ -418,7 +562,7 @@ public class Film extends BaseEntity {
         this.title = title;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------------- description
     public String getDescription() {
         return description;
     }
@@ -427,7 +571,7 @@ public class Film extends BaseEntity {
         this.description = description;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------------------- releaseYear
     public Integer getReleaseYear() {
         return releaseYear;
     }
@@ -436,25 +580,37 @@ public class Film extends BaseEntity {
         this.releaseYear = releaseYear;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------- language
     public Language getLanguage() {
         return language;
     }
 
     public void setLanguage(final Language language) {
+        if (this.language != null) {
+            final boolean removed = this.language.getFilms().remove(this);
+        }
         this.language = language;
+        if (this.language != null && !this.language.getFilms().contains(this)) {
+            this.language.addFilm(this);
+        }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------ originalLanguage
     public Language getOriginalLanguage() {
         return originalLanguage;
     }
 
     public void setOriginalLanguage(final Language originalLanguage) {
+        if (this.originalLanguage != null) {
+            final boolean removed = this.originalLanguage.getFilmsRecorded().remove(this);
+        }
         this.originalLanguage = originalLanguage;
+        if (this.originalLanguage != null && !this.originalLanguage.getFilmsRecorded().contains(this)) {
+            this.originalLanguage.addFilmRecorded(this);
+        }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------- rentalDuration
     public int getRentalDuration() {
         return rentalDuration;
     }
@@ -464,15 +620,18 @@ public class Film extends BaseEntity {
     }
 
     @Transient
-    public Duration getRentalDurationAsJavaTime() {
+    public Duration getRentalDurationOfJavaTime() {
         return Duration.of(getRentalDuration(), ChronoUnit.DAYS);
     }
 
-    public void setRentalDurationAsJavaTime(final Duration rentalDurationAsJavaTime) {
-        setRentalDuration(toIntExact(requireNonNull(rentalDurationAsJavaTime, "duration is null").toDays()));
+    public void setRentalDurationAsJavaTime(final Duration rentalDurationOfJavaTime) {
+        if (rentalDurationOfJavaTime == null) {
+            throw new NullPointerException("rentalDurationOfJavaTime is null");
+        }
+        setRentalDuration(toIntExact(rentalDurationOfJavaTime.toDays()));
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------ rentalRate
     public BigDecimal getRentalRate() {
         return rentalRate;
     }
@@ -481,7 +640,7 @@ public class Film extends BaseEntity {
         this.rentalRate = rentalRate;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------- length
     public Integer getLength() {
         return length;
     }
@@ -490,7 +649,16 @@ public class Film extends BaseEntity {
         this.length = length;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    @Transient
+    public Duration getLengthDuration() {
+        return ofNullable(getLength()).map(v -> Duration.of(v, ChronoUnit.MINUTES)).orElse(null);
+    }
+
+    public void setLengthDuration(final Duration lengthDuration) {
+        setLength(ofNullable(lengthDuration).map(v -> toIntExact(v.toMinutes())).orElse(null));
+    }
+
+    // ------------------------------------------------------------------------------------------------- replacementCost
     public BigDecimal getReplacementCost() {
         return replacementCost;
     }
@@ -499,7 +667,7 @@ public class Film extends BaseEntity {
         this.replacementCost = replacementCost;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------- rating
     public Rating getRating() {
         return rating;
     }
@@ -508,13 +676,63 @@ public class Film extends BaseEntity {
         this.rating = rating;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------- specialFeatures
     public EnumSet<SpecialFeature> getSpecialFeatures() {
         return specialFeatures;
     }
 
     public void setSpecialFeatures(final EnumSet<SpecialFeature> specialFeatures) {
         this.specialFeatures = specialFeatures;
+    }
+
+    @Transient
+    public boolean hasSpecialFeature(final SpecialFeature specialFeature) {
+        if (specialFeature == null) {
+            throw new NullPointerException("specialFeature is null");
+        }
+        return ofNullable(getSpecialFeatures()).map(s -> s.contains(specialFeature)).orElse(false);
+    }
+
+    // ------------------------------------------------------------------------------------------------------ categories
+    @Deprecated
+    public Set<Category> getCategories() {
+        if (categories == null) {
+            categories = new HashSet<>();
+        }
+        return categories;
+    }
+
+    @Deprecated
+    public boolean addCategory(final Category category) {
+        if (category == null) {
+            throw new NullPointerException("category is null");
+        }
+        final boolean categoryAdded = getCategories().add(category);
+        if (!category.getFilms().contains(this)) {
+            final boolean filmAdded = category.addFilm(this);
+        }
+        return categoryAdded;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------- actors
+    @Deprecated
+    public Set<Actor> getActors() {
+        if (actors == null) {
+            actors = new HashSet<>();
+        }
+        return actors;
+    }
+
+    @Deprecated
+    public boolean addActor(final Actor actor) {
+        if (actor == null) {
+            throw new NullPointerException("actor is null");
+        }
+        final boolean actorAdded = getActors().add(actor);
+        if (!actor.getFilms().contains(this)) {
+            final boolean addedToActor = actor.addFilm(this);
+        }
+        return actorAdded;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -568,8 +786,8 @@ public class Film extends BaseEntity {
 
     @Max(MAX_LENGTH)
     @Min(MIN_LENGTH)
-    @Basic
-    @Column(name = COLUMN_NAME_LENGTH)
+    @Basic(optional = true)
+    @Column(name = COLUMN_NAME_LENGTH, nullable = true)
     @NamedAttribute(ATTRIBUTE_NAME_LENGTH)
     private Integer length;
 
@@ -582,13 +800,33 @@ public class Film extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_REPLACEMENT_COST)
     private BigDecimal replacementCost;
 
-    @Convert(converter = Rating.RatingAttributeConverter.class) //@Enumerated(EnumType.STRING)
-    @Column(name = COLUMN_NAME_RATING)
+    //@Enumerated(EnumType.ORDINAL)
+    //@Enumerated(EnumType.STRING)
+    @Convert(converter = Rating.RatingAttributeConverter.class)
+    @Column(name = COLUMN_NAME_RATING, nullable = true)
     @NamedAttribute(ATTRIBUTE_NAME_RATING)
     private Rating rating;
 
-    @Convert(converter = SpecialFeature.SpecialFeatureAttributeConverter.class) //@Enumerated(EnumType.STRING)
-    @Column(name = COLUMN_NAME_SPECIAL_FEATURES)
+    //@Enumerated(EnumType.ORDINAL)
+    //@Enumerated(EnumType.STRING)
+    @Convert(converter = SpecialFeature.SpecialFeatureAttributeConverter.class)
+    @Column(name = COLUMN_NAME_SPECIAL_FEATURES, nullable = true)
     @NamedAttribute(ATTRIBUTE_NAME_SPECIAL_FEATURES)
     private EnumSet<SpecialFeature> specialFeatures;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Deprecated
+    @ManyToMany
+    @JoinTable(name = FilmCategory.TABLE_NAME,
+               joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
+                                          referencedColumnName = COLUMN_NAME_FILM_ID)},
+               inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
+                                                 referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
+    @NamedAttribute(ATTRIBUTE_NAME_CATEGORIES)
+    private Set<Category> categories;
+
+    @Deprecated
+    @ManyToMany(mappedBy = Actor.ATTRIBUTE_NAME_FILMS)
+    @NamedAttribute(ATTRIBUTE_NAME_ACTORS)
+    private Set<Actor> actors;
 }

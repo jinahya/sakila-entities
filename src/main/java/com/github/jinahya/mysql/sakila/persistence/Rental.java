@@ -1,5 +1,25 @@
 package com.github.jinahya.mysql.sakila.persistence;
 
+/*-
+ * #%L
+ * sakila-entities
+ * %%
+ * Copyright (C) 2019 Jinahya, Inc.
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -16,9 +36,9 @@ import static com.github.jinahya.mysql.sakila.persistence.Rental.COLUMN_NAME_REN
 import static com.github.jinahya.mysql.sakila.persistence.Rental.TABLE_NAME;
 
 @AttributeOverrides({
-        @AttributeOverride(name = ATTRIBUTE_NAME_ID,
-                column = @Column(name = COLUMN_NAME_RENTAL_ID, nullable = false))
-})
+                            @AttributeOverride(name = ATTRIBUTE_NAME_ID,
+                                               column = @Column(name = COLUMN_NAME_RENTAL_ID, nullable = false))
+                    })
 @Entity
 @Table(name = TABLE_NAME)
 public class Rental extends BaseEntity {
@@ -54,6 +74,57 @@ public class Rental extends BaseEntity {
     public static final String COLUMN_NAME_STAFF_ID = "staff_id";
 
     public static final String ATTRIBUTE_NAME_STAFF = "staff";
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance.
+     */
+    public Rental() {
+        super();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public LocalDateTime getRentalDate() {
+        return rentalDate;
+    }
+
+    public void setRentalDate(LocalDateTime rentalDate) {
+        this.rentalDate = rentalDate;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public LocalDateTime getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDateTime returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     //@Past

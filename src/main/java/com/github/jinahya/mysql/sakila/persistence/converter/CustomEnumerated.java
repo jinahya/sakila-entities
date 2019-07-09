@@ -1,7 +1,5 @@
-/**
- * Defines entities for <a href="https://dev.mysql.com/doc/sakila/en/">Sakila Sample Database</a>.
- */
-package com.github.jinahya.mysql.sakila.persistence;
+package com.github.jinahya.mysql.sakila.persistence.converter;
+
 /*-
  * #%L
  * sakila-entities
@@ -21,3 +19,21 @@ package com.github.jinahya.mysql.sakila.persistence;
  * limitations under the License.
  * #L%
  */
+
+/**
+ * An interface for enums of customized database column values.
+ *
+ * @param <E> enum type parameter
+ * @param <T> database column type parameter
+ */
+public interface CustomEnumerated<E extends Enum<E> & CustomEnumerated<E, T>, T> {
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a value for database column.
+     *
+     * @return a value for database column.
+     */
+    T getDatabaseColumn();
+}
