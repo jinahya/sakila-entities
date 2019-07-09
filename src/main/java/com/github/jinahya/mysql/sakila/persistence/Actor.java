@@ -21,7 +21,6 @@ package com.github.jinahya.mysql.sakila.persistence;
  */
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,9 +48,7 @@ import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_N
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
-@AttributeOverrides(value = {
-        @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
-})
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
 public class Actor extends BaseEntity {

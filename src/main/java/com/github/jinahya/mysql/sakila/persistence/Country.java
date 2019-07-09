@@ -21,7 +21,6 @@ package com.github.jinahya.mysql.sakila.persistence;
  */
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -36,10 +35,7 @@ import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_N
 import static com.github.jinahya.mysql.sakila.persistence.Country.COLUMN_NAME_COUNTRY_ID;
 import static com.github.jinahya.mysql.sakila.persistence.Country.TABLE_NAME;
 
-@AttributeOverrides({
-                            @AttributeOverride(name = ATTRIBUTE_NAME_ID,
-                                               column = @Column(name = COLUMN_NAME_COUNTRY_ID, nullable = false))
-                    })
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_COUNTRY_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
 public class Country extends BaseEntity {

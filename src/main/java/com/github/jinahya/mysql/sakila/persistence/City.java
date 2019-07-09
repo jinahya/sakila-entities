@@ -21,7 +21,6 @@ package com.github.jinahya.mysql.sakila.persistence;
  */
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,10 +35,7 @@ import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_N
 import static com.github.jinahya.mysql.sakila.persistence.City.COLUMN_NAME_CITY_ID;
 import static com.github.jinahya.mysql.sakila.persistence.City.TABLE_NAME;
 
-@AttributeOverrides({
-                            @AttributeOverride(name = ATTRIBUTE_NAME_ID,
-                                               column = @Column(name = COLUMN_NAME_CITY_ID, nullable = false))
-                    })
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_CITY_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
 public class City extends BaseEntity {

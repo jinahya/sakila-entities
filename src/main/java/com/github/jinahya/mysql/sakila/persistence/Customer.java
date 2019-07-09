@@ -21,7 +21,6 @@ package com.github.jinahya.mysql.sakila.persistence;
  */
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,10 +33,7 @@ import static com.github.jinahya.mysql.sakila.persistence.BaseEntity.ATTRIBUTE_N
 import static com.github.jinahya.mysql.sakila.persistence.Customer.COLUMN_NAME_CUSTOMER_ID;
 import static com.github.jinahya.mysql.sakila.persistence.Customer.TABLE_NAME;
 
-@AttributeOverrides({
-                            @AttributeOverride(name = ATTRIBUTE_NAME_ID,
-                                               column = @Column(name = COLUMN_NAME_CUSTOMER_ID))
-                    })
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_CUSTOMER_ID))
 @Entity
 @Table(name = TABLE_NAME)
 public class Customer extends BaseEntity {
