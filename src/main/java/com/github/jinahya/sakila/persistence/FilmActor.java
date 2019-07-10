@@ -31,6 +31,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -39,6 +40,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
@@ -67,16 +69,19 @@ public class FilmActor implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Actor actor) {
-        return (long) entityManager
-                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor")
+        return entityManager
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class)
                 .setParameter("actor", actor)
                 .getSingleResult();
     }
 
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
-                                                @NotNull final BinaryOperator<Query> operator) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+                                                @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
+        final TypedQuery<Film> query = operator.apply(
+                entityManager.createQuery("SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actors", Film.class));
+        query.setParameter("actor", actor);
+        return query.getResultList();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
