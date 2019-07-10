@@ -7,12 +7,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
