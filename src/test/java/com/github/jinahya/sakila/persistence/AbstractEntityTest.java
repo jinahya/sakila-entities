@@ -1,8 +1,5 @@
 package com.github.jinahya.sakila.persistence;
 
-import org.jboss.weld.junit5.WeldJunit5Extension;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -10,7 +7,6 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <T> entity type parameter
  */
-@ExtendWith({WeldJunit5Extension.class})
 abstract class AbstractEntityTest<T> {
 
     // -----------------------------------------------------------------------------------------------------------------

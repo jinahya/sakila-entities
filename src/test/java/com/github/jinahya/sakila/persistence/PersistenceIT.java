@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith({WeldJunit5Extension.class})
 @Slf4j
-class PersistenceTest {
+class PersistenceIT {
 
     // -----------------------------------------------------------------------------------------------------------------
     @Test

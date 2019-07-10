@@ -24,9 +24,9 @@
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:33306/sakila"/>
-      <property name="javax.persistence.jdbc.user" value="sakila"/>
-      <property name="javax.persistence.jdbc.password" value="sakila"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}"/>
+      <property name="javax.persistence.jdbc.user" value="${mysql.user}"/>
+      <property name="javax.persistence.jdbc.password" value="${mysql.password}"/>
     </properties>
   </persistence-unit>
 </persistence>
