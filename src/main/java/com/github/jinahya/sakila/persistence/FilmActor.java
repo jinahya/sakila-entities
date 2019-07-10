@@ -78,8 +78,9 @@ public class FilmActor implements Serializable {
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
                                                 @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
-        final TypedQuery<Film> query = operator.apply(
-                entityManager.createQuery("SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actors", Film.class));
+        final TypedQuery<Film> query = operator.apply(entityManager.createQuery(
+                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actors ORDER BY fa.film.title ASC",
+                Film.class));
         query.setParameter("actor", actor);
         return query.getResultList();
     }
