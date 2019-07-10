@@ -71,18 +71,18 @@ class FilmActorIT extends EntityIT<FilmActor> {
             log.debug("expected: {}, actual: {}", expected, list.size());
         }
         {
-            int count = 0;
+            int actual = 0;
             final int maxResults = current().nextInt(1, 17);
             for (int firstResult = 0; true; firstResult += maxResults) {
-                final List<Film> list = FilmActor.listFilms(getEntityManager(), actor, firstResult, maxResults);
-                log.debug("list: {}", list);
-                if (list.isEmpty()) {
+                final List<Film> page = FilmActor.listFilms(getEntityManager(), actor, firstResult, maxResults);
+                log.debug("page: ({}){}", page.size(), page);
+                if (page.isEmpty()) {
                     break;
                 }
-                count += list.size();
+                actual += page.size();
             }
-            assertEquals(expected, count);
-            log.debug("expected: {}, actual: {}", expected, count);
+            assertEquals(expected, actual);
+            log.debug("expected: {}, actual: {}", expected, actual);
         }
     }
 
