@@ -22,17 +22,23 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BinaryOperator;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
@@ -59,14 +65,59 @@ public class FilmActor implements Serializable {
     public static final String ATTRIBUTE_NAME_FILM = "film";
 
     // -----------------------------------------------------------------------------------------------------------------
-    public static long countFilms(final Actor actor) {
+    public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
+                                                  @NotEmpty final Actor actor) {
+        return (long) entityManager
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor")
+                .setParameter("actor", actor)
+                .getSingleResult();
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
-    public static List<Film> listFilms(final Actor actor) {
+    public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
+                                                @NotEmpty final Actor actor,
+                                                @NotNull final BinaryOperator<Query> operator) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
+                                                  @NotEmpty final Collection<@NotNull ? extends Actor> actors,
+                                                  @NotNull final BinaryOperator<Query> operator) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
+
+    public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
+                                                @NotEmpty final Collection<? extends Actor> actors,
+                                                @NotNull final BinaryOperator<Query> operator) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
+                                                   @NotEmpty final Film film,
+                                                   @NotNull final BinaryOperator<Query> operator) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
+
+    public static @NotNull List<Film> listActors(@NotNull final EntityManager entityManager,
+                                                 @NotEmpty final Film film,
+                                                 @NotNull final BinaryOperator<Query> operator) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
+                                                   @NotEmpty final Collection<@NotNull ? extends Film> films,
+                                                   @NotNull final BinaryOperator<Query> operator) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
+
+    public static @NotNull List<Film> listActors(@NotNull final EntityManager entityManager,
+                                                 @NotEmpty final Collection<? extends Film> films,
+                                                 @NotNull final BinaryOperator<Query> operator) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
