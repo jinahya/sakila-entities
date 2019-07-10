@@ -33,6 +33,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
+import static java.util.Optional.ofNullable;
 
 /**
  * An entity class for {@value #TABLE_NAME} table.
@@ -82,22 +84,16 @@ public class FilmActor implements Serializable {
                 .getSingleResult();
     }
 
-    /**
-     * Lists all films mapped specified actor order by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR} attribute in ascending
-     * order.
-     *
-     * @param entityManager an entity manager.
-     * @param actor         the actor to map.
-     * @param operator      a unary operator for customizing the query.
-     * @return a list of films mapped to specified actor.
-     */
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
-                                                @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
-        final TypedQuery<Film> query = operator.apply(entityManager.createQuery(
+                                                @PositiveOrZero final Integer firstResult,
+                                                @Positive final Integer maxResults) {
+        final TypedQuery<Film> query = entityManager.createQuery(
                 "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear ASC",
-                Film.class));
+                Film.class);
         query.setParameter("actor", actor);
+        ofNullable(firstResult).ifPresent(query::setFirstResult);
+        ofNullable(maxResults).ifPresent(query::setMaxResults);
         return query.getResultList();
     }
 
@@ -112,13 +108,14 @@ public class FilmActor implements Serializable {
 
     public static @NotNull Stream<Film> streamFilms(@NotNull final EntityManager entityManager,
                                                     @NotEmpty final Collection<? extends Actor> actors,
-                                                    @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
-        final TypedQuery<Film> query = operator.apply(
-                entityManager.createQuery(
-                        "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
-                        Film.class)
-        );
+                                                    @PositiveOrZero final Integer firstResult,
+                                                    @Positive final Integer maxResults) {
+        final TypedQuery<Film> query = entityManager.createQuery(
+                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
+                Film.class);
         query.setParameter("actors", actors);
+        ofNullable(firstResult).ifPresent(query::setFirstResult);
+        ofNullable(maxResults).ifPresent(query::setMaxResults);
         return query.getResultStream();
     }
 
