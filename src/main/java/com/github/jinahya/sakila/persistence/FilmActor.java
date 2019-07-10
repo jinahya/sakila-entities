@@ -80,6 +80,15 @@ public class FilmActor implements Serializable {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    /**
+     * Lists all films mapped specified actor order by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR} attribute in ascending
+     * order.
+     *
+     * @param entityManager an entity manager.
+     * @param actor         the actor to map.
+     * @param operator      a unary operator for customizing the query.
+     * @return a list of films mapped to specified actor.
+     */
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
                                                 @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
