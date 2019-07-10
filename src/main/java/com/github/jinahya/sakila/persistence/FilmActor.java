@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
@@ -89,19 +90,22 @@ public class FilmActor implements Serializable {
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
         return entityManager
-                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor IN :actors", Long.class)
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor IN :actors",
+                             Long.class)
                 .setParameter("actors", actors)
                 .getSingleResult();
     }
 
-    public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
-                                                @NotEmpty final Collection<? extends Actor> actors,
-                                                @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
-        final TypedQuery<Film> query = operator.apply(entityManager.createQuery(
-                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
-                Film.class));
+    public static @NotNull Stream<Film> listFilms(@NotNull final EntityManager entityManager,
+                                                  @NotEmpty final Collection<? extends Actor> actors,
+                                                  @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
+        final TypedQuery<Film> query = operator.apply(
+                entityManager.createQuery(
+                        "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
+                        Film.class)
+        );
         query.setParameter("actors", actors);
-        return query.getResultList();
+        return query.getResultStream();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
