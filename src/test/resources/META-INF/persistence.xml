@@ -3,8 +3,6 @@
              xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
   <persistence-unit name="sakilaPU" transaction-type="RESOURCE_LOCAL">
-    <class>com.github.jinahya.sakila.persistence.Film.RatingAttributeConverter</class>
-    <class>com.github.jinahya.sakila.persistence.Film.SpecialFeatureAttributeConverter</class>
     <class>com.github.jinahya.sakila.persistence.Actor</class>
     <class>com.github.jinahya.sakila.persistence.Address</class>
     <class>com.github.jinahya.sakila.persistence.Category</class>
@@ -12,8 +10,8 @@
     <class>com.github.jinahya.sakila.persistence.Country</class>
     <class>com.github.jinahya.sakila.persistence.Customer</class>
     <class>com.github.jinahya.sakila.persistence.Film</class>
-<!--    <class>com.github.jinahya.sakila.persistence.Film.Rating</class>-->
-<!--    <class>com.github.jinahya.sakila.persistence.Film.SpecialFeature</class>-->
+    <class>com.github.jinahya.sakila.persistence.Film$RatingAttributeConverter</class>
+    <class>com.github.jinahya.sakila.persistence.Film$SpecialFeatureAttributeConverter</class>
     <class>com.github.jinahya.sakila.persistence.FilmActor</class>
     <class>com.github.jinahya.sakila.persistence.FilmCategory</class>
     <class>com.github.jinahya.sakila.persistence.FilmText</class>

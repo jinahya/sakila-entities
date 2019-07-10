@@ -21,9 +21,9 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import com.github.jinahya.sakila.persistence.converter.CustomValuedEnum;
+import com.github.jinahya.sakila.persistence.converter.CustomValuedEnumAttributeConverter;
 import com.github.jinahya.sakila.persistence.converter.CustomValuedEnumSetJoinedStringAttributeConverter;
 
-import javax.persistence.AttributeConverter;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -370,16 +370,10 @@ public class Film extends BaseEntity {
      * An attribute converter for converting constants to database values and vice versa.
      */
     @Converter
-    public static class RatingAttributeConverter implements AttributeConverter<Rating, String> {
+    public static class RatingAttributeConverter extends CustomValuedEnumAttributeConverter<Rating, String> {
 
-        @Override
-        public String convertToDatabaseColumn(final Rating attribute) {
-            return ofNullable(attribute).map(Rating::getDatabaseColumn).orElse(null);
-        }
-
-        @Override
-        public Rating convertToEntityAttribute(final String dbData) {
-            return ofNullable(dbData).map(Rating::valueOfDatabaseColumn).orElse(null);
+        public RatingAttributeConverter() {
+            super(Rating.class);
         }
     }
 
