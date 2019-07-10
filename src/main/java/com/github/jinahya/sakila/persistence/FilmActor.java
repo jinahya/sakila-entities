@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
@@ -86,9 +87,9 @@ public class FilmActor implements Serializable {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
-    public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
-                                                @NotEmpty final Collection<? extends Actor> actors,
-                                                @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
+    public static @NotNull Stream<Film> listFilms(@NotNull final EntityManager entityManager,
+                                                  @NotEmpty final Collection<? extends Actor> actors,
+                                                  @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
