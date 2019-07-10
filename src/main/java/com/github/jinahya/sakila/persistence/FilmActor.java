@@ -67,7 +67,10 @@ public class FilmActor implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Actor actor) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return (long) entityManager
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor")
+                .setParameter("actor", actor)
+                .getSingleResult();
     }
 
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
