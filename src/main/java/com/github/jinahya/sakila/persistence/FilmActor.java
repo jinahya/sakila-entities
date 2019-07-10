@@ -79,7 +79,7 @@ public class FilmActor implements Serializable {
                                                 @NotEmpty final Actor actor,
                                                 @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
         final TypedQuery<Film> query = operator.apply(entityManager.createQuery(
-                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actors ORDER BY fa.film.title ASC",
+                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.title ASC",
                 Film.class));
         query.setParameter("actor", actor);
         return query.getResultList();
@@ -88,13 +88,20 @@ public class FilmActor implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor IN :actors", Long.class)
+                .setParameter("actors", actors)
+                .getSingleResult();
     }
 
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Collection<? extends Actor> actors,
                                                 @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Film> query = operator.apply(entityManager.createQuery(
+                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
+                Film.class));
+        query.setParameter("actors", actors);
+        return query.getResultList();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
