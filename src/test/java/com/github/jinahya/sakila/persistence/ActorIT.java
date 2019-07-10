@@ -6,6 +6,7 @@ package com.github.jinahya.sakila.persistence;
 class ActorIT extends BaseEntityIT<Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a new instance.
      */

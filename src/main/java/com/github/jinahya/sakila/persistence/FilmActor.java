@@ -32,6 +32,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
@@ -56,6 +57,15 @@ public class FilmActor implements Serializable {
     public static final String COLUMN_NAME_FILM_ID = "film_id";
 
     public static final String ATTRIBUTE_NAME_FILM = "film";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static long countFilms(final Actor actor) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
+
+    public static List<Film> listFilms(final Actor actor) {
+        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
