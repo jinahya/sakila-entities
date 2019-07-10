@@ -33,6 +33,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.Collection;
@@ -80,18 +81,10 @@ public class FilmActor implements Serializable {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
-    /**
-     * Lists all films mapped specified actor order by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR} attribute in ascending
-     * order.
-     *
-     * @param entityManager an entity manager.
-     * @param actor         the actor to map.
-     * @param operator      a unary operator for customizing the query.
-     * @return a list of films mapped to specified actor.
-     */
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
-                                                @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
+                                                @PositiveOrZero final Integer firstResult,
+                                                @Positive final Integer maxResults) {
         // TODO: 7/10/2019 implement
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
@@ -103,7 +96,8 @@ public class FilmActor implements Serializable {
 
     public static @NotNull Stream<Film> streamFilms(@NotNull final EntityManager entityManager,
                                                     @NotEmpty final Collection<? extends Actor> actors,
-                                                    @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
+                                                    @PositiveOrZero final Integer firstResult,
+                                                    @Positive final Integer maxResults) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
