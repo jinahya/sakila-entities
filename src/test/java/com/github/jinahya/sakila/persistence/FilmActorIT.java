@@ -33,7 +33,7 @@ class FilmActorIT extends EntityIT<FilmActor> {
     static Stream<Arguments> provideActorsAndFilmCounts() {
         return Stream.of(
                 Arguments.of(asList(BaseEntity.of(Actor::new, 148),BaseEntity.of(Actor::new, 199)), 29L),
-                Arguments.of(asList(BaseEntity.of(Actor::new, 107), BaseEntity.of(Actor::new, 102), 83L)
+                Arguments.of(asList(BaseEntity.of(Actor::new, 107), BaseEntity.of(Actor::new, 102)), 83L)
         );
     }
 
