@@ -87,14 +87,13 @@ public class FilmActor implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
-                                                  @NotEmpty final Collection<@NotNull ? extends Actor> actors,
-                                                  @NotNull final BinaryOperator<Query> operator) {
+                                                  @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Collection<? extends Actor> actors,
-                                                @NotNull final BinaryOperator<Query> operator) {
+                                                @NotNull final UnaryOperator<TypedQuery<Film>> operator) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
