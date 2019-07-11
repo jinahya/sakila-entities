@@ -15,6 +15,7 @@ import static com.github.jinahya.sakila.persistence.BaseEntityIT.distinctById;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
