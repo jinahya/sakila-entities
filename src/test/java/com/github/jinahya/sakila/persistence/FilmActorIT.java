@@ -58,7 +58,8 @@ class FilmActorIT extends EntityIT<FilmActor> {
      * Tests {@link FilmActor#countFilms(EntityManager, Actor)}.
      *
      * @param actor    a value for {@code actor} parameter.
-     * @param expected an expected value of {@link FilmActor#countFilms(EntityManager, Actor)} for {@code actor}.
+     * @param expected an expected value of {@link FilmActor#countFilms(EntityManager, Actor)} for specified {@code
+     *                 actor}.
      */
     @Tag(TAG_JPQL)
     @MethodSource({"provideActorAndFilmCounts"})
@@ -74,7 +75,7 @@ class FilmActorIT extends EntityIT<FilmActor> {
      *
      * @param actor    an actor to test with.
      * @param expected the expected value of {@link FilmActor#listFilms(EntityManager, Actor, Integer, Integer)} for
-     *                 {@code actor}.
+     *                 specified {@code actor}.
      */
     @Tag(TAG_JPQL)
     @MethodSource({"provideActorAndFilmCounts"})
