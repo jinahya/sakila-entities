@@ -39,7 +39,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
@@ -49,20 +48,40 @@ import static java.util.Optional.ofNullable;
 /**
  * An entity class for {@value #TABLE_NAME} table.
  */
-@Entity
 @IdClass(FilmActorId.class)
+@Entity
 @Table(name = FilmActor.TABLE_NAME)
 public class FilmActor implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The target table name of this entity class. The value is {@value}.
+     */
     public static final String TABLE_NAME = "film_actor";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The table column name for {@value #ATTRIBUTE_NAME_ACTOR} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the actor.
+     * </blockquote>
+     * {@code SMALLINT(5) PK NN UN}
+     */
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
 
     public static final String ATTRIBUTE_NAME_ACTOR = "actor";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@link #ATTRIBUTE_NAME_FILM} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the film.
+     * </blockquote>
+     * {@code SMALLINT(5) PK NN UN}
+     */
     public static final String COLUMN_NAME_FILM_ID = "film_id";
 
     public static final String ATTRIBUTE_NAME_FILM = "film";
@@ -70,11 +89,11 @@ public class FilmActor implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Counts all films mapped to specified actor.
+     * Counts films mapped to specified actor.
      *
      * @param entityManager an entity manager.
-     * @param actor         the actor to match.
-     * @return the number of all films mapped to specified actor.
+     * @param actor         the actor whose films are counted.
+     * @return the number of films mapped to specified actor.
      */
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Actor actor) {
@@ -84,6 +103,16 @@ public class FilmActor implements Serializable {
                 .getSingleResult();
     }
 
+    /**
+     * Lists films mapped to specified actor ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
+     * order.
+     *
+     * @param entityManager an entity manager.
+     * @param actor         the actor to match.
+     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
+     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
+     * @return a list of films.
+     */
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
                                                 @PositiveOrZero final Integer firstResult,
@@ -97,6 +126,13 @@ public class FilmActor implements Serializable {
         return query.getResultList();
     }
 
+    /**
+     * Counts distinct films mapped to any of specified actors.
+     *
+     * @param entityManager an entity manager.
+     * @param actors        the actors whose films are counted.
+     * @return the number of distinct films mapped to any of specified actors.
+     */
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
         return entityManager
@@ -106,8 +142,18 @@ public class FilmActor implements Serializable {
                 .getSingleResult();
     }
 
+    /**
+     * Returns a stream of distinct films mapped to any of specified actors ordered by {@link
+     * BaseEntity#ATTRIBUTE_NAME_ID} in ascending order.
+     *
+     * @param entityManager an entity manager.
+     * @param actors        the actors to match.
+     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
+     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
+     * @return a stream of distinct films mapped to any of specified actors.
+     */
     public static @NotNull Stream<Film> streamFilms(@NotNull final EntityManager entityManager,
-                                                    @NotEmpty final Collection<? extends Actor> actors,
+                                                    @NotEmpty final Collection<@NotNull ? extends Actor> actors,
                                                     @PositiveOrZero final Integer firstResult,
                                                     @Positive final Integer maxResults) {
         final TypedQuery<Film> query = entityManager.createQuery(
@@ -120,25 +166,61 @@ public class FilmActor implements Serializable {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Count actors mapped to specified film.
+     *
+     * @param entityManager an entity manager.
+     * @param film          the film to match.
+     * @return the number of actors mapped to specified film.
+     */
     public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
                                                    @NotEmpty final Film film) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    /**
+     * Lists actors mapped to specified film ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} in ascending order.
+     *
+     * @param entityManager an entity manager.
+     * @param film          the film to match.
+     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
+     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
+     * @return a list of mapped actors of specified film.
+     */
     public static @NotNull List<Actor> listActors(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Film film,
-                                                  @NotNull final UnaryOperator<TypedQuery<Actor>> operator) {
+                                                  @PositiveOrZero final Integer firstResult,
+                                                  @Positive final Integer maxResults) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    /**
+     * Count distinct actors mapped to any of specified films.
+     *
+     * @param entityManager an entity manager.
+     * @param films         the films to match.
+     * @return the number of actors mapped to specified film.
+     */
     public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
                                                    @NotEmpty final Collection<@NotNull ? extends Film> films) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    /**
+     * Returns a stream of distinct actors mapped to any of specified films ordered by {@link
+     * Actor#ATTRIBUTE_NAME_LAST_NAME} attribute in ascending order.
+     *
+     * @param entityManager an entity manager.
+     * @param films         the films to match.
+     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
+     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
+     * @return a stream of distinct actors mapped to any of specified films.
+     */
     public static @NotNull Stream<Actor> streamActors(@NotNull final EntityManager entityManager,
-                                                      @NotEmpty final Collection<? extends Film> films,
-                                                      @NotNull final UnaryOperator<TypedQuery<Actor>> operator) {
+                                                      @NotEmpty final Collection<@NotNull ? extends Film> films,
+                                                      @PositiveOrZero final Integer firstResult,
+                                                      @Positive final Integer maxResults) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
     // -----------------------------------------------------------------------------------------------------------------
@@ -189,13 +271,12 @@ public class FilmActor implements Serializable {
     // ------------------------------------------------------------------------------------------------------ lastUpdate
 
     /**
-     * Returns the current value of {@value com.github.jinahya.sakila.persistence.BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE}
-     * attribute.
+     * Returns the current value of {@code lastUpdate} attribute.
      *
-     * @return the current value of {@value com.github.jinahya.sakila.persistence.BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE}
-     * attribute.
+     * @return the current value of {@code lastUpdte} attribute.
      */
     public Date getLastUpdate() {
+        // TODO: 2019-07-11 Make to return a copy!!!
         return lastUpdate;
     }
 
@@ -215,7 +296,7 @@ public class FilmActor implements Serializable {
     @NamedAttribute(ATTRIBUTE_NAME_FILM)
     private Film film;
 
-    @NotNull
+    //@NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = COLUMN_NAME_LAST_UPDATE, nullable = false, insertable = false, updatable = false)
     @NamedAttribute(ATTRIBUTE_NAME_LAST_UPDATE)

@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,10 +49,25 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
+//@NamedQuery(name = Actor.NAMED_QUERY_SELECT, query = "SELECT a FROM Actor AS a")
+//@NamedQuery(name = Actor.NAMED_QUERY_COUNT, query = "SELECT COUNT(a) FROM Actor AS a")
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
 public class Actor extends BaseEntity {
+
+//    // -----------------------------------------------------------------------------------------------------------------
+//    public static final String NAMED_QUERY_COUNT = "com.github.jinahya.sakila.persistence.Actor.count";
+//
+//    static {
+//        assert NAMED_QUERY_COUNT.startsWith(Actor.class.getName());
+//    }
+//
+//    public static final String NAMED_QUERY_SELECT = "com.github.jinahya.sakila.persistence.Actor.select";
+//
+//    static {
+//        assert NAMED_QUERY_SELECT.startsWith(Actor.class.getName());
+//    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -91,6 +107,12 @@ public class Actor extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"

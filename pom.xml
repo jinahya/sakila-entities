@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -50,8 +51,10 @@
     <version.org.junit.jupiter>5.5.0</version.org.junit.jupiter>
     <version.org.mockito>2.28.2</version.org.mockito>
     <version.maven-surefire>3.0.0-M3</version.maven-surefire>
+    <docker.image>jinahya/sakila-db</docker.image>
+    <docker.container>sakila-db</docker.container>
     <mysql.host>127.0.0.1</mysql.host>
-    <mysql.port>33306</mysql.port>
+    <mysql.hostPort>33306</mysql.hostPort>
     <mysql.database>sakila</mysql.database>
     <mysql.user>sakila</mysql.user>
     <mysql.password>sakila</mysql.password>
@@ -274,10 +277,36 @@
         <version>${version.maven-surefire}</version>
         <executions>
           <execution>
-<!--            <goals>-->
-<!--              <goal>integration-test</goal>-->
-<!--              <goal>verify</goal>-->
-<!--            </goals>-->
+            <!--            <goals>-->
+            <!--              <goal>integration-test</goal>-->
+            <!--              <goal>verify</goal>-->
+            <!--            </goals>-->
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources-docker</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/sh</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>*.sh</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
