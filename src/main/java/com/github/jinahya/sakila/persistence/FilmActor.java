@@ -101,7 +101,8 @@ public class FilmActor implements Serializable {
     }
 
     /**
-     * Lists films mapped to specified actor ordered by {@link Film#ATTRIBUTE_NAME_TITLE} attribute in ascending order.
+     * Lists films mapped to specified actor ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
+     * order.
      *
      * @param entityManager an entity manager.
      * @param actor         the actor to match.
@@ -130,8 +131,8 @@ public class FilmActor implements Serializable {
     }
 
     /**
-     * Returns a stream of distinct films mapped to any of specified actors ordered by {@link Film#ATTRIBUTE_NAME_TITLE}
-     * in ascending order.
+     * Returns a stream of distinct films mapped to any of specified actors ordered by {@link
+     * BaseEntity#ATTRIBUTE_NAME_ID} in ascending order.
      *
      * @param entityManager an entity manager.
      * @param actors        the actors to match.

@@ -19,6 +19,11 @@ import java.util.List;
 public abstract class EntityIT<T> extends AbstractEntityTest {
 
     // -----------------------------------------------------------------------------------------------------------------
+    public static final String TAG_JPQL = "jpql";
+
+    public static final String TAG_CRITERIA_API = "criteria-api";
+
+    // -----------------------------------------------------------------------------------------------------------------
     @Deprecated
     protected static List selectAll(final EntityManager entityManager, final Class<?> entityClass) {
         return entityManager.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " AS e").getResultList();

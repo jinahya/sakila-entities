@@ -44,26 +44,56 @@ public class Store extends BaseEntity {
     public static final String TABLE_NAME = "store";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The primary key column name of this entity. The value is {@value} column.
+     * <blockquote>
+     * A surrogate primary key that uniquely identifies the store.
+     * </blockquote>
+     * {@code TINYINT(5) PK NN UN AI}
+     */
     public static final String COLUMN_NAME_STORE_ID = "store_id";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value ATTRIBUTE_NAME_MANAGER} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the manager of this store.
+     * </blockquote>
+     * {@code TINYINT(3) NN UQ UN}
+     */
     public static final String COLUMN_NAME_MANAGER_STAFF_ID = "manager_staff_id";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_MANAGER_STAFF_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_MANAGER = "manager";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_ADDRESS} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the address of this store.
+     * </blockquote>
+     * {@code SMALLINT(5) NN UN}
+     */
     public static final String COLUMN_NAME_ADDRESS_ID = "address_id";
 
+    /**
+     * The attribute name for {@value #COLUMN_NAME_ADDRESS_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_ADDRESS = "address";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 Remove this field.
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_STAFFS = "staffs";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 Remove this field.
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_CUSTOMERS = "customers";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -93,26 +123,48 @@ public class Store extends BaseEntity {
     // TODO: 2019-07-10 Consider adding equals/hashCode.
 
     // --------------------------------------------------------------------------------------------------------- manager
+
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_MANAGER} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_MANAGER} attribute.
+     */
     public Staff getManager() {
         return manager;
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_MANAGER} attribute.
+     *
+     * @param manager new value for {@value #ATTRIBUTE_NAME_MANAGER} attribute.
+     */
     public void setManager(final Staff manager) {
         this.manager = manager;
     }
 
     // --------------------------------------------------------------------------------------------------------- address
+
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_ADDRESS} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_ADDRESS} attribute.
+     */
     public Address getAddress() {
         return address;
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_ADDRESS} attribute with specified value.
+     *
+     * @param address new current value of {@value #ATTRIBUTE_NAME_ADDRESS} attribute.
+     */
     public void setAddress(final Address address) {
         this.address = address;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 Remove this method.
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     public Set<Staff> getStaffs() {
         if (staffs == null) {
             staffs = new HashSet<>();
@@ -121,8 +173,8 @@ public class Store extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 Remove this method.
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     public Set<Customer> getCustomers() {
         if (customers == null) {
             customers = new HashSet<>();
@@ -145,13 +197,13 @@ public class Store extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-10 Remove this field.
-    @Deprecated
+    @Deprecated // forRemoval = true
     @OneToMany(mappedBy = Staff.ATTRIBUTE_NAME_STORE)
     @NamedAttribute(ATTRIBUTE_NAME_STAFFS)
     private Set<Staff> staffs;
 
     // TODO: 2019-07-10 Remove this field.
-    @Deprecated
+    @Deprecated // forRemoval = true
     @OneToMany(mappedBy = Customer.ATTRIBUTE_NAME_STORE)
     @NamedAttribute(ATTRIBUTE_NAME_STAFFS)
     private Set<Customer> customers;

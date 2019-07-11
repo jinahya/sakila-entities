@@ -29,9 +29,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
 import java.util.Date;
-import java.util.function.Supplier;
 
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
@@ -54,32 +52,6 @@ public abstract class BaseEntity implements Serializable {
      * The attribute name for {@link #COLUMN_NAME_LAST_UPDATE} column.
      */
     public static final String ATTRIBUTE_NAME_LAST_UPDATE = "lastUpdate";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    static <T extends BaseEntity> T of(final Class<? extends T> clazz, final Integer id) {
-        return of(
-                () -> {
-                    try {
-                        final Constructor<? extends T> constructor = clazz.getDeclaredConstructor();
-                        if (!constructor.isAccessible()) {
-                            constructor.setAccessible(true);
-                        }
-                        final T instance = constructor.newInstance();
-                        instance.setId(id);
-                        return instance;
-                    } catch (final ReflectiveOperationException roe) {
-                        throw new RuntimeException(roe);
-                    }
-                },
-                id
-        );
-    }
-
-    static <T extends BaseEntity> T of(final Supplier<? extends T> supplier, final Integer id) {
-        final T instance = supplier.get();
-        instance.setId(id);
-        return instance;
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
     @Override
