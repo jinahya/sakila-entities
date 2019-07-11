@@ -69,10 +69,10 @@ public class FilmActor implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Counts all films mapped to specified actor.
+     * Counts all films that specified actor played.
      *
      * @param entityManager an entity manager.
-     * @param actor         the actor to match.
+     * @param actor         the actor who played.
      * @return the number of all films mapped to specified actor.
      */
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
@@ -81,6 +81,15 @@ public class FilmActor implements Serializable {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    /**
+     * Lists films that specified actor play.
+     *
+     * @param entityManager an entity manager
+     * @param actor         the actor who played.
+     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
+     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
+     * @return a list of films.
+     */
     public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
                                                 @NotEmpty final Actor actor,
                                                 @PositiveOrZero final Integer firstResult,
@@ -89,6 +98,13 @@ public class FilmActor implements Serializable {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
 
+    /**
+     * Count all films that specified actors played.
+     *
+     * @param entityManager an entity manager.
+     * @param actors        actors played.
+     * @return the number of films that all specified actors played.
+     */
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
