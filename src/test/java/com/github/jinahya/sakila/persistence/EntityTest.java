@@ -29,6 +29,11 @@ public abstract class EntityTest<T> {
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Validates all field names of {@link #entityClass} and its superclasses against {@link NamedAttribute#value()}.
+     */
     @Test
     void verifyNamedAttributes() {
         NamedAttributeTests.verify(entityClass);

@@ -21,7 +21,8 @@
     <class>com.github.jinahya.sakila.persistence.Rental</class>
     <class>com.github.jinahya.sakila.persistence.Staff</class>
     <class>com.github.jinahya.sakila.persistence.Store</class>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+<!--    <exclude-unlisted-classes>false</exclude-unlisted-classes>-->
+    <validation-mode>CALLBACK</validation-mode>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}"/>

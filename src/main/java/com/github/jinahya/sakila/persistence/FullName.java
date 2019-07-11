@@ -112,6 +112,49 @@ public class FullName implements Serializable {
         return Objects.hash(getFirstName(), getLastName());
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined specified
+     * delimiter.
+     *
+     * @return a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined with
+     * specified declimiter.
+     */
+    public String getAsFirstNameFirst(@NotNull final String delimiter) {
+        return firstName + delimiter + lastName;
+    }
+
+    /**
+     * Returns a full name as first name first delimited with a white space.
+     *
+     * @return a full name as first name first delimited with a white space.
+     */
+    public String getAsFirstNameFirst() {
+        return getAsFirstNameFirst(" ");
+    }
+
+    /**
+     * Returns a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
+     * specified delimiter.
+     *
+     * @param delimiter the delimiter.
+     * @return a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
+     * specified delimiter.
+     */
+    public String getAsLastNameFirst(@NotNull final String delimiter) {
+        return lastName + delimiter + firstName;
+    }
+
+    /**
+     * Returns a full name as last name first delimited with a comma followed by a white space.
+     *
+     * @return a full name as last name first delimited with a comma followed by a white space.
+     */
+    public String getAsLastNameFirst() {
+        return getAsLastNameFirst(", ");
+    }
+
     // ------------------------------------------------------------------------------------------------------- firstName
 
     /**

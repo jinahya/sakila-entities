@@ -64,9 +64,12 @@ public class Category extends BaseEntity {
 
     public static final String ATTRIBUTE_NAME_NAME = "name";
 
+    public static final int SIZE_MIN_NAME = 0; // empty?
+
     public static final int SIZE_MAX_NAME = 25;
 
     // -----------------------------------------------------------------------------------------------------------------
+    // TODO: 2019-07-11 Remove!!!
     @Deprecated
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
@@ -87,6 +90,8 @@ public class Category extends BaseEntity {
                + "name=" + name
                + "}";
     }
+
+    // TODO: 2019-07-11 Add equals/hashCode ???
 
     // ------------------------------------------------------------------------------------------------------------ name
 
@@ -109,7 +114,15 @@ public class Category extends BaseEntity {
     }
 
     // ----------------------------------------------------------------------------------------------------------- films
-    @Deprecated
+
+    /**
+     * Returns all films categorized to this category.
+     *
+     * @return a set of films categories to this category.
+     * @deprecated Going to be removed!!!
+     */
+    // TODO: 2019-07-11 Remove!!!
+    @Deprecated // forRemoval = true
     public Set<Film> getFilms() {
         if (films == null) {
             films = new HashSet<>();
@@ -117,7 +130,14 @@ public class Category extends BaseEntity {
         return films;
     }
 
-    @Deprecated
+    /**
+     * Categorize specified film to this category.
+     *
+     * @param film the film to be categorized this this category.
+     * @return {@code true} if specified film is not already categorized to this category; {@code false} otherwise.
+     */
+    // TODO: 2019-07-11 Remove!!!
+    @Deprecated // forRemoval = true
     public boolean addFilm(final Film film) {
         if (film == null) {
             throw new NullPointerException("film is null");
@@ -130,7 +150,7 @@ public class Category extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Size(max = SIZE_MAX_NAME)
+    @Size(min = SIZE_MIN_NAME, max = SIZE_MAX_NAME)
     @NotNull
     @Basic(optional = false)
     @Column(name = COLUMN_NAME_NAME, nullable = false)
@@ -138,7 +158,8 @@ public class Category extends BaseEntity {
     private String name;
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Deprecated
+    // TODO: 2019-07-11 Remove!!!
+    @Deprecated // forRemoval = true
     @ManyToMany(mappedBy = Film.ATTRIBUTE_NAME_CATEGORIES)
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
     private Set<Film> films;

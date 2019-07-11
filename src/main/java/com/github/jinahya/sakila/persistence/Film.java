@@ -706,14 +706,14 @@ public class Film extends BaseEntity {
     private String title;
 
     @Size(max = SIZE_MAX_DESCRIPTION)
-    @Basic
+    @Basic(optional = true)
     @Column(name = COLUMN_NAME_DESCRIPTION)
     @NamedAttribute(ATTRIBUTE_NAME_DESCRIPTION)
     private String description;
 
     @Max(MAX_RELEASE_YEAR)
     @Min(MIN_RELEASE_YEAR)
-    @Basic
+    @Basic(optional = true)
     @Column(name = COLUMN_NAME_RELEASE_YEAR)
     @NamedAttribute(ATTRIBUTE_NAME_RELEASE_YEAR)
     private Integer releaseYear;
@@ -724,7 +724,7 @@ public class Film extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_LANGUAGE)
     private Language language;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = COLUMN_NAME_ORIGINAL_LANGUAGE_ID)
     @NamedAttribute(ATTRIBUTE_NAME_ORIGINAL_LANGUAGE)
     private Language originalLanguage;
@@ -776,6 +776,7 @@ public class Film extends BaseEntity {
     private Set<SpecialFeature> specialFeatures;
 
     // -----------------------------------------------------------------------------------------------------------------
+    // TODO: 2019-07-11 Remove!!!
     @Deprecated
     @ManyToMany
     @JoinTable(name = FilmCategory.TABLE_NAME,
@@ -786,6 +787,7 @@ public class Film extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_CATEGORIES)
     private Set<Category> categories;
 
+    // TODO: 2019-07-11 Remove!!!
     @Deprecated
     @ManyToMany(mappedBy = Actor.ATTRIBUTE_NAME_FILMS)
     @NamedAttribute(ATTRIBUTE_NAME_ACTORS)
