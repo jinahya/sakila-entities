@@ -132,10 +132,11 @@ class FilmActorIT extends EntityIT<FilmActor> {
     @ParameterizedTest
     @Test
     void testCountFilms(final List<? extends Actor> actors) {
-        final long expected = actors.stream().mapToLong(v -> FilmActor.countFilms(getEntityManager(), v)).sum();
+        final long sum = actors.stream().mapToLong(v -> FilmActor.countFilms(getEntityManager(), v)).sum();
+        log.debug("sum: {}", sum);
         final long actual = FilmActor.countFilms(getEntityManager(), actors);
-        log.debug("expected: {}, actual: {}", expected, actual);
-        assertTrue(actual <= expected);
+        log.debug("actual: {}", actual);
+        assertTrue(actual <= sum);
     }
 
     @Disabled
