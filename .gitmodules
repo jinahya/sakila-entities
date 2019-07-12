@@ -2,3 +2,4 @@
 	path = .idea/codeStyles
 	url = https://github.com/jinahya/dot-idea-codestyles.git
 	branch = master
+	dirty = ignore

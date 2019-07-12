@@ -94,6 +94,7 @@ public class Actor extends BaseEntity {
     public static final int SIZE_MAX_LAST_NAME = 45;
 
     // -----------------------------------------------------------------------------------------------------------------
+    // TODO: 2019-07-12 remove!!! 
     @Deprecated
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
@@ -159,7 +160,8 @@ public class Actor extends BaseEntity {
         return films;
     }
 
-    @Deprecated
+    // TODO: 2019-07-12 remove!!!
+    @Deprecated // forRemoval = true
     public boolean addFilm(final Film film) {
         if (film == null) {
             throw new NullPointerException("film is null");
