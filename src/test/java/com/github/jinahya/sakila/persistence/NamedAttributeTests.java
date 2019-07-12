@@ -46,7 +46,7 @@ final class NamedAttributeTests {
      *
      * @param clazz the class to be verified.
      */
-    public static void verify(final Class<?> clazz) {
+    static void verify(final Class<?> clazz) {
         if (clazz == null) {
             throw new NullPointerException("clazz is null");
         }

@@ -160,6 +160,12 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of films mapped to specified actor.
      */
     public @PositiveOrZero long countFilms(@NotNull final Actor actor) {
+        if (true) {
+            return entityManager
+                    .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class)
+                    .setParameter("actor", actor)
+                    .getSingleResult();
+        }
         // TODO: 7/10/2019 implement
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
@@ -243,9 +249,9 @@ class FilmActorService extends EntityService<FilmActor> {
      * Returns a stream of distinct actors mapped to any of specified films ordered by {@link
      * BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending order.
      *
-     * @param films         the films to match.
-     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
-     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
+     * @param films       the films to match.
+     * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}.
+     * @param maxResults  a value for {@link TypedQuery#setMaxResults(int)}.
      * @return a stream of distinct actors mapped to any of specified films.
      */
     public @NotNull Stream<Actor> streamActors(@NotNull final Collection<@NotNull ? extends Film> films,

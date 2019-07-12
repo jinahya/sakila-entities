@@ -213,6 +213,11 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.8.2</version>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -275,15 +280,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${version.maven-surefire}</version>
-        <configuration>
-          <testSourceDirectory>${project.baseDir}/src/it/java</testSourceDirectory>
-        </configuration>
         <executions>
           <execution>
-            <!--            <goals>-->
-            <!--              <goal>integration-test</goal>-->
-            <!--              <goal>verify</goal>-->
-            <!--            </goals>-->
+            <goals>
+              <goal>integration-test</goal>
+<!--              <goal>verify</goal>-->
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -302,7 +304,7 @@
               <outputDirectory>${project.basedir}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.basedir}/sh</directory>
+                  <directory>${project.basedir}/.sh</directory>
                   <filtering>true</filtering>
                   <includes>
                     <include>*.sh</include>

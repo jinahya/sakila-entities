@@ -33,6 +33,7 @@ import java.lang.annotation.Target;
 public @interface NamedAttribute {
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * The target attribute name to match.
      *

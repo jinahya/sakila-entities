@@ -48,6 +48,11 @@ public class FullName implements Serializable {
     public static final String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
 
     /**
+     * The minimum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     */
+    public static final int SIZE_MIN_FIRST_NAME = 0;
+
+    /**
      * The maximum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
      */
     public static final int SIZE_MAX_FIRST_NAME = 45;
@@ -63,6 +68,11 @@ public class FullName implements Serializable {
      * The object attribute name for {@value #COLUMN_NAME_LAST_NAME} column. The value is {@value}.
      */
     public static final String ATTRIBUTE_NAME_LAST_NAME = "lastName";
+
+    /**
+     * The minimum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
+    public static final int SIZE_MIN_LAST_NAME = 0;
 
     /**
      * The maximum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
@@ -196,14 +206,14 @@ public class FullName implements Serializable {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Size(max = SIZE_MAX_FIRST_NAME)
+    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
     @NotNull
     @Basic(optional = false)
     @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
     private String firstName;
 
-    @Size(max = SIZE_MAX_LAST_NAME)
+    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
     @NotNull
     @Basic(optional = false)
     @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
