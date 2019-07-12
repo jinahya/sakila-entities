@@ -21,9 +21,9 @@ package com.github.jinahya.sakila.persistence;
  */
 
 /**
- * A class for testing {@link FilmActor}.
+ * A class for testing {@link FilmActorService}.
  */
-class FilmActorTest extends EntityTest<FilmActor> {
+class FilmActorTest extends EntityTest<FilmActorService> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -31,6 +31,6 @@ class FilmActorTest extends EntityTest<FilmActor> {
      * Creates a new instance.
      */
     FilmActorTest() {
-        super(FilmActor.class);
+        super(FilmActorService.class);
     }
 }

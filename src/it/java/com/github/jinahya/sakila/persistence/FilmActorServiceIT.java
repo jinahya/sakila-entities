@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * A class for testing {@link FilmActorService}.
  */
 @Slf4j
-class FilmActorIT extends EntityIT<FilmActorService> {
+class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
 
     // -----------------------------------------------------------------------------------------------------------------
     static Stream<Arguments> provideActorAndFilmCount() {
@@ -70,43 +70,28 @@ class FilmActorIT extends EntityIT<FilmActorService> {
     /**
      * Creates a new instance.
      */
-    FilmActorIT() {
-        super(FilmActorService.class);
+    FilmActorServiceIT() {
+        super(FilmActorService.class, FilmActor.class);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Tests {@link FilmActorService#countFilms(EntityManager, Actor)} method.
-     *
-     * @param actor    an actor to test with.
-     * @param expected an expected value of {@link FilmActorService#countFilms(EntityManager, Actor)} for specified {@code
-     *                 actor}.
-     */
     // TODO: 2019-07-12 un-disable, assert fails, implement, and assert passes
     @Disabled
     @Tag(TAG_JPQL)
     @MethodSource({"provideActorAndFilmCount"})
     @ParameterizedTest
     void testCountFilms(final Actor actor, final long expected) {
-        final long actual = FilmActorService.countFilms(getEntityManager(), actor);
+        final long actual = serviceInstance().countFilms(actor);
         assertEquals(expected, actual);
     }
 
-    /**
-     * Tests {@link FilmActorService#listFilms(EntityManager, Actor, Integer, Integer)} method.
-     *
-     * @param actor    an actor to test with.
-     * @param expected the expected value of {@link FilmActorService#listFilms(EntityManager, Actor, Integer, Integer)} for
-     *                 specified {@code actor}.
-     */
     @Disabled
     @Tag(TAG_JPQL)
     @MethodSource({"provideActorAndFilmCount"})
     @ParameterizedTest
     void testListFilms(final Actor actor, final long expected) {
         {
-            final List<Film> list = FilmActorService.listFilms(getEntityManager(), actor, null, null);
+            final List<Film> list = serviceInstance().listFilms(actor, null, null);
             assertEquals(expected, list.size());
         }
         {

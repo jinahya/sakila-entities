@@ -12,7 +12,7 @@
     <class>com.github.jinahya.sakila.persistence.Film</class>
     <class>com.github.jinahya.sakila.persistence.Film$RatingAttributeConverter</class>
     <class>com.github.jinahya.sakila.persistence.Film$SpecialFeatureAttributeConverter</class>
-    <class>com.github.jinahya.sakila.persistence.FilmActor</class>
+    <class>com.github.jinahya.sakila.persistence.FilmActorService</class>
     <class>com.github.jinahya.sakila.persistence.FilmCategory</class>
     <class>com.github.jinahya.sakila.persistence.FilmText</class>
     <class>com.github.jinahya.sakila.persistence.Inventory</class>
