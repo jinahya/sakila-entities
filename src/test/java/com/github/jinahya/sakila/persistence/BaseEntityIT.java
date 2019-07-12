@@ -60,7 +60,7 @@ public abstract class BaseEntityIT<T extends BaseEntity> extends EntityIT<T> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    protected static <T extends BaseEntity> Predicate<? super T> distinctById() {
+    static <T extends BaseEntity> Predicate<? super T> distinctById() {
         final Map<Integer, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(t.getId(), Boolean.TRUE) == null;
     }
