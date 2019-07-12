@@ -136,7 +136,7 @@ public class FilmActor implements Serializable {
     public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
                                                   @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
         return entityManager
-                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor IN :actors",
+                .createQuery("SELECT COUNT(DISTINCT fa) FROM FilmActor AS fa WHERE fa.actor IN :actors",
                              Long.class)
                 .setParameter("actors", actors)
                 .getSingleResult();
@@ -157,7 +157,7 @@ public class FilmActor implements Serializable {
                                                     @PositiveOrZero final Integer firstResult,
                                                     @Positive final Integer maxResults) {
         final TypedQuery<Film> query = entityManager.createQuery(
-                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
+                "SELECT DISTINCT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
                 Film.class);
         query.setParameter("actors", actors);
         ofNullable(firstResult).ifPresent(query::setFirstResult);
@@ -176,11 +176,16 @@ public class FilmActor implements Serializable {
      */
     public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
                                                    @NotEmpty final Film film) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(fa.actor) FROM FilmActor AS fa WHERE fa.film = :film",
+                             Long.class)
+                .setParameter("film", film)
+                .getSingleResult();
     }
 
     /**
-     * Lists actors mapped to specified film ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} in ascending order.
+     * Lists actors mapped to specified film ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
+     * order.
      *
      * @param entityManager an entity manager.
      * @param film          the film to match.
@@ -192,7 +197,13 @@ public class FilmActor implements Serializable {
                                                   @NotEmpty final Film film,
                                                   @PositiveOrZero final Integer firstResult,
                                                   @Positive final Integer maxResults) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Actor> query = entityManager
+                .createQuery("SELECT fa.actor FROM FilmActor AS fa WHERE fa.film = :film ORDER BY fa.actor.id ASC",
+                             Actor.class)
+                .setParameter("film", film);
+        ofNullable(firstResult).ifPresent(query::setFirstResult);
+        ofNullable(maxResults).ifPresent(query::setMaxResults);
+        return query.getResultList();
     }
 
     /**
@@ -204,7 +215,11 @@ public class FilmActor implements Serializable {
      */
     public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
                                                    @NotEmpty final Collection<@NotNull ? extends Film> films) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(fa.actor) FROM FilmActor AS fa WHERE fa.film IN :films",
+                             Long.class)
+                .setParameter("films", films)
+                .getSingleResult();
     }
 
     /**
@@ -221,8 +236,15 @@ public class FilmActor implements Serializable {
                                                       @NotEmpty final Collection<@NotNull ? extends Film> films,
                                                       @PositiveOrZero final Integer firstResult,
                                                       @Positive final Integer maxResults) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Actor> query = entityManager
+                .createQuery("SELECT fa.actor FROM FilmActor AS fa WHERE fa.film IN :films ORDER BY fa.actor.id ASC",
+                             Actor.class)
+                .setParameter("films", films);
+        ofNullable(firstResult).ifPresent(query::setFirstResult);
+        ofNullable(maxResults).ifPresent(query::setMaxResults);
+        return query.getResultStream();
     }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
