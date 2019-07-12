@@ -57,6 +57,10 @@ public class Category extends BaseEntity {
     public static final String TABLE_NAME = "category";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The column name for {@link #ATTRIBUTE_NAME_ID} attribute. The value is {@value}.
+     */
     public static final String COLUMN_NAME_CATEGORY_ID = "category_id";
 
     // -----------------------------------------------------------------------------------------------------------------
