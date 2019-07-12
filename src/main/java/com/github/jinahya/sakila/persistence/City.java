@@ -32,12 +32,21 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 
 /**
- * An entity clsas for binding {@value #TABLE_NAME} table.
+ * An entity class for binding {@value #TABLE_NAME} table.
+ * <blockquote>
+ * The {@code city} table contains a list of cities.
+ * <p>
+ * The {@code city} table is referred to by a foreign key in the {@link Address address} table and refers to the {@link
+ * Country country} table using a foreign key.
+ * </blockquote>
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-city.html">The city Table (Sakila Sample
+ * Database, MySQL Documentation)</a>
  */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = City.COLUMN_NAME_CITY_ID, nullable = false))
 @Entity
@@ -52,33 +61,57 @@ public class City extends BaseEntity {
     public static final String TABLE_NAME = "city";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The primary key column name of this table. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each city in the table.
+     * </blockquote>
+     * {@code SMALLINT(5) PK NN UN AI}
+     */
     public static final String COLUMN_NAME_CITY_ID = "city_id";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@link #ATTRIBUTE_NAME_CITY} attribute. The value is {@value}.a
+     * <blockquote>
+     * The name of the city.
+     * </blockquote>
+     * {@code VARCHAR(50) NN}
+     */
     public static final String COLUMN_NAME_CITY = "city";
 
     public static final String ATTRIBUTE_NAME_CITY = "city";
 
-    public static final int SIZE_MIN_CITY = 0;
+    public static final int SIZE_MIN_CITY = 0; // TODO: 2019-07-12 empty???
 
     public static final int SIZE_MAX_CITY = 50;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column for {@link #ATTRIBUTE_NAME_COUNTRY} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the country that the city belongs to.
+     * </blockquote>
+     * {@code SMALLINT(5) NN UN}
+     */
     public static final String COLUMN_NAME_COUNTRY_ID = "country_id";
 
     public static final String ATTRIBUTE_NAME_COUNTRY = "country";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 remove this field!
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_ADDRESSES = "addresses";
 
-    // TODO: 2019-07-10 remove this field!
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     public static final int SIZE_MIN_ADDRESSES = 0;
 
-    // TODO: 2019-07-10  remove this field!
-    @Deprecated
+    // TODO: 2019-07-10  remove!!!
+    @Deprecated // forRemoval = true
     public static final int SIZE_MAX_ADDRESSES = Integer.MAX_VALUE;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -92,6 +125,11 @@ public class City extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
@@ -100,29 +138,24 @@ public class City extends BaseEntity {
                + "}";
     }
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof City)) {
-            return false;
-        }
-        final City that = (City) obj;
-        return Objects.equals(getCity(), that.getCity())
-               && Objects.equals(getCountry(), that.getCountry());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getCity(), getCountry());
-    }
+    // TODO: 2019-07-12 equals/hashCode ???
 
     // ------------------------------------------------------------------------------------------------------------ city
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_CITY} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_CITY} attribute.
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_CITY} attribute with specified value.
+     *
+     * @param city new value for {@link #ATTRIBUTE_NAME_CITY} attribute.
+     */
     public void setCity(final String city) {
         this.city = city;
     }
@@ -134,16 +167,16 @@ public class City extends BaseEntity {
 
     public void setCountry(final Country country) {
         if (this.country != null) {
-            final boolean removedFromOldCountry = this.country.getCities().remove(this);
+            final boolean removedFromOldCountry = this.country.getCities().remove(this); // TODO: 2019-07-12 equals???
         }
         this.country = country;
-        if (this.country != null && !this.country.getCities().contains(this)) {
+        if (this.country != null && !this.country.getCities().contains(this)) { // TODO: 2019-07-12 equals???
             final boolean addedToNewCountry = this.country.addCity(this);
         }
     }
 
     // ------------------------------------------------------------------------------------------------------- addresses
-    // TODO: 2019-07-10 remove this method!
+    // TODO: 2019-07-10 remove!!!
     @Deprecated
     public List<Address> getAddresses() {
         if (addresses == null) {
@@ -152,10 +185,10 @@ public class City extends BaseEntity {
         return addresses;
     }
 
-    // TODO: 2019-07-10 remove this method!
+    // TODO: 2019-07-10 remove!!!
     @Deprecated
     public void addAddress(final Address address) {
-        getAddresses().add(address);
+        final boolean addressAdded = getAddresses().add(address);
         if (address.getCity() != this) {
             address.setCity(this);
         }
@@ -163,7 +196,7 @@ public class City extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
     @Size(min = SIZE_MIN_CITY, max = SIZE_MAX_CITY)
-    @NotNull // TODO: 2019-07-10 how about @NotBlank?
+    @NotNull // TODO: 2019-07-10 @NotBlank???
     @Basic(optional = false)
     @Column(name = COLUMN_NAME_CITY, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_CITY)
@@ -176,8 +209,8 @@ public class City extends BaseEntity {
     private Country country;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 remove this field!
-    @Deprecated
+    // TODO: 2019-07-10 remove!!!
+    @Deprecated // forRemoval = true
     @OneToMany(mappedBy = Address.ATTRIBUTE_NAME_CITY)
     @NamedAttribute(ATTRIBUTE_NAME_ADDRESSES)
     private @Size(min = SIZE_MIN_ADDRESSES, max = SIZE_MAX_ADDRESSES) List<@NotNull Address> addresses;
