@@ -127,7 +127,7 @@ public class FilmActor implements Serializable {
     /**
      * Returns the current value of {@code lastUpdate} attribute.
      *
-     * @return the current value of {@code lastUpdte} attribute.
+     * @return the current value of {@code lastUpdate} attribute.
      */
     public Date getLastUpdate() {
         // TODO: 2019-07-11 Make to return a copy!!!

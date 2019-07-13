@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -21,11 +20,22 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 abstract class EntityServiceIT<T extends EntityService<U>, U> {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A tag value for JPQL.
+     */
     static final String TAG_JPQL = "jpql";
 
+    /**
+     * A tag value for Criteria-API.
+     */
     static final String TAG_CRITERIA_API = "criteria-api";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A map of entity classes and their entity counts.
+     */
     private static Map<Class<?>, Long> COUNTS;
 
     private static Map<Class<?>, Long> counts() {
@@ -35,7 +45,14 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         return COUNTS;
     }
 
-    static long count(final EntityManager entityManager, final Class<?> entityClass) {
+    /**
+     * Counts the total number of entities of specified class.
+     *
+     * @param entityManager an entity manager.
+     * @param entityClass   the entity class to count.
+     * @return the number of all entities of specified class.
+     */
+    static long entityCount(final EntityManager entityManager, final Class<?> entityClass) {
         return counts().computeIfAbsent(entityClass, k -> {
             final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
@@ -47,17 +64,34 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         });
     }
 
-    static <T> T random(final EntityManager entityManager, final Class<T> entityClass) {
+    /**
+     * Selects a random entity of specified class.
+     *
+     * @param entityManager an entity manager.
+     * @param entityClass   the entity class to select.
+     * @param <T>           entity type parameter
+     * @return a randomly selected entity instance of specified class.
+     */
+    static <T> T randomEntity(final EntityManager entityManager, final Class<T> entityClass) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         criteriaQuery.select(criteriaQuery.from(entityClass));
         final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(toIntExact(current().nextLong(count(entityManager, entityClass))));
+        typedQuery.setFirstResult(toIntExact(current().nextLong(entityCount(entityManager, entityClass))));
         typedQuery.setMaxResults(1);
         return typedQuery.getSingleResult();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance with specified service class and entity class.
+     *
+     * @param serviceClass the service class to test.
+     * @param entityClass  the target entity class of the {@code serviceClass}.
+     * @see #serviceClass
+     * @see #entityClass
+     */
     EntityServiceIT(final Class<? extends T> serviceClass, final Class<? extends U> entityClass) {
         super();
         this.serviceClass = requireNonNull(serviceClass, "serviceClass is null");
@@ -65,38 +99,53 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns an instance of {@link #serviceClass}.
+     *
+     * @return an instance of {@link #serviceClass}.
+     */
     T serviceInstance() {
-        if (true) {
-            return serviceInstance.select(serviceClass).get();
-        }
-        try {
-            final Constructor<? extends T> constructor = serviceClass.getDeclaredConstructor();
-            if (!constructor.isAccessible()) {
-                constructor.setAccessible(true);
-            }
-            return constructor.newInstance();
-        } catch (final ReflectiveOperationException roe) {
-            throw new RuntimeException(roe);
-        }
+        return serviceInstance.select(serviceClass).get();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    final long count() {
-        return count(entityManager, entityClass);
+
+    /**
+     * Returns all count of the {@link #entityClass}.
+     *
+     * @return all count of the {@link #entityClass}.
+     */
+    final long entityCount() {
+        if (entityClass == null) {
+            entityCount = entityCount(entityManager, entityClass);
+        }
+        return entityCount;
     }
 
-    final U random() {
-        return random(entityManager, entityClass);
+    final U randomEntity() {
+        return randomEntity(entityManager, entityClass);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The service class to test.
+     */
     final Class<? extends T> serviceClass;
 
+    /**
+     * The target entity class of the {@link #serviceClass}.
+     */
     final Class<? extends U> entityClass;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Inject
+    private transient Instance<EntityService> serviceInstance;
 
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    private transient Instance<EntityService> serviceInstance;
+    // -----------------------------------------------------------------------------------------------------------------
+    private transient Long entityCount;
 }

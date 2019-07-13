@@ -29,6 +29,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -57,6 +58,9 @@ public abstract class BaseEntity implements Serializable {
      * The entity attribute name for {@link #COLUMN_NAME_LAST_UPDATE} column.
      */
     public static final String ATTRIBUTE_NAME_LAST_UPDATE = "lastUpdate";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator<? super BaseEntity> COMPARING_ID = Comparator.comparing(BaseEntity::getId);
 
     // -----------------------------------------------------------------------------------------------------------------
 

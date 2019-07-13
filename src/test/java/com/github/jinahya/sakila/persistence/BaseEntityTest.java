@@ -28,7 +28,6 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * A class for testing subclasses of {@link BaseEntity}.
@@ -40,24 +39,24 @@ abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Replaces the current value of {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute of specified object
-     * reference with specified field value.
+     * Replaces the current value of {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute of specified object with
+     * specified value.
      *
-     * @param objectReference the object reference whose {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} field is set.
-     * @param fieldValue      the value for {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
-     * @param <T>             object type type parameter.
+     * @param object the object whose {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} field is set.
+     * @param value  the value for {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
+     * @param <T>    object type type parameter.
      * @return given object.
      * @throws NoSuchFieldException   if failed to find a field.
      * @throws IllegalAccessException if failed to set the value.
      */
-    static <T extends BaseEntity> T setLastUpdate(final T objectReference, final Date fieldValue)
+    static <T extends BaseEntity> T setLastUpdate(final T object, final Date value)
             throws NoSuchFieldException, IllegalAccessException {
         final Field field = BaseEntity.class.getDeclaredField(BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE);
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
-        field.set(objectReference, fieldValue);
-        return objectReference;
+        field.set(object, value);
+        return object;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -71,7 +70,7 @@ abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
         super(entityClass);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------ lastUpdate
 
     /**
      * Asserts the default value of {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute is {@code null}.
@@ -84,19 +83,16 @@ abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
     /**
      * Asserts {@link BaseEntity#getLastUpdate()} returns a copy of the current value of {@link
      * BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
+     *
+     * @throws ReflectiveOperationException if a reflection related error occurs.
      */
     // TODO: 2019-07-12 enable, assert fails, fix it, and assert passes.
     @Disabled
     @Test
-    void assertGetLastUpdateReturnsCopy() {
+    void assertGetLastUpdateReturnsCopy() throws ReflectiveOperationException {
         final T entityInstance = entityInstance();
         final Date unexpected = new Date();
-        try {
-            setLastUpdate(entityInstance, unexpected);
-        } catch (final ReflectiveOperationException roe) {
-            fail(roe);
-            return;
-        }
+        setLastUpdate(entityInstance, unexpected);
         final Date actual = entityInstance.getLastUpdate();
         assertNotSame(unexpected, actual);
     }

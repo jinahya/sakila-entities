@@ -28,6 +28,8 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An embeddable for those entities which each has two attributes for {@value #COLUMN_NAME_FIRST_NAME} column and
  * {@value #COLUMN_NAME_LAST_NAME} column.
@@ -82,6 +84,45 @@ public class FullName implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Constants for formatting names.
+     */
+    public enum NameOrder {
+
+        /**
+         * A constant for formatting a full name as the {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute first.
+         */
+        FIRST_NAME_FIRST() {
+            @Override
+            String format(final FullName object, final String delimiter) {
+                return object.getFirstName() + delimiter + object.getLastName();
+            }
+        },
+
+        /**
+         * A constant for formatting a full name as the {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attribute first.
+         */
+        LAST_NAME_FIRST() {
+            @Override
+            String format(final FullName object, final String delimiter) {
+                return object.getLastName() + delimiter + object.getFirstName();
+            }
+        };
+
+        // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * Formats specified full name using specified delimiter.
+         *
+         * @param object  the full name to format.
+         * @param delimiter a delimiter between names.
+         * @return a formatted value for specified full name.
+         */
+        abstract String format(final FullName object, final String delimiter);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * Returns a string representation of the object.
      *
      * @return a string representation of the object.
@@ -124,26 +165,36 @@ public class FullName implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    // TODO: 2019-07-13 remove!!!!
     /**
      * Returns a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined specified
      * delimiter.
      *
      * @return a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined with
-     * specified declimiter.
+     * specified delimiter.
+     * @deprecated Use {@link #getFormatted(NameOrder, String)}
      */
+    @Deprecated // forRemoval = true
     public String getAsFirstNameFirst(@NotNull final String delimiter) {
+        if (true) {
+            return getFormatted(NameOrder.FIRST_NAME_FIRST, delimiter);
+        }
         return firstName + delimiter + lastName;
     }
 
+    // TODO: 2019-07-13 remove!!!
     /**
      * Returns a full name as first name first delimited with a white space.
      *
      * @return a full name as first name first delimited with a white space.
+     * @deprecated Use {@link #getFormatted(NameOrder, String)}
      */
+    @Deprecated // forRemoval = true
     public String getAsFirstNameFirst() {
         return getAsFirstNameFirst(" ");
     }
 
+    // TODO: 2019-07-13 remove!!!
     /**
      * Returns a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
      * specified delimiter.
@@ -151,18 +202,37 @@ public class FullName implements Serializable {
      * @param delimiter the delimiter.
      * @return a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
      * specified delimiter.
+     * @deprecated Use {@link #getFormatted(NameOrder, String)}
      */
+    @Deprecated // forRemoval = true
     public String getAsLastNameFirst(@NotNull final String delimiter) {
+        if (true) {
+            return getFormatted(NameOrder.LAST_NAME_FIRST, delimiter);
+        }
         return lastName + delimiter + firstName;
     }
 
+    // TODO: 2019-07-13 remove!!!
     /**
      * Returns a full name as last name first delimited with a comma followed by a white space.
      *
      * @return a full name as last name first delimited with a comma followed by a white space.
+     * @deprecated Use {@link #getFormatted(NameOrder, String)}
      */
+    @Deprecated // forRemoval = true
     public String getAsLastNameFirst() {
         return getAsLastNameFirst(", ");
+    }
+
+    /**
+     * Returns a formatted full name of this object using specified order and delimiter.
+     *
+     * @param order     the order of the name.
+     * @param delimiter the delimiter.
+     * @return a formatted full name of this object.
+     */
+    public String getFormatted(final NameOrder order, final String delimiter) {
+        return requireNonNull(order, "order is null").format(this, requireNonNull(delimiter, "delimiter is null"));
     }
 
     // ------------------------------------------------------------------------------------------------------- firstName
@@ -209,14 +279,14 @@ public class FullName implements Serializable {
     @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
     @NotNull
     @Basic(optional = false)
-    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false)
+    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
     @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
     private String firstName;
 
     @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
     @NotNull
     @Basic(optional = false)
-    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
+    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
     @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
     private String lastName;
 }
