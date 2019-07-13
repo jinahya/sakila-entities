@@ -160,12 +160,6 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of films mapped to specified actor.
      */
     public @PositiveOrZero long countFilms(@NotNull final Actor actor) {
-        if (true) {
-            return entityManager
-                    .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class)
-                    .setParameter("actor", actor)
-                    .getSingleResult();
-        }
         // TODO: 7/10/2019 implement
         throw new UnsupportedOperationException("unsupported operation; not implemented yet");
     }
