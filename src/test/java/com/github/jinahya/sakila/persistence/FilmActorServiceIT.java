@@ -123,8 +123,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
         assertEquals(expected, actual);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
     /**
      * Tests {@link FilmActorService#listFilms(Actor, Integer, Integer)} method.
      */
@@ -212,6 +210,104 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
                     break;
                 }
                 final List<Film> expected = films.subList(firstResult, firstResult + actual.size());
+                assertIterableEquals(expected, actual);
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmActorService#countActors(Film)}} method.
+     */
+    // TODO: 2019-07-12 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @Tag(TAG_JPQL)
+    @RepeatedTest(8)
+    void testCountActorsWithSingleActor() {
+        final Film film = randomEntity(entityManager, Film.class);
+        final long expected = FILM_ID_ACTOR_COUNT.get(film.getId());
+        final long actual = serviceInstance().countActors(film);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Tests {@link FilmActorService#listActors(Film, Integer, Integer)} method.
+     */
+    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @Tag(TAG_JPQL)
+    @RepeatedTest(8)
+    void testListActorsWithSingleActor() {
+        final Film film = randomEntity(entityManager, Film.class);
+        {
+            final List<Actor> actors = serviceInstance().listActors(film, null, null);
+            assertEquals(FILM_ID_ACTOR_COUNT.get(film.getId()), actors.size());
+            assertSorted(actors, COMPARING_ID);
+        }
+        {
+            int total = 0;
+            final int maxResults = current().nextInt(1, 17); // [1..16]
+            for (int firstResult = 0; true; firstResult += maxResults) {
+                final List<Actor> page = serviceInstance().listActors(film, firstResult, maxResults);
+                assertTrue(page.size() <= maxResults);
+                assertSorted(page, COMPARING_ID);
+                total += page.size();
+                if (page.size() < maxResults) {
+                    break;
+                }
+            }
+            assertEquals(FILM_ID_ACTOR_COUNT.get(film.getId()), total);
+        }
+    }
+
+    /**
+     * Tests {@link FilmActorService#countActors(Collection)} method.
+     */
+    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @Tag(TAG_JPQL)
+    @RepeatedTest(4)
+    void testCountActorsWithMultipleActors() {
+        final List<Film> films = randomEntities(
+                entityManager, Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
+        final long expected = films.stream()
+                .flatMap(f -> serviceInstance().listActors(f, null, null).stream())
+                .filter(DISTINCT_BY_ID)
+                .count();
+        final long actual = serviceInstance().countActors(films);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Tests {@link FilmActorService#streamActors(Collection, Integer, Integer)} method.
+     */
+    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @Tag(TAG_JPQL)
+    @RepeatedTest(4)
+    void testStreamActors() {
+        final List<Film> films = randomEntities(
+                entityManager, Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
+        final List<Actor> actors = films.stream()
+                .flatMap(f -> serviceInstance().listActors(f, null, null).stream())
+                .filter(DISTINCT_BY_ID)
+                .collect(toList());
+        {
+            final List<Actor> actual = serviceInstance().streamActors(films, null, null).collect(toList());
+            assertIterableEquals(actors, actual);
+        }
+        {
+            final int maxResults = current().nextInt(1, 17); // [1..16]
+            for (int firstResult = 0; true; firstResult += maxResults) {
+                final List<Actor> actual
+                        = serviceInstance().streamActors(films, firstResult, maxResults).collect(toList());
+                assertTrue(actual.size() <= maxResults);
+                assertSorted(actual, COMPARING_ID);
+                if (actual.size() < maxResults) {
+                    break;
+                }
+                final List<Actor> expected = actors.subList(firstResult, firstResult + actual.size());
                 assertIterableEquals(expected, actual);
             }
         }
