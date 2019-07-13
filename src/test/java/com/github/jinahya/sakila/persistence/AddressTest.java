@@ -36,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * A class for testing {@link Address} class.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
 class AddressTest extends BaseEntityTest<Address> {
@@ -67,7 +69,7 @@ class AddressTest extends BaseEntityTest<Address> {
 
     /**
      * Asserts the {@link Address#applyLocationAsPoint(BiFunction)} method throws an {@code IllegalStateException} when
-     * {@link Address#ATTRIBUTE_NAME_LOCATION} attribute is {@code null}.
+     * the value of {@link Address#ATTRIBUTE_NAME_LOCATION} attribute is currently {@code null}.
      */
     @Test
     void assertApplyLocationAsPointThrowsIllegalStateExceptionWhenAddressIsNull() {

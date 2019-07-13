@@ -1,8 +1,77 @@
 package com.github.jinahya.sakila.persistence;
 
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.concurrent.ThreadLocalRandom.current;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.LongStream.rangeClosed;
+
+/**
+ * An abstract class for testing subclasses of {@link BaseEntityService}.
+ *
+ * @param <T> service type parameter
+ * @param <U> entity type parameter
+ */
 abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends BaseEntity> extends EntityServiceIT<T, U> {
 
     // -----------------------------------------------------------------------------------------------------------------
+    // https://www.baeldung.com/java-streams-distinct-by
+    static final Predicate<BaseEntity> DISTINCT_BY_ID = e -> {
+        final Map<Integer, Boolean> seen = new ConcurrentHashMap<>();
+        return seen.putIfAbsent(e.getId(), Boolean.TRUE) == null;
+    };
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Selects random entities of specified class, as a stream, which each is distinct by {@link
+     * BaseEntity#ATTRIBUTE_NAME_ID} attribute, and applies it to specified function.
+     *
+     * @param entityManager an entity manager.
+     * @param entityClass   the class of entities to select.
+     * @param function      the function to be applied with a stream of selected entities.
+     * @param <T>           entity type parameter
+     * @param <R>           result type parameter
+     * @return the result of the {@code function}.
+     * @see #randomEntities(EntityManager, Class)
+     */
+    static <T extends BaseEntity, R> R randomEntities(
+            final EntityManager entityManager, final Class<? extends T> entityClass,
+            final Function<? super Stream<? extends T>, ? extends R> function) {
+        return function.apply(rangeClosed(0L, current().nextLong(entityCount(entityManager, entityClass) >> 1))
+                                      .mapToObj(i -> randomEntity(entityManager, entityClass))
+                                      .filter(DISTINCT_BY_ID));
+    }
+
+    /**
+     * Selects a list of random entities, which each is distinct by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute, of
+     * specified class.
+     *
+     * @param entityManager an entity manager.
+     * @param entityClass   the class of entities to select.
+     * @param <T>           entity type parameter.
+     * @return a list of selected entities.
+     * @see #randomEntities(EntityManager, Class, Function)
+     */
+    static <T extends BaseEntity> List<T> randomEntities(final EntityManager entityManager,
+                                                         final Class<? extends T> entityClass) {
+        return randomEntities(entityManager, entityClass, s -> s.collect(toList()));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance with specified service class and entity class.
+     *
+     * @param serviceClass the service class to test.
+     * @param entityClass  the entity class of the {@code serviceClass}.
+     */
     BaseEntityServiceIT(final Class<? extends T> serviceClass, final Class<? extends U> entityClass) {
         super(serviceClass, entityClass);
     }

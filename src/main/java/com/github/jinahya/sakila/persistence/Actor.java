@@ -48,7 +48,7 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
-//@NamedQuery(name = Actor.NAMED_QUERY_SELECT, query = "SELECT a FROM Actor AS a")
+//@NamedQuery(name = Actor.NAMED_QUERY_SELECT, query = "SELECT a FROM Actor AS a ORDER BY a.id ASC")
 //@NamedQuery(name = Actor.NAMED_QUERY_COUNT, query = "SELECT COUNT(a) FROM Actor AS a")
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
 @Entity
@@ -191,10 +191,10 @@ public class Actor extends BaseEntity {
     @Deprecated
     @ManyToMany(cascade = {/* ??? */})
     @JoinTable(name = FilmActor.TABLE_NAME,
-               joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
-                                          referencedColumnName = COLUMN_NAME_ACTOR_ID)},
-               inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
-                                                 referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
+            joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
+                    referencedColumnName = COLUMN_NAME_ACTOR_ID)},
+            inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
+                    referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
     private Set<Film> films;
 }

@@ -22,6 +22,8 @@ package com.github.jinahya.sakila.persistence;
 
 /**
  * A class for testing {@link Actor}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 class ActorTest extends BaseEntityTest<Actor> {
 
