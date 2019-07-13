@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  *
  * @param <T> entity type parameter
  */
-public abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
+abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
 

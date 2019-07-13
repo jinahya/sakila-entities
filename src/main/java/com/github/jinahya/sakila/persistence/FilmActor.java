@@ -22,7 +22,6 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -30,20 +29,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.TypedQuery;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
-import static java.util.Optional.ofNullable;
 
 /**
  * An entity class for {@value #TABLE_NAME} table.
@@ -87,166 +78,6 @@ public class FilmActor implements Serializable {
     public static final String ATTRIBUTE_NAME_FILM = "film";
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Counts films mapped to specified actor.
-     *
-     * @param entityManager an entity manager.
-     * @param actor         the actor whose films are counted.
-     * @return the number of films mapped to specified actor.
-     */
-    public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
-                                                  @NotEmpty final Actor actor) {
-        return entityManager
-                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class)
-                .setParameter("actor", actor)
-                .getSingleResult();
-    }
-
-    /**
-     * Lists films mapped to specified actor ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
-     * order.
-     *
-     * @param entityManager an entity manager.
-     * @param actor         the actor to match.
-     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
-     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
-     * @return a list of films.
-     */
-    public static @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
-                                                @NotEmpty final Actor actor,
-                                                @PositiveOrZero final Integer firstResult,
-                                                @Positive final Integer maxResults) {
-        final TypedQuery<Film> query = entityManager.createQuery(
-                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear ASC",
-                Film.class);
-        query.setParameter("actor", actor);
-        ofNullable(firstResult).ifPresent(query::setFirstResult);
-        ofNullable(maxResults).ifPresent(query::setMaxResults);
-        return query.getResultList();
-    }
-
-    /**
-     * Counts distinct films mapped to any of specified actors.
-     *
-     * @param entityManager an entity manager.
-     * @param actors        the actors whose films are counted.
-     * @return the number of distinct films mapped to any of specified actors.
-     */
-    public static @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
-                                                  @NotEmpty final Collection<@NotNull ? extends Actor> actors) {
-        return entityManager
-                .createQuery("SELECT COUNT(DISTINCT fa) FROM FilmActor AS fa WHERE fa.actor IN :actors",
-                             Long.class)
-                .setParameter("actors", actors)
-                .getSingleResult();
-    }
-
-    /**
-     * Returns a stream of distinct films mapped to any of specified actors ordered by {@link
-     * BaseEntity#ATTRIBUTE_NAME_ID} in ascending order.
-     *
-     * @param entityManager an entity manager.
-     * @param actors        the actors to match.
-     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
-     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
-     * @return a stream of distinct films mapped to any of specified actors.
-     */
-    public static @NotNull Stream<Film> streamFilms(@NotNull final EntityManager entityManager,
-                                                    @NotEmpty final Collection<@NotNull ? extends Actor> actors,
-                                                    @PositiveOrZero final Integer firstResult,
-                                                    @Positive final Integer maxResults) {
-        final TypedQuery<Film> query = entityManager.createQuery(
-                "SELECT DISTINCT fa.film FROM FilmActor AS fa WHERE fa.actor IN :actors ORDER BY fa.film.title ASC",
-                Film.class);
-        query.setParameter("actors", actors);
-        ofNullable(firstResult).ifPresent(query::setFirstResult);
-        ofNullable(maxResults).ifPresent(query::setMaxResults);
-        return query.getResultStream();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Count actors mapped to specified film.
-     *
-     * @param entityManager an entity manager.
-     * @param film          the film to match.
-     * @return the number of actors mapped to specified film.
-     */
-    public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
-                                                   @NotEmpty final Film film) {
-        return entityManager
-                .createQuery("SELECT COUNT(fa.actor) FROM FilmActor AS fa WHERE fa.film = :film",
-                             Long.class)
-                .setParameter("film", film)
-                .getSingleResult();
-    }
-
-    /**
-     * Lists actors mapped to specified film ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
-     * order.
-     *
-     * @param entityManager an entity manager.
-     * @param film          the film to match.
-     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
-     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
-     * @return a list of mapped actors of specified film.
-     */
-    public static @NotNull List<Actor> listActors(@NotNull final EntityManager entityManager,
-                                                  @NotEmpty final Film film,
-                                                  @PositiveOrZero final Integer firstResult,
-                                                  @Positive final Integer maxResults) {
-        final TypedQuery<Actor> query = entityManager
-                .createQuery("SELECT fa.actor FROM FilmActor AS fa WHERE fa.film = :film ORDER BY fa.actor.id ASC",
-                             Actor.class)
-                .setParameter("film", film);
-        ofNullable(firstResult).ifPresent(query::setFirstResult);
-        ofNullable(maxResults).ifPresent(query::setMaxResults);
-        return query.getResultList();
-    }
-
-    /**
-     * Count distinct actors mapped to any of specified films.
-     *
-     * @param entityManager an entity manager.
-     * @param films         the films to match.
-     * @return the number of actors mapped to specified film.
-     */
-    public static @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
-                                                   @NotEmpty final Collection<@NotNull ? extends Film> films) {
-        return entityManager
-                .createQuery("SELECT COUNT(fa.actor) FROM FilmActor AS fa WHERE fa.film IN :films",
-                             Long.class)
-                .setParameter("films", films)
-                .getSingleResult();
-    }
-
-    /**
-     * Returns a stream of distinct actors mapped to any of specified films ordered by {@link
-     * Actor#ATTRIBUTE_NAME_LAST_NAME} attribute in ascending order.
-     *
-     * @param entityManager an entity manager.
-     * @param films         the films to match.
-     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
-     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
-     * @return a stream of distinct actors mapped to any of specified films.
-     */
-    public static @NotNull Stream<Actor> streamActors(@NotNull final EntityManager entityManager,
-                                                      @NotEmpty final Collection<@NotNull ? extends Film> films,
-                                                      @PositiveOrZero final Integer firstResult,
-                                                      @Positive final Integer maxResults) {
-        final TypedQuery<Actor> query = entityManager
-                .createQuery("SELECT fa.actor FROM FilmActor AS fa WHERE fa.film IN :films ORDER BY fa.actor.id ASC",
-                             Actor.class)
-                .setParameter("films", films);
-        ofNullable(firstResult).ifPresent(query::setFirstResult);
-        ofNullable(maxResults).ifPresent(query::setMaxResults);
-        return query.getResultStream();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
     /**
      * Creates a new instance.
      */

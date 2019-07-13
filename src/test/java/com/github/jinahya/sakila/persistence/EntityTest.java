@@ -21,9 +21,11 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.weld.junit5.WeldJunit5Extension;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.lang.reflect.Constructor;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract class for testing an entity class.
@@ -31,9 +33,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @param <T> entity type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-@ExtendWith({WeldJunit5Extension.class})
 @Slf4j
-public abstract class EntityTest<T> extends AbstractEntityTest<T> {
+public abstract class EntityTest<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -43,7 +44,8 @@ public abstract class EntityTest<T> extends AbstractEntityTest<T> {
      * @param entityClass the entity class to test.
      */
     public EntityTest(final Class<? extends T> entityClass) {
-        super(entityClass);
+        super();
+        this.entityClass = requireNonNull(entityClass, "entityClass is null");
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -55,4 +57,20 @@ public abstract class EntityTest<T> extends AbstractEntityTest<T> {
     void verifyNamedAttributes() {
         NamedAttributeTests.verify(entityClass);
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    T entityInstance() {
+        try {
+            final Constructor<? extends T> constructor = entityClass.getDeclaredConstructor();
+            if (!constructor.isAccessible()) {
+                constructor.setAccessible(true);
+            }
+            return constructor.newInstance();
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    protected final Class<? extends T> entityClass;
 }
