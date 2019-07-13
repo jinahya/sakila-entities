@@ -35,11 +35,11 @@ public final class IterableUtil {
      * @return {@code true} if {@code iterable} is sorted; {@code false} otherwise.
      */
     public static <T> boolean isSorted(final Iterable<? extends T> iterable, final Comparator<? super T> comparator) {
-        boolean beforeTheFirst = true;
+        boolean beforeFirst = true;
         T previous = null;
         for (final T current : iterable) {
-            if (beforeTheFirst) {
-                beforeTheFirst = false;
+            if (beforeFirst) {
+                beforeFirst = false;
                 previous = current;
                 continue;
             }
