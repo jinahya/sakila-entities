@@ -113,7 +113,7 @@ public class FullName implements Serializable {
         /**
          * Formats specified full name using specified delimiter.
          *
-         * @param object  the full name to format.
+         * @param object    the full name to format.
          * @param delimiter a delimiter between names.
          * @return a formatted value for specified full name.
          */
@@ -166,6 +166,7 @@ public class FullName implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
 
     // TODO: 2019-07-13 remove!!!!
+
     /**
      * Returns a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined specified
      * delimiter.
@@ -183,6 +184,7 @@ public class FullName implements Serializable {
     }
 
     // TODO: 2019-07-13 remove!!!
+
     /**
      * Returns a full name as first name first delimited with a white space.
      *
@@ -195,6 +197,7 @@ public class FullName implements Serializable {
     }
 
     // TODO: 2019-07-13 remove!!!
+
     /**
      * Returns a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
      * specified delimiter.
@@ -213,6 +216,7 @@ public class FullName implements Serializable {
     }
 
     // TODO: 2019-07-13 remove!!!
+
     /**
      * Returns a full name as last name first delimited with a comma followed by a white space.
      *
