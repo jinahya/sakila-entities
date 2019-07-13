@@ -31,6 +31,9 @@ import java.util.Objects;
 public class FilmActorId implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
+    private static final long serialVersionUID = 8539750634726943501L;
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Creates a new instance.
@@ -41,6 +44,11 @@ public class FilmActorId implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
@@ -49,6 +57,12 @@ public class FilmActorId implements Serializable {
                + "}";
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param obj the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -61,6 +75,11 @@ public class FilmActorId implements Serializable {
         return getActor() == that.getActor() && getFilm() == that.getFilm();
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getActor(), getFilm());

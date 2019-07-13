@@ -304,22 +304,27 @@ public class Film extends BaseEntity {
      * film ratings (Wikipedia)</a>
      */
     public enum Rating implements CustomValuedEnum<Rating, String> {
+
         /**
          * Constant for {@link #RATING_G}.
          */
         GENERAL_AUDIENCES("G"),
+
         /**
          * Constants for {@link #RATING_PG}.
          */
         PARENTAL_GUIDANCE_SUGGESTED("PG"),
+
         /**
          * Constants for {@link #RATING_PG_13}.
          */
         PARENTS_STRONGLY_CAUTIONED("PG-13"),
+
         /**
          * Constants for {@link #RATING_R}.
          */
         RESTRICTED("R"),
+
         /**
          * Constants for {@link #RATING_NC_17}.
          */
@@ -328,10 +333,11 @@ public class Film extends BaseEntity {
         // -------------------------------------------------------------------------------------------------------------
 
         /**
-         * Returns the value whose {@code databaseColumn} value is equals to specified value.
+         * Returns the value whose {@code databaseColumn} attribute equals to specified value.
          *
          * @param databaseColumn the value for {@code databaseColumn} to match.
          * @return The matched value.
+         * @see CustomValuedEnum#valueOfDatabaseColumn(Class, Object)
          */
         public static Rating valueOfDatabaseColumn(final String databaseColumn) {
             return CustomValuedEnum.valueOfDatabaseColumn(Rating.class, databaseColumn);
@@ -342,7 +348,7 @@ public class Film extends BaseEntity {
         /**
          * Creates a new instance.
          *
-         * @param databaseColumn a value for {@code databaseColumn}.
+         * @param databaseColumn a value for {@code databaseColumn} attribute.
          */
         Rating(final String databaseColumn) {
             this.databaseColumn = requireNonNull(databaseColumn);
@@ -372,6 +378,9 @@ public class Film extends BaseEntity {
     @Converter
     public static class RatingAttributeConverter extends CustomValuedEnumAttributeConverter<Rating, String> {
 
+        /**
+         * Creates a new instance.
+         */
         public RatingAttributeConverter() {
             super(Rating.class);
         }
@@ -416,18 +425,22 @@ public class Film extends BaseEntity {
      * Constants for {@link #ATTRIBUTE_NAME_SPECIAL_FEATURES} attribute.
      */
     public enum SpecialFeature implements CustomValuedEnum<SpecialFeature, String> {
+
         /**
          * Constant for {@link #SPECIAL_FEATURE_TRAILERS}.
          */
         TRAILERS(SPECIAL_FEATURE_TRAILERS),
+
         /**
          * Constant for {@link #SPECIAL_FEATURE_COMMENTARIES}.
          */
         COMMENTARIES(SPECIAL_FEATURE_COMMENTARIES),
+
         /**
          * Constant for {@link #SPECIAL_FEATURE_DELETED_SCENES}.
          */
         DELETED_SCENES(SPECIAL_FEATURE_DELETED_SCENES),
+
         /**
          * Constant for {@link #SPECIAL_FEATURE_BEHIND_THE_SCENES}.
          */
@@ -436,7 +449,7 @@ public class Film extends BaseEntity {
         // -------------------------------------------------------------------------------------------------------------
 
         /**
-         * Creates a new instance.
+         * Creates a new instance with specified database column value.
          *
          * @param databaseColumn a value for {@code databaseColumn}.
          */
@@ -445,6 +458,12 @@ public class Film extends BaseEntity {
         }
 
         // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * {@inheritDoc}
+         *
+         * @return {@inheritDoc}
+         */
         @Override
         public String getDatabaseColumn() {
             return databaseColumn;
@@ -455,21 +474,32 @@ public class Film extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A converter class for converting between a set of {@link SpecialFeature}s and comma separated columns.
+     */
     @Converter
     public static class SpecialFeatureAttributeConverter
             extends CustomValuedEnumSetJoinedStringAttributeConverter<SpecialFeature> {
 
+        // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * Creates a new instance.
+         */
         public SpecialFeatureAttributeConverter() {
             super(SpecialFeature.class, ",");
         }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Deprecated
+    // TODO: 7/13/2019 remove!!!
+    @Deprecated // forRemoval
     public static final String ATTRIBUTE_NAME_CATEGORIES = "categories";
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Deprecated
+    // TODO: 7/13/2019 remove!!!
+    @Deprecated // forRemoval
     public static final String ATTRIBUTE_NAME_ACTORS = "actors";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -500,16 +530,18 @@ public class Film extends BaseEntity {
                + "}";
     }
 
-    // TODO: 2019-07-09 implement equals/hashCode, if it's believed to be required.
+    // TODO: 2019-07-09 equals/hashCode???
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Indicates whether this film's current value of {@value #ATTRIBUTE_NAME_LANGUAGE} attribute is different from the
-     * value of {@value #ATTRIBUTE_NAME_ORIGINAL_LANGUAGE} attribute.
+     * Indicates whether this film is dubbed which means the current value of {@value #ATTRIBUTE_NAME_LANGUAGE}
+     * attribute is different from the value of {@value #ATTRIBUTE_NAME_ORIGINAL_LANGUAGE} attribute. Note that a film
+     * whose {@link #ATTRIBUTE_NAME_ORIGINAL_LANGUAGE} is {@code null} is not dubbed.
      *
      * @return {@code true} if this film is dubbed; {@code false} otherwise.
      */
+    @Transient
     public boolean isDubbed() {
         // TODO: 2019-07-09 implement
         throw new UnsupportedOperationException("not implemented yet");
@@ -549,11 +581,11 @@ public class Film extends BaseEntity {
 
     public void setLanguage(final Language language) {
         if (this.language != null) {
-            final boolean removed = this.language.getFilms().remove(this);
+            final boolean removedFromOldLanguage = this.language.getFilms().remove(this);
         }
         this.language = language;
         if (this.language != null && !this.language.getFilms().contains(this)) {
-            this.language.addFilm(this);
+            final boolean addedToNewLanguage = this.language.addFilm(this);
         }
     }
 
@@ -564,11 +596,11 @@ public class Film extends BaseEntity {
 
     public void setOriginalLanguage(final Language originalLanguage) {
         if (this.originalLanguage != null) {
-            final boolean removed = this.originalLanguage.getFilmsRecorded().remove(this);
+            final boolean removedFromOldOriginalLanguage = this.originalLanguage.getFilmsRecorded().remove(this);
         }
         this.originalLanguage = originalLanguage;
         if (this.originalLanguage != null && !this.originalLanguage.getFilmsRecorded().contains(this)) {
-            this.originalLanguage.addFilmRecorded(this);
+            final boolean addedToNewOriginalLanguage = this.originalLanguage.addFilmRecorded(this);
         }
     }
 
@@ -581,16 +613,16 @@ public class Film extends BaseEntity {
         this.rentalDuration = rentalDuration;
     }
 
-    @Transient
-    public Duration getRentalDurationOfJavaTime() {
+    //@Transient
+    public Duration getRentalDurationInJavaTime() {
         return Duration.of(getRentalDuration(), ChronoUnit.DAYS);
     }
 
-    public void setRentalDurationAsJavaTime(final Duration rentalDurationOfJavaTime) {
-        if (rentalDurationOfJavaTime == null) {
-            throw new NullPointerException("rentalDurationOfJavaTime is null");
+    public void setRentalDurationInJavaTime(final Duration rentalDurationInJavaTime) {
+        if (rentalDurationInJavaTime == null) {
+            throw new NullPointerException("rentalDurationInJavaTime is null");
         }
-        setRentalDuration(toIntExact(rentalDurationOfJavaTime.toDays()));
+        setRentalDuration(toIntExact(rentalDurationInJavaTime.toDays()));
     }
 
     // ------------------------------------------------------------------------------------------------------ rentalRate
@@ -611,13 +643,13 @@ public class Film extends BaseEntity {
         this.length = length;
     }
 
-    @Transient
-    public Duration getLengthDuration() {
+    //@Transient
+    public Duration getLengthInJavaTime() {
         return ofNullable(getLength()).map(v -> Duration.of(v, ChronoUnit.MINUTES)).orElse(null);
     }
 
-    public void setLengthDuration(final Duration lengthDuration) {
-        setLength(ofNullable(lengthDuration).map(v -> toIntExact(v.toMinutes())).orElse(null));
+    public void setLengthInJavaTime(final Duration lengthInJavaTime) {
+        setLength(ofNullable(lengthInJavaTime).map(v -> toIntExact(v.toMinutes())).orElse(null));
     }
 
     // ------------------------------------------------------------------------------------------------- replacementCost
@@ -647,16 +679,9 @@ public class Film extends BaseEntity {
         this.specialFeatures = specialFeatures;
     }
 
-    @Transient
-    public boolean hasSpecialFeature(final SpecialFeature specialFeature) {
-        if (specialFeature == null) {
-            throw new NullPointerException("specialFeature is null");
-        }
-        return ofNullable(getSpecialFeatures()).map(s -> s.contains(specialFeature)).orElse(false);
-    }
-
     // ------------------------------------------------------------------------------------------------------ categories
-    @Deprecated
+    // TODO: 7/13/2019 remove!!!
+    @Deprecated // forRemoval = true
     public Set<Category> getCategories() {
         if (categories == null) {
             categories = new HashSet<>();
@@ -664,7 +689,8 @@ public class Film extends BaseEntity {
         return categories;
     }
 
-    @Deprecated
+    // TODO: 7/13/2019 remove!!!
+    @Deprecated // forRemoval = true
     public boolean addCategory(final Category category) {
         if (category == null) {
             throw new NullPointerException("category is null");
@@ -677,7 +703,8 @@ public class Film extends BaseEntity {
     }
 
     // ---------------------------------------------------------------------------------------------------------- actors
-    @Deprecated
+    // TODO: 7/13/2019 remove!!!
+    @Deprecated // forRemoval = true
     public Set<Actor> getActors() {
         if (actors == null) {
             actors = new HashSet<>();
@@ -685,7 +712,8 @@ public class Film extends BaseEntity {
         return actors;
     }
 
-    @Deprecated
+    // TODO: 7/13/2019 remove!!!
+    @Deprecated // forRemoval = true
     public boolean addActor(final Actor actor) {
         if (actor == null) {
             throw new NullPointerException("actor is null");
@@ -734,7 +762,7 @@ public class Film extends BaseEntity {
     @NotNull
     @Column(name = COLUMN_NAME_RENTAL_DURATION, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_RENTAL_DURATION)
-    private int rentalDuration;
+    private int rentalDuration; // +
 
     @DecimalMax(DECIMAL_MAX_RENTAL_RATE)
     @DecimalMin(DECIMAL_MIN_RENTAL_RATE)
@@ -750,7 +778,7 @@ public class Film extends BaseEntity {
     @Basic(optional = true)
     @Column(name = COLUMN_NAME_LENGTH, nullable = true)
     @NamedAttribute(ATTRIBUTE_NAME_LENGTH)
-    private Integer length;
+    private Integer length; // +
 
     @DecimalMax(DECIMAL_MAX_REPLACEMENT_COST)
     @DecimalMin(DECIMAL_MIN_REPLACEMENT_COST)
@@ -776,18 +804,18 @@ public class Film extends BaseEntity {
     private Set<SpecialFeature> specialFeatures;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-11 Remove!!!
+    // TODO: 2019-07-11 remove!!!
     @Deprecated
     @ManyToMany
     @JoinTable(name = FilmCategory.TABLE_NAME,
-            joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
-                    referencedColumnName = COLUMN_NAME_FILM_ID)},
-            inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
-                    referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
+               joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
+                                          referencedColumnName = COLUMN_NAME_FILM_ID)},
+               inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
+                                                 referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
     @NamedAttribute(ATTRIBUTE_NAME_CATEGORIES)
     private Set<Category> categories;
 
-    // TODO: 2019-07-11 Remove!!!
+    // TODO: 2019-07-11 remove!!!
     @Deprecated
     @ManyToMany(mappedBy = Actor.ATTRIBUTE_NAME_FILMS)
     @NamedAttribute(ATTRIBUTE_NAME_ACTORS)

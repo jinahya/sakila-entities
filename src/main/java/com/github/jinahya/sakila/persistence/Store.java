@@ -120,7 +120,7 @@ public class Store extends BaseEntity {
                + "}";
     }
 
-    // TODO: 2019-07-10 Consider adding equals/hashCode.
+    // TODO: 2019-07-10 equals/hashCode???
 
     // --------------------------------------------------------------------------------------------------------- manager
 

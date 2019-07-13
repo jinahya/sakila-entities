@@ -317,6 +317,13 @@ public class Address extends BaseEntity {
         return function.apply(x, y);
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_LOCATION} attribute with a value of point.
+     *
+     * @param x     a value for x coordinate.
+     * @param y     a value for y coordinate.
+     * @param order a byte order.
+     */
     public void setLocationAsPoint(final double x, final double y, final ByteOrder order) {
         final ByteBuffer buffer = ByteBuffer.allocate(SIZE_LOCATION_FOR_POINT).order(order);
         buffer.put(order == ByteOrder.BIG_ENDIAN ? (byte) 0x00 : (byte) 0x01);

@@ -27,8 +27,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -38,7 +36,7 @@ import java.util.Date;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -130,7 +128,7 @@ public abstract class BaseEntity implements Serializable {
 
     // last_update TIMESTAMP NN CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     // !Payment !Customer
-    @NotNull
+    //@NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = COLUMN_NAME_LAST_UPDATE, nullable = /* ??? */ false, insertable = false, updatable = false)
     @NamedAttribute(ATTRIBUTE_NAME_LAST_UPDATE)

@@ -27,7 +27,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 import static com.github.jinahya.sakila.persistence.Film.COLUMN_NAME_FILM_ID;
 import static com.github.jinahya.sakila.persistence.Film.TABLE_NAME;
@@ -35,7 +34,7 @@ import static com.github.jinahya.sakila.persistence.Film.TABLE_NAME;
 @AttributeOverride(name = BaseEntity.ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_FILM_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
-public class FilmText implements Serializable {
+public class FilmText {
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final String TABLE_NAME = "film_text";

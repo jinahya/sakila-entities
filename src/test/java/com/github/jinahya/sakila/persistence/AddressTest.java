@@ -21,6 +21,7 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,6 +33,7 @@ import java.util.stream.Stream;
 
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -65,7 +67,31 @@ class AddressTest extends BaseEntityTest<Address> {
         super(Address.class);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------- location
+
+    /**
+     * Asserts {@link Address#getLocation()} returns a copy of the current value.
+     */
+    @Disabled
+    @Test
+    void assertGetLocationReturnsCopy() {
+        final Address address = new Address();
+        final byte[] location = new byte[0];
+        setField(Address.class, address, Address.ATTRIBUTE_NAME_LOCATION, location);
+        assertNotSame(location, address.getLocation());
+    }
+
+    /**
+     * Asserts {@link Address#setLocation(byte[])} replaces the current value with a copy of specified value.
+     */
+    @Disabled
+    @Test
+    void assertSetLocationReplacesCopy() {
+        final Address address = new Address();
+        final byte[] location = new byte[0];
+        address.setLocation(location);
+        assertNotSame(location, getField(Address.class, address, Address.ATTRIBUTE_NAME_LOCATION));
+    }
 
     /**
      * Asserts the {@link Address#applyLocationAsPoint(BiFunction)} method throws an {@code IllegalStateException} when

@@ -38,6 +38,9 @@ import static java.util.Objects.requireNonNull;
 public class FullName implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
+    private static final long serialVersionUID = 672072114529715565L;
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.

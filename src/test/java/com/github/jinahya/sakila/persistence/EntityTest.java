@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,6 +36,32 @@ import static java.util.Objects.requireNonNull;
  */
 @Slf4j
 public abstract class EntityTest<T> {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T> T setField(final Class<? extends T> clazz, final T object, final String name, final Object value) {
+        try {
+            final Field field = clazz.getDeclaredField(name);
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            field.set(object, value);
+            return object;
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
+    }
+
+    static <T> Object getField(final Class<? extends T> clazz, final T object, final String name) {
+        try {
+            final Field field = clazz.getDeclaredField(name);
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            return field.get(object);
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -59,6 +86,12 @@ public abstract class EntityTest<T> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a new instance of {@link #entityClass}.
+     *
+     * @return a new instance of {@link #entityClass}.
+     */
     T entityInstance() {
         try {
             final Constructor<? extends T> constructor = entityClass.getDeclaredConstructor();
@@ -72,5 +105,9 @@ public abstract class EntityTest<T> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    protected final Class<? extends T> entityClass;
+
+    /**
+     * The class of the entity to test.
+     */
+    final Class<? extends T> entityClass;
 }

@@ -30,7 +30,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
@@ -42,7 +41,7 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_
 @IdClass(FilmActorId.class)
 @Entity
 @Table(name = FilmActor.TABLE_NAME)
-public class FilmActor implements Serializable {
+public class FilmActor {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -102,7 +101,7 @@ public class FilmActor implements Serializable {
                + '}';
     }
 
-    // TODO: 2019-07-10 Add equals/hashCode ???
+    // TODO: 2019-07-10 equals/hashCode???
 
     // ----------------------------------------------------------------------------------------------------------- actor
     public Actor getActor() {
@@ -130,12 +129,11 @@ public class FilmActor implements Serializable {
      * @return the current value of {@code lastUpdate} attribute.
      */
     public Date getLastUpdate() {
-        // TODO: 2019-07-11 Make to return a copy!!!
+        // TODO: 2019-07-11 copy!!!
         return lastUpdate;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
     @NotNull
     @Id
     @ManyToOne(optional = false)

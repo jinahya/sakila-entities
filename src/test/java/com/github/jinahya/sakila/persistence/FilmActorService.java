@@ -28,130 +28,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * A service class for {@link FilmActor}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 class FilmActorService extends EntityService<FilmActor> {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance.
+     */
     FilmActorService() {
         super(FilmActor.class);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Counts films mapped to specified actor.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param actor         the actor whose films are counted.
-//     * @return the number of films mapped to specified actor.
-//     */
-//    public @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager, @NotNull final Actor actor) {
-//        // TODO: 7/10/2019 implement
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    /**
-//     * Lists films mapped to specified actor ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
-//     * order.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param actor         the actor to match.
-//     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
-//     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
-//     * @return a list of films.
-//     */
-//    public @NotNull List<Film> listFilms(@NotNull final EntityManager entityManager,
-//                                         @NotNull final Actor actor,
-//                                         @PositiveOrZero final Integer firstResult,
-//                                         @Positive final Integer maxResults) {
-//        // TODO: 7/10/2019 implement
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    /**
-//     * Counts distinct films mapped to any of specified actors.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param actors        the actors whose films are counted.
-//     * @return the number of distinct films mapped to any of specified actors.
-//     */
-//    public @PositiveOrZero long countFilms(@NotNull final EntityManager entityManager,
-//                                           @NotNull final Collection<@NotNull ? extends Actor> actors) {
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    /**
-//     * Returns a stream of distinct films mapped to any of specified actors ordered by {@link
-//     * BaseEntity#ATTRIBUTE_NAME_ID} in ascending order.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param actors        the actors to match.
-//     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}
-//     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}
-//     * @return a stream of distinct films mapped to any of specified actors.
-//     */
-//    public @NotNull Stream<Film> streamFilms(@NotNull final EntityManager entityManager,
-//                                             @NotNull final Collection<@NotNull ? extends Actor> actors,
-//                                             @PositiveOrZero final Integer firstResult,
-//                                             @Positive final Integer maxResults) {
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    // -----------------------------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Count actors mapped to specified film.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param film          the film to match.
-//     * @return the number of actors mapped to specified film.
-//     */
-//    public @PositiveOrZero long countActors(@NotNull final EntityManager entityManager, @NotEmpty final Film film) {
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    /**
-//     * Lists actors mapped to specified film ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} in ascending order.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param film          the film to match.
-//     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
-//     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
-//     * @return a list of mapped actors of specified film.
-//     */
-//    public @NotNull List<Actor> listActors(@NotNull final EntityManager entityManager, @NotEmpty final Film film,
-//                                           @PositiveOrZero final Integer firstResult,
-//                                           @Positive final Integer maxResults) {
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    /**
-//     * Count distinct actors mapped to any of specified films.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param films         the films to match.
-//     * @return the number of actors mapped to specified film.
-//     */
-//    public @PositiveOrZero long countActors(@NotNull final EntityManager entityManager,
-//                                            @NotNull final Collection<@NotNull ? extends Film> films) {
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
-//
-//    /**
-//     * Returns a stream of distinct actors mapped to any of specified films ordered by {@link
-//     * BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending order.
-//     *
-//     * @param entityManager an entity manager.
-//     * @param films         the films to match.
-//     * @param firstResult   a value for {@link TypedQuery#setFirstResult(int)}.
-//     * @param maxResults    a value for {@link TypedQuery#setMaxResults(int)}.
-//     * @return a stream of distinct actors mapped to any of specified films.
-//     */
-//    public @NotNull Stream<Actor> streamActors(@NotNull final EntityManager entityManager,
-//                                               @NotNull final Collection<@NotNull ? extends Film> films,
-//                                               @PositiveOrZero final Integer firstResult,
-//                                               @Positive final Integer maxResults) {
-//        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
-//    }
 
     /**
      * Counts films mapped to specified actor.

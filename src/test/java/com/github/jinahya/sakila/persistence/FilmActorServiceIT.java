@@ -62,7 +62,8 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     static {
         final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream = FilmActorServiceIT.class.getResourceAsStream("film_actor_actor_id_film_count.txt");
+            try (InputStream stream
+                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_actor_id_film_count.txt");
                  Scanner scanner = new Scanner(stream)) {
                 while (scanner.hasNext()) {
                     map.put(scanner.nextInt(), scanner.nextInt());
@@ -85,7 +86,8 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     static {
         final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream = FilmActorServiceIT.class.getResourceAsStream("film_actor_film_id_actor_count.txt");
+            try (InputStream stream
+                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_film_id_actor_count.txt");
                  Scanner scanner = new Scanner(stream)) {
                 while (scanner.hasNext()) {
                     map.put(scanner.nextInt(), scanner.nextInt());
@@ -117,7 +119,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testCountFilmsOfSingleActor() {
-        final Actor actor = randomEntity(entityManager, Actor.class);
+        final Actor actor = randomEntity(entityManager(), Actor.class);
         final long expected = ACTOR_ID_FILM_COUNT.get(actor.getId());
         final long actual = serviceInstance().countFilms(actor);
         assertEquals(expected, actual);
@@ -132,7 +134,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @RepeatedTest(8)
     void testListFilmsOfSingleActor() {
         // select a random actor
-        final Actor actor = randomEntity(entityManager, Actor.class);
+        final Actor actor = randomEntity(entityManager(), Actor.class);
         {
             // test for all films of the actor.
             final List<Film> films = serviceInstance().listFilms(actor, null, null);
@@ -166,7 +168,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     void testCountFilmsWithMultipleActors() {
         // prepare a list of actors; random, distinct by id, ordered by id in ascending order.
         final List<Actor> actors = randomEntities(
-                entityManager, Actor.class, s -> s.sorted(COMPARING_ID).collect(toList()));
+                entityManager(), Actor.class, s -> s.sorted(COMPARING_ID).collect(toList()));
         // map films for each actor, distinct by id, sorted by id in ascending order, count them.
         final long expected = actors.stream()
                 .flatMap(a -> serviceInstance().listFilms(a, null, null).stream())
@@ -187,7 +189,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     void testStreamFilms() {
         // prepare a list of actors; random, distinct by id, ordered by id in ascending order.
         final List<Actor> actors = randomEntities(
-                entityManager, Actor.class, s -> s.sorted(COMPARING_ID).collect(toList()));
+                entityManager(), Actor.class, s -> s.sorted(COMPARING_ID).collect(toList()));
         // map films for each actor, distinct by id, sorted by id in ascending order, collect them.
         final List<Film> films = actors.stream()
                 .flatMap(a -> serviceInstance().listFilms(a, null, null).stream())
@@ -225,7 +227,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testCountActorsWithSingleActor() {
-        final Film film = randomEntity(entityManager, Film.class);
+        final Film film = randomEntity(entityManager(), Film.class);
         final long expected = FILM_ID_ACTOR_COUNT.get(film.getId());
         final long actual = serviceInstance().countActors(film);
         assertEquals(expected, actual);
@@ -239,7 +241,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testListActorsWithSingleActor() {
-        final Film film = randomEntity(entityManager, Film.class);
+        final Film film = randomEntity(entityManager(), Film.class);
         {
             final List<Actor> actors = serviceInstance().listActors(film, null, null);
             assertEquals(FILM_ID_ACTOR_COUNT.get(film.getId()), actors.size());
@@ -270,7 +272,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @RepeatedTest(4)
     void testCountActorsWithMultipleActors() {
         final List<Film> films = randomEntities(
-                entityManager, Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
+                entityManager(), Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
         final long expected = films.stream()
                 .flatMap(f -> serviceInstance().listActors(f, null, null).stream())
                 .filter(DISTINCT_BY_ID)
@@ -288,7 +290,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @RepeatedTest(4)
     void testStreamActors() {
         final List<Film> films = randomEntities(
-                entityManager, Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
+                entityManager(), Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
         final List<Actor> actors = films.stream()
                 .flatMap(f -> serviceInstance().listActors(f, null, null).stream())
                 .filter(DISTINCT_BY_ID)
