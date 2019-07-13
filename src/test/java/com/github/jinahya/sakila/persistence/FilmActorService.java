@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Optional.ofNullable;
+
 class FilmActorService extends EntityService<FilmActor> {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -160,8 +162,10 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of films mapped to specified actor.
      */
     public @PositiveOrZero long countFilms(@NotNull final Actor actor) {
-        // TODO: 7/10/2019 implement
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class)
+                .setParameter("actor", actor)
+                .getSingleResult();
     }
 
     /**
@@ -175,8 +179,13 @@ class FilmActorService extends EntityService<FilmActor> {
      */
     public @NotNull List<Film> listFilms(@NotNull final Actor actor, @PositiveOrZero final Integer firstResult,
                                          @Positive final Integer maxResults) {
-        // TODO: 7/10/2019 implement
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Film> typedQuery = entityManager.createQuery(
+                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.id ASC",
+                Film.class);
+        typedQuery.setParameter("actor", actor);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 
     /**
@@ -186,7 +195,10 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of distinct films mapped to any of specified actors.
      */
     public @PositiveOrZero long countFilms(@NotNull final Collection<@NotNull ? extends Actor> actors) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(DISTINCT fa) FROM FilmActor AS fa WHERE fa.actor IN :actors", Long.class)
+                .setParameter("actors", actors).setParameter("actors", actors)
+                .getSingleResult();
     }
 
     /**
@@ -201,7 +213,16 @@ class FilmActorService extends EntityService<FilmActor> {
     public @NotNull Stream<Film> streamFilms(@NotNull final Collection<@NotNull ? extends Actor> actors,
                                              @PositiveOrZero final Integer firstResult,
                                              @Positive final Integer maxResults) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Film> typedQuery = entityManager
+                .createQuery("SELECT DISTINCT fa.film"
+                             + " FROM FilmActor AS fa"
+                             + " WHERE fa.actor IN :actors"
+                             + " ORDER BY fa.film.id",
+                             Film.class)
+                .setParameter("actors", actors).setParameter("actors", actors);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultStream();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -213,7 +234,10 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of actors mapped to specified film.
      */
     public @PositiveOrZero long countActors(@NotNull final Film film) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.film = :film", Long.class)
+                .setParameter("film", film)
+                .getSingleResult();
     }
 
     /**
@@ -226,7 +250,13 @@ class FilmActorService extends EntityService<FilmActor> {
      */
     public @NotNull List<Actor> listActors(@NotNull final Film film, @PositiveOrZero final Integer firstResult,
                                            @Positive final Integer maxResults) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Actor> typedQuery = entityManager
+                .createQuery("SELECT fa.actor FROM FilmActor AS fa WHERE fa.film = :film ORDER BY fa.actor.id ASC",
+                             Actor.class)
+                .setParameter("film", film);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 
     /**
@@ -236,7 +266,10 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of actors mapped to specified film.
      */
     public @PositiveOrZero long countActors(@NotNull final Collection<@NotNull ? extends Film> films) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        return entityManager
+                .createQuery("SELECT COUNT(DISTINCT fa) FROM FilmActor AS fa WHERE fa.film IN :films", Long.class)
+                .setParameter("films", films)
+                .getSingleResult();
     }
 
     /**
@@ -251,6 +284,15 @@ class FilmActorService extends EntityService<FilmActor> {
     public @NotNull Stream<Actor> streamActors(@NotNull final Collection<@NotNull ? extends Film> films,
                                                @PositiveOrZero final Integer firstResult,
                                                @Positive final Integer maxResults) {
-        throw new UnsupportedOperationException("unsupported operation; not implemented yet");
+        final TypedQuery<Actor> typedQuery = entityManager
+                .createQuery("SELECT DISTINCT fa.actor"
+                             + " FROM FilmActor AS fa"
+                             + " WHERE fa.film IN :films"
+                             + " ORDER BY fa.actor.id ASC",
+                             Actor.class)
+                .setParameter("films", films);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultStream();
     }
 }
