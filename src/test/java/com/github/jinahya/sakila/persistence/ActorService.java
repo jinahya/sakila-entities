@@ -21,11 +21,11 @@ class ActorService extends BaseEntityService<Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Returns a stream of actors whose {@link Actor#ATTRIBUTE_NAME_LAST_NAME} attribute <i>optionally</i> matches to
-     * specified value ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending indicated by
-     * specified flag.
+     * Returns a stream of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attribute <i>optionally</i> matches
+     * to specified value, ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending
+     * indicated by specified flag.
      *
-     * @param lastName       a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
+     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
      *                       {@code null}.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
      * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
@@ -38,11 +38,11 @@ class ActorService extends BaseEntityService<Actor> {
     }
 
     /**
-     * Returns a stream of actors whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} attribute <i>optionally</i> matches to
-     * specified value ordered by {@link Actor#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending indicated by
-     * specified flag.
+     * Returns a stream of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute <i>optionally</i> matches
+     * to specified value, ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending
+     * indicated by specified flag.
      *
-     * @param firstName      a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
+     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
      *                       {@code null}.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
      * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
