@@ -63,7 +63,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
         final Map<Integer, Integer> map = new HashMap<>();
         try {
             try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_actor_id_film_count.txt");
+                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_map_actor_id_film_count.txt");
                  Scanner scanner = new Scanner(stream)) {
                 while (scanner.hasNext()) {
                     map.put(scanner.nextInt(), scanner.nextInt());

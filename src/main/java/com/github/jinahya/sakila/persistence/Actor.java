@@ -21,19 +21,19 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.Actor.COLUMN_NAME_ACTOR_ID;
+import static com.github.jinahya.sakila.persistence.Actor.ENTITY_NAME;
 import static com.github.jinahya.sakila.persistence.Actor.TABLE_NAME;
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 
@@ -48,25 +48,10 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
-//@NamedQuery(name = Actor.NAMED_QUERY_SELECT, query = "SELECT a FROM Actor AS a ORDER BY a.id ASC")
-//@NamedQuery(name = Actor.NAMED_QUERY_COUNT, query = "SELECT COUNT(a) FROM Actor AS a")
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
-@Entity
+@Entity(name = ENTITY_NAME)
 @Table(name = TABLE_NAME)
-public class Actor extends BaseEntity {
-
-//    // -----------------------------------------------------------------------------------------------------------------
-//    public static final String NAMED_QUERY_COUNT = "com.github.jinahya.sakila.persistence.Actor.count";
-//
-//    static {
-//        assert NAMED_QUERY_COUNT.startsWith(Actor.class.getName());
-//    }
-//
-//    public static final String NAMED_QUERY_SELECT = "com.github.jinahya.sakila.persistence.Actor.select";
-//
-//    static {
-//        assert NAMED_QUERY_SELECT.startsWith(Actor.class.getName());
-//    }
+public class Actor extends BaseEntity implements FullNameEmbedded {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -76,25 +61,30 @@ public class Actor extends BaseEntity {
     public static final String TABLE_NAME = "actor";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The value for {@link Entity#name()}.
+     *
+     * @deprecated Use default value.
+     */
+    // TODO: 2019-07-14 remove!!!
+    @Deprecated // for Removal = true
+    public static final String ENTITY_NAME = "Actor";
+
+    static {
+        assert ENTITY_NAME.equals(Actor.class.getSimpleName());
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * {@code SMALLINT(5) PK NN UN AI}
+     */
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
 
     // -----------------------------------------------------------------------------------------------------------------
-    public static final String COLUMN_NAME_FIRST_NAME = "first_name";
-
-    public static final String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
-
-    public static final int SIZE_MAX_FIRST_NAME = 45;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    public static final String COLUMN_NAME_LAST_NAME = "last_name";
-
-    public static final String ATTRIBUTE_NAME_LAST_NAME = "lastName";
-
-    public static final int SIZE_MAX_LAST_NAME = 45;
-
-    // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-12 remove!!! 
-    @Deprecated
+    @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -116,42 +106,35 @@ public class Actor extends BaseEntity {
     @Override
     public String toString() {
         return super.toString() + "{"
-               + "firstName=" + firstName
-               + ",lastName=" + lastName
+               + "fullName=" + fullName
                + "}";
     }
 
-    // ------------------------------------------------------------------------------------------------------- firstName
+    // -------------------------------------------------------------------------------------------------------- fullName
 
     /**
-     * Returns the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     * {@inheritDoc}
      *
-     * @return the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     * @return {@inheritDoc}
      */
-    public String getFirstName() {
-        return firstName;
+    @Override
+    public FullName getFullName() {
+        return fullName;
     }
 
     /**
-     * Replaces the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute with specified value.
+     * {@inheritDoc}
      *
-     * @param firstName new value for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     * @param fullName new value for  {@link #ATTRIBUTE_NAME_FULL_NAME} attribute.
      */
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
-
-    // -------------------------------------------------------------------------------------------------------- lastName
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
+    @Override
+    public void setFullName(final FullName fullName) {
+        this.fullName = fullName;
     }
 
     // ----------------------------------------------------------------------------------------------------------- films
-    @Deprecated
+    // TODO: 2019-07-14 remove!!!
+    @Deprecated // forRemoval = true
     public Set<Film> getFilms() {
         if (films == null) {
             films = new HashSet<>();
@@ -173,28 +156,19 @@ public class Actor extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Size(max = SIZE_MAX_FIRST_NAME)
     @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
-    private String firstName;
-
-    @Size(max = SIZE_MAX_LAST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
-    private String lastName;
+    @Embedded
+    private FullName fullName;
 
     // -----------------------------------------------------------------------------------------------------------------
+    // TODO: 2019-07-14 remove!!!
     @Deprecated
     @ManyToMany(cascade = {/* ??? */})
     @JoinTable(name = FilmActor.TABLE_NAME,
-               joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
-                                          referencedColumnName = COLUMN_NAME_ACTOR_ID)},
-               inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
-                                                 referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
+            joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
+                    referencedColumnName = COLUMN_NAME_ACTOR_ID)},
+            inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
+                    referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
     private Set<Film> films;
 }

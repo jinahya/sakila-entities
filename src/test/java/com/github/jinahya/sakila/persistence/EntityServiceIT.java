@@ -148,7 +148,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @return all count of the {@link #entityClass}.
      */
     final long entityCount() {
-        if (entityClass == null) {
+        if (entityCount == null) {
             entityCount = entityCount(entityManager, entityClass);
         }
         return entityCount;
