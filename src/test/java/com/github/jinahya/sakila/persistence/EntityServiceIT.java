@@ -9,9 +9,9 @@ package com.github.jinahya.sakila.persistence;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.lang.StrictMath.toIntExact;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -84,6 +85,22 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         });
     }
 
+    static long entityCount(final Class<?> entityClass) {
+        return applyEntityManager(v -> entityCount(v, requireNonNull(entityClass, "entityClass is null")));
+    }
+
+    static int entityCountAsInt(final Class<?> entityClass) {
+        return toIntExact(entityCount(requireNonNull(entityClass, "entityClass is null")));
+    }
+
+    static int firstResult(final Class<?> entityClass) {
+        return current().nextInt(entityCountAsInt(entityClass));
+    }
+
+    static int maxResults(final Class<?> entityClass) {
+        return current().nextInt(0, 17); // [0..16]
+    }
+
     /**
      * Selects a random entity of specified class.
      *
@@ -100,6 +117,10 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         typedQuery.setFirstResult(toIntExact(current().nextLong(entityCount(entityManager, entityClass))));
         typedQuery.setMaxResults(1);
         return typedQuery.getSingleResult();
+    }
+
+    static <T> T randomEntity(final Class<T> entityClass) {
+        return applyEntityManager(v -> randomEntity(v, requireNonNull(entityClass, "entityClass is null")));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
