@@ -177,7 +177,7 @@ public class Country extends BaseEntity {
     @Deprecated // forRemoval = true
     @Size(min = SIZE_MIN_CITIES, max = SIZE_MAX_CITIES)
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = City.ATTRIBUTE_NAME_COUNTRY, orphanRemoval = false,
-               targetEntity = City.class)
+            targetEntity = City.class)
     @NamedAttribute(ATTRIBUTE_NAME_CITIES)
     private Set<@NotNull City> cities;
 }

@@ -34,6 +34,7 @@ import java.util.WeakHashMap;
 
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.lang.StrictMath.toIntExact;
+import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
@@ -57,14 +58,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     /**
      * A map of entity classes and their entity counts.
      */
-    private static Map<Class<?>, Long> COUNTS;
-
-    private static Map<Class<?>, Long> counts() {
-        if (COUNTS == null) {
-            COUNTS = new WeakHashMap<>();
-        }
-        return COUNTS;
-    }
+    private static final Map<Class<?>, Long> COUNTS = synchronizedMap(new WeakHashMap<>());
 
     /**
      * Counts the total number of entities of specified class.
@@ -74,15 +68,17 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @return the number of all entities of specified class.
      */
     static long entityCount(final EntityManager entityManager, final Class<?> entityClass) {
-        return counts().computeIfAbsent(entityClass, k -> {
-            final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-            criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(entityClass)));
-            final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
-            final long count = typedQuery.getSingleResult();
-            assert count > 0L;
-            return count;
-        });
+        synchronized (COUNTS) {
+            return COUNTS.computeIfAbsent(entityClass, k -> {
+                final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+                final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+                criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(entityClass)));
+                final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
+                final long count = typedQuery.getSingleResult();
+                assert count > 0L;
+                return count;
+            });
+        }
     }
 
     static long entityCount(final Class<?> entityClass) {
