@@ -27,25 +27,17 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.regex.Pattern;
 
-import static java.util.Arrays.stream;
+import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toCollection;
 
 public abstract class CustomValuedEnumSetJoinedStringAttributeConverter<E extends Enum<E> & CustomValuedEnum<E, String>>
         implements AttributeConverter<Set<E>, String> {
 
-    // -----------------------------------------------------------------------------------------------------------------
-    private static Map<String, Pattern> PATTERNS;
-
-    private static Map<String, Pattern> patterns() {
-        if (PATTERNS == null) {
-            PATTERNS = new WeakHashMap<>();
-        }
-        return PATTERNS;
-    }
+    //    // -----------------------------------------------------------------------------------------------------------------
+    private static final Map<String, Pattern> PATTERNS = synchronizedMap(new WeakHashMap<>());
 
     /**
      * Returns a pre-compiled pattern of specified regular expression.
@@ -54,7 +46,9 @@ public abstract class CustomValuedEnumSetJoinedStringAttributeConverter<E extend
      * @return a compiled pattern of specified regular expression.
      */
     private static Pattern pattern(final String regex) {
-        return patterns().computeIfAbsent(requireNonNull(regex, "regex is null"), Pattern::compile);
+        synchronized (PATTERNS) {
+            return PATTERNS.computeIfAbsent(requireNonNull(regex, "regex is null"), Pattern::compile);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -75,8 +69,7 @@ public abstract class CustomValuedEnumSetJoinedStringAttributeConverter<E extend
     @Override
     public Set<E> convertToEntityAttribute(final String column) {
         return ofNullable(column)
-                .map(j -> (current().nextBoolean() ? // TODO: 2019-07-10 Choose one of them!
-                           pattern(columnDelimiter).splitAsStream(j) : stream(j.split(columnDelimiter)))
+                .map(j -> pattern(columnDelimiter).splitAsStream(j)
                         .map(s -> CustomValuedEnum.valueOfDatabaseColumn(enumClass, s))
                         .collect(toCollection(() -> EnumSet.noneOf(enumClass))))
                 .orElse(null);

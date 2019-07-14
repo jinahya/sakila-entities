@@ -15,8 +15,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.FullNameEmbedded.comparingFirstName;
-import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
-import static java.lang.StrictMath.toIntExact;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -75,24 +73,6 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
         }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The total number of instances of {@link Actor} entity.
-     */
-    static final int ACTOR_COUNT = toIntExact(entityCount(Actor.class);
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a random instance of {@link Actor} found from the database.
-     *
-     * @return a random instance of {@link Actor} found from the database.
-     */
-    static Actor randomActor() {
-        return randomEntity(Actor.class);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
