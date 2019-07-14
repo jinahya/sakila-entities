@@ -31,9 +31,9 @@ class ActorService extends BaseEntityService<Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Returns a stream of actors whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attribute <i>optionally</i> matches to
-     * specified value ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending indicated
-     * by specified flag.
+     * Returns a stream of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attribute <i>optionally</i> matches
+     * to specified value, ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending
+     * indicated by specified flag.
      *
      * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
      *                       {@code null}.
@@ -62,8 +62,8 @@ class ActorService extends BaseEntityService<Actor> {
     }
 
     /**
-     * Returns a stream of actors whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute <i>optionally</i> matches
-     * to specified value ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending
+     * Returns a stream of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute <i>optionally</i> matches
+     * to specified value, ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending
      * indicated by specified flag.
      *
      * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be

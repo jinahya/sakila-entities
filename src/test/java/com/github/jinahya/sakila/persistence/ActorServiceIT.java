@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.FullNameEmbedded.comparingFirstName;
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.lang.StrictMath.toIntExact;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
@@ -75,6 +76,13 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * The total number of instances of {@link Actor} entity.
+     */
+    public static final Long ENTITY_COUNT = applyEntityManager(v -> entityCount(v, Actor.class));
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * Creates a new instance.
      */
     ActorServiceIT() {
@@ -90,8 +98,8 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     void testStreamOrderByFirstName() {
         final String lastName = current().nextBoolean() ? null : randomEntity().getLastName();
         final boolean ascendingOrder = current().nextBoolean();
-        final Integer firstResult = current().nextBoolean() ? null : current().nextInt(toIntExact(entityCount()));
-        final Integer maxResult = current().nextBoolean() ? null : current().nextInt(1, toIntExact(entityCount() + 1));
+        final Integer firstResult = current().nextBoolean() ? null : current().nextInt(toIntExact(ENTITY_COUNT));
+        final Integer maxResult = current().nextBoolean() ? null : current().nextInt(1, toIntExact(ENTITY_COUNT + 1L));
         log.debug("lastName: {}, ascendingOrder: {}, firstResult: {}, maxResults: {}", lastName, ascendingOrder,
                   firstResult, maxResult);
         final List<Actor> stream = serviceInstance()

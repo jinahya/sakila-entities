@@ -27,6 +27,9 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class PersistenceProducer {
@@ -36,6 +39,22 @@ public class PersistenceProducer {
 
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY
             = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+
+    /**
+     * Applies an entity manager to specified function and returns the result.
+     *
+     * @param function the function to be applied with an entity manager.
+     * @param <R>      result type parameter.
+     * @return the result of the {@code function}.
+     */
+    static <R> R applyEntityManager(final Function<? super EntityManager, ? extends R> function) {
+        final EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        try {
+            return requireNonNull(function, "function is null").apply(entityManager);
+        } finally {
+            entityManager.close();
+        }
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     @Produces
