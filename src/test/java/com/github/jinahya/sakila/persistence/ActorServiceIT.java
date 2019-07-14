@@ -120,7 +120,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .streamOrderedByLastName(firstName, ascendingOrder, firstResult, maxResult)
                 .collect(toList());
         assertThat(stream)
-                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getLastName())).orElse(true))
+                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResult).map(v -> s <= v).orElse(true))
