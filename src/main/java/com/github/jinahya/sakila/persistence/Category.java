@@ -95,7 +95,7 @@ public class Category extends BaseEntity {
                + "}";
     }
 
-    // TODO: 2019-07-11 Add equals/hashCode ???
+    // TODO: 2019-07-11 equals/hashCode???
 
     // ------------------------------------------------------------------------------------------------------------ name
 

@@ -20,17 +20,18 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * An embeddable id class for {@link FilmCategory}.
+ * An id class for {@link FilmCategory}.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 public class FilmCategoryId implements Serializable {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    private static final long serialVersionUID = 2133404256025489459L;
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -43,6 +44,11 @@ public class FilmCategoryId implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
@@ -51,6 +57,12 @@ public class FilmCategoryId implements Serializable {
                + "}";
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @param obj the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -63,6 +75,11 @@ public class FilmCategoryId implements Serializable {
         return getFilm() == that.getFilm() && getCategory() == that.getCategory();
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getFilm(), getCategory());
@@ -87,13 +104,9 @@ public class FilmCategoryId implements Serializable {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Basic(optional = false)
-    @Column(name = FilmCategory.COLUMN_NAME_FILM_ID, nullable = false)
     @NamedAttribute(FilmCategory.ATTRIBUTE_NAME_FILM)
     private int film;
 
-    @Basic(optional = false)
-    @Column(name = FilmCategory.COLUMN_NAME_CATEGORY_ID, nullable = false)
     @NamedAttribute(FilmCategory.ATTRIBUTE_NAME_CATEGORY)
     private int category;
 }

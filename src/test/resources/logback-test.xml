@@ -10,5 +10,6 @@
     <appender-ref ref="console"/>
   </root>
   <logger name="org.hibernate" level="warn"/>
+  <logger name="org.jboss.logging" level="warn"/>
   <logger name="org.jboss.weld" level="warn"/>
 </configuration>

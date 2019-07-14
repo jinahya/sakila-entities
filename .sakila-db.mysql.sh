@@ -1,3 +1,3 @@
 #!/bin/sh
-mysql -h127.0.0.1 -P33306 -usakila -psakila -Dsakila
+mysql -h192.168.99.102 -P33306 -usakila -psakila -Dsakila
 

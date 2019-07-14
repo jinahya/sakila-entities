@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -130,7 +131,7 @@ public class Customer extends BaseEntity {
                + "}";
     }
 
-    // TODO: 2019-07-10 Consider adding equals/hashCode.
+    // TODO: 2019-07-10 equals/hashCode???
 
     // ----------------------------------------------------------------------------------------------------------- store
     public Store getStore() {
@@ -142,6 +143,7 @@ public class Customer extends BaseEntity {
     }
 
     // -------------------------------------------------------------------------------------------------------- fullName
+    //@Transient // TODO: 7/13/2019 remove @Transient annotation
     public FullName getFullName() {
         return fullName;
     }
@@ -206,8 +208,8 @@ public class Customer extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_STORE)
     private Store store;
 
-    // TODO: 2019-07-13 uncomment @Embedded
-    //@Embedded
+    //@Embedded // TODO: 2019-07-13 uncomment @Embedded
+    @Transient // TODO: 7/13/2019 remove @Transient annotation
     @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
     private FullName fullName;
 

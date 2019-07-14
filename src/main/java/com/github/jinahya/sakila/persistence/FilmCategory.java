@@ -30,15 +30,23 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
 
-@Entity
+/**
+ * An entity class for binding {@link #TABLE_NAME} table.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 @IdClass(FilmCategoryId.class)
+@Entity
 @Table(name = FilmCategory.TABLE_NAME)
-public class FilmCategory implements Serializable {
+public class FilmCategory {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The target table name of this entity. The value {@value}.
+     */
     public static final String TABLE_NAME = "film_category";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -50,6 +58,22 @@ public class FilmCategory implements Serializable {
     public static final String COLUMN_NAME_CATEGORY_ID = "category_id";
 
     public static final String ATTRIBUTE_NAME_CATEGORY = "category";
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance with specified film and category.
+     *
+     * @param film     a value for {@value #ATTRIBUTE_NAME_FILM} attribute.
+     * @param category a value for {@value #ATTRIBUTE_NAME_CATEGORY} attribute.
+     * @return a new instance.
+     */
+    public static FilmCategory of(final Film film, final Category category) {
+        final FilmCategory instance = new FilmCategory();
+        instance.setFilm(film);
+        instance.setCategory(category);
+        return instance;
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -71,14 +95,24 @@ public class FilmCategory implements Serializable {
                + "}";
     }
 
-    // TODO: 2019-07-10 Add equals/hashCode if it's believed to be required
+    // TODO: 2019-07-10 equals/hashCode???
 
     // ------------------------------------------------------------------------------------------------------------ film
 
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_FILM} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_FILM} attribute.
+     */
     public Film getFilm() {
         return film;
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_FILM} attribute with specified value.
+     *
+     * @param film new value for {@value #ATTRIBUTE_NAME_FILM} attribute.
+     */
     public void setFilm(final Film film) {
         this.film = film;
     }
@@ -93,8 +127,14 @@ public class FilmCategory implements Serializable {
     }
 
     // ----------------------------------------------------------------------------------------------------- lastUpdated
+
+    /**
+     * Returns the current value of {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
+     *
+     * @return the current value of {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
+     */
     public Date getLastUpdate() {
-        // TODO: 2019-07-10 return as a copy
+        // TODO: 2019-07-10 copy!!!
         return lastUpdate;
     }
 
@@ -114,7 +154,7 @@ public class FilmCategory implements Serializable {
     private Category category;
 
     // -----------------------------------------------------------------------------------------------------------------
-    @NotNull
+    //@NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = BaseEntity.COLUMN_NAME_LAST_UPDATE, nullable = false, insertable = false, updatable = false)
     @NamedAttribute(BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE)

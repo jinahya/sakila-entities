@@ -21,16 +21,24 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 /**
  * An abstract base class for entity classes.
@@ -38,7 +46,7 @@ import java.util.Date;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable {
+public abstract class BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -60,7 +68,27 @@ public abstract class BaseEntity implements Serializable {
     public static final String ATTRIBUTE_NAME_LAST_UPDATE = "lastUpdate";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A comparator for comparing entities with {@link #ATTRIBUTE_NAME_ID} attribute.
+     */
     public static final Comparator<? super BaseEntity> COMPARING_ID = Comparator.comparing(BaseEntity::getId);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static <T extends BaseEntity> Stream<T> select(
+            final EntityManager entityManager, final Class<T> entityClass,
+            final BiFunction<CriteriaBuilder, Root<T>, Collection<? extends Predicate>> predicatesFunction,
+            final UnaryOperator<TypedQuery<T>> queryOperator) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<T> root = criteriaQuery.from(entityClass);
+        final Collection<? extends Predicate> predicates = predicatesFunction.apply(criteriaBuilder, root);
+        if (!predicates.isEmpty()) {
+            criteriaQuery.where((Predicate[]) predicates.toArray());
+        }
+        final TypedQuery<T> typedQuery = queryOperator.apply(entityManager.createQuery(criteriaQuery));
+        return typedQuery.getResultStream();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -130,7 +158,7 @@ public abstract class BaseEntity implements Serializable {
 
     // last_update TIMESTAMP NN CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     // !Payment !Customer
-    @NotNull
+    //@NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = COLUMN_NAME_LAST_UPDATE, nullable = /* ??? */ false, insertable = false, updatable = false)
     @NamedAttribute(ATTRIBUTE_NAME_LAST_UPDATE)

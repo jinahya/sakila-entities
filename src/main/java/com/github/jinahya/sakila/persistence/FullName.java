@@ -31,11 +31,16 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An embeddable for those entities which each has two attributes for {@value #COLUMN_NAME_FIRST_NAME} column and
- * {@value #COLUMN_NAME_LAST_NAME} column.
+ * An embeddable class for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute and {@value #ATTRIBUTE_NAME_LAST_NAME}
+ * attribute.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Embeddable
 public class FullName implements Serializable {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    private static final long serialVersionUID = 672072114529715565L;
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -52,7 +57,7 @@ public class FullName implements Serializable {
     /**
      * The minimum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
      */
-    public static final int SIZE_MIN_FIRST_NAME = 0;
+    public static final int SIZE_MIN_FIRST_NAME = 0; // TODO: 2019-07-14 empty???
 
     /**
      * The maximum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
@@ -74,7 +79,7 @@ public class FullName implements Serializable {
     /**
      * The minimum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
      */
-    public static final int SIZE_MIN_LAST_NAME = 0;
+    public static final int SIZE_MIN_LAST_NAME = 0; // TODO: 2019-07-14 empty???
 
     /**
      * The maximum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
@@ -84,9 +89,25 @@ public class FullName implements Serializable {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Constants for formatting names.
+     * Creates a new instance with specified first name and last name.
+     *
+     * @param firstName a value for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     * @param lastName  a value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     * @return a new instance.
      */
-    public enum NameOrder {
+    public static FullName of(final String firstName, final String lastName) {
+        final FullName instance = new FullName();
+        instance.setFirstName(firstName);
+        instance.setLastName(lastName);
+        return instance;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Constants for ordering names.
+     */
+    public enum Order {
 
         /**
          * A constant for formatting a full name as the {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute first.
@@ -165,38 +186,34 @@ public class FullName implements Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    // TODO: 2019-07-13 remove!!!!
-
     /**
      * Returns a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined specified
      * delimiter.
      *
      * @return a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined with
      * specified delimiter.
-     * @deprecated Use {@link #getFormatted(NameOrder, String)}
+     * @deprecated Use {@link #toString(Order, String)}
      */
+    // TODO: 2019-07-13 remove!!!!
     @Deprecated // forRemoval = true
     public String getAsFirstNameFirst(@NotNull final String delimiter) {
         if (true) {
-            return getFormatted(NameOrder.FIRST_NAME_FIRST, delimiter);
+            return toString(Order.FIRST_NAME_FIRST, delimiter);
         }
         return firstName + delimiter + lastName;
     }
-
-    // TODO: 2019-07-13 remove!!!
 
     /**
      * Returns a full name as first name first delimited with a white space.
      *
      * @return a full name as first name first delimited with a white space.
-     * @deprecated Use {@link #getFormatted(NameOrder, String)}
+     * @deprecated Use {@link #toString(Order, String)}
      */
+    // TODO: 2019-07-13 remove!!!
     @Deprecated // forRemoval = true
     public String getAsFirstNameFirst() {
         return getAsFirstNameFirst(" ");
     }
-
-    // TODO: 2019-07-13 remove!!!
 
     /**
      * Returns a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
@@ -205,37 +222,37 @@ public class FullName implements Serializable {
      * @param delimiter the delimiter.
      * @return a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
      * specified delimiter.
-     * @deprecated Use {@link #getFormatted(NameOrder, String)}
+     * @deprecated Use {@link #toString(Order, String)}
      */
+    // TODO: 2019-07-13 remove!!!
     @Deprecated // forRemoval = true
     public String getAsLastNameFirst(@NotNull final String delimiter) {
         if (true) {
-            return getFormatted(NameOrder.LAST_NAME_FIRST, delimiter);
+            return toString(Order.LAST_NAME_FIRST, delimiter);
         }
         return lastName + delimiter + firstName;
     }
-
-    // TODO: 2019-07-13 remove!!!
 
     /**
      * Returns a full name as last name first delimited with a comma followed by a white space.
      *
      * @return a full name as last name first delimited with a comma followed by a white space.
-     * @deprecated Use {@link #getFormatted(NameOrder, String)}
+     * @deprecated Use {@link #toString(Order, String)}
      */
+    // TODO: 2019-07-13 remove!!!
     @Deprecated // forRemoval = true
     public String getAsLastNameFirst() {
         return getAsLastNameFirst(", ");
     }
 
     /**
-     * Returns a formatted full name of this object using specified order and delimiter.
+     * Returns a full name of this object using specified order and delimiter.
      *
      * @param order     the order of the name.
      * @param delimiter the delimiter.
      * @return a formatted full name of this object.
      */
-    public String getFormatted(final NameOrder order, final String delimiter) {
+    public String toString(final Order order, final String delimiter) {
         return requireNonNull(order, "order is null").format(this, requireNonNull(delimiter, "delimiter is null"));
     }
 
