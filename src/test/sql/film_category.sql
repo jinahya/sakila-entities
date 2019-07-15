@@ -7,7 +7,8 @@ ORDER BY category_count DESC
 ;
 
 SELECT fc.film_id, c.*
-FROM film_category AS fc JOIN category AS c ON fc.category_id = c.category_id
+FROM film_category AS fc
+         JOIN category AS c ON fc.category_id = c.category_id
 ORDER BY fc.film_id ASC, c.category_id ASC
 ;
 
