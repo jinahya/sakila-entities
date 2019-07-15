@@ -58,7 +58,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> extends EntityIT<U
     }
 
     static int maxResults(final Class<?> entityClass) {
-        return current().nextInt(0, 17); // [0..16]
+        return current().nextInt(1, entityCountAsInt(entityClass)); // [1..16]
     }
 
     // -----------------------------------------------------------------------------------------------------------------
