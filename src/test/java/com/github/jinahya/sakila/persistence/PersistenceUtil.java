@@ -51,7 +51,7 @@ final class PersistenceUtil {
                     if (ENTITY_MANAGER_CLOSE.equals(method)) {
                         throw new UnsupportedOperationException("not permitted");
                     }
-                    return method.invoke(proxy, args);
+                    return method.invoke(entityManager, args);
                 }
         );
     }
