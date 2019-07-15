@@ -30,6 +30,7 @@ import javax.persistence.EntityManager;
 
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith({WeldJunit5Extension.class})
 @Slf4j
@@ -43,8 +44,8 @@ class PersistenceIT {
 
     // -----------------------------------------------------------------------------------------------------------------
     @Test
-    void testUncloseable() {
-        uncloseable(entityManager).close();
+    void assertCloseUnsupportedOnUncloseable() {
+        assertThrows(UnsupportedOperationException.class, () -> uncloseable(entityManager).close());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
