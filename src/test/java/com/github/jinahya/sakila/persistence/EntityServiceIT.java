@@ -20,21 +20,9 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import org.jboss.weld.junit5.WeldJunit5Extension;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import java.util.Map;
-import java.util.WeakHashMap;
 
-import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
-import static java.lang.StrictMath.toIntExact;
-import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
