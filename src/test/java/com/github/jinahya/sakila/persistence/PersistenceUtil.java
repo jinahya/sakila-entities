@@ -47,11 +47,11 @@ final class PersistenceUtil {
         return (EntityManager) Proxy.newProxyInstance(
                 requireNonNull(entityManager, "entityManager is null").getClass().getClassLoader(),
                 new Class<?>[] {EntityManager.class},
-                (proxy, method, object) -> {
+                (proxy, method, args) -> {
                     if (ENTITY_MANAGER_CLOSE.equals(method)) {
                         throw new UnsupportedOperationException("not permitted");
                     }
-                    return method.invoke(object);
+                    return method.invoke(proxy, args);
                 }
         );
     }
