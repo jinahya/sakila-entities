@@ -28,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith({WeldJunit5Extension.class})
@@ -38,6 +39,12 @@ class PersistenceIT {
     @Test
     void assertEntityManagerInjected() {
         assertNotNull(entityManager);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Test
+    void testUncloseable() {
+        uncloseable(entityManager).close();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
