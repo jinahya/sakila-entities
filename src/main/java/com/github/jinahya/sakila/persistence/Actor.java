@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -156,6 +157,7 @@ public class Actor extends BaseEntity implements FullNameEmbedded {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    @Valid
     @NotNull
     @Embedded
     private FullName fullName;
@@ -165,10 +167,10 @@ public class Actor extends BaseEntity implements FullNameEmbedded {
     @Deprecated
     @ManyToMany(cascade = {/* ??? */})
     @JoinTable(name = FilmActor.TABLE_NAME,
-            joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
-                    referencedColumnName = COLUMN_NAME_ACTOR_ID)},
-            inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
-                    referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
+               joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
+                                          referencedColumnName = COLUMN_NAME_ACTOR_ID)},
+               inverseJoinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_FILM_ID,
+                                                 referencedColumnName = Film.COLUMN_NAME_FILM_ID)})
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
     private Set<Film> films;
 }
