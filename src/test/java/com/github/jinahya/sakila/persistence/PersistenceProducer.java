@@ -27,18 +27,30 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 public class PersistenceProducer {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The name of the persistence unit. The value is {@value}.
+     */
     private static final String PERSISTENCE_UNIT_NAME = "sakilaPU";
 
+    /**
+     * The entity manager factory.
+     */
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY
             = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Applies an entity manager to specified function and returns the result.
@@ -50,10 +62,25 @@ public class PersistenceProducer {
     static <R> R applyEntityManager(final Function<? super EntityManager, ? extends R> function) {
         final EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         try {
-            return requireNonNull(function, "function is null").apply(entityManager);
+            return requireNonNull(function, "function is null").apply(uncloseable(entityManager));
         } finally {
             entityManager.close();
         }
+    }
+
+    /**
+     * Applies an entity manager, along with a second argument provided by specified supplier, to specified function and
+     * returns the result.
+     *
+     * @param function the function to be applied.
+     * @param supplier the supplier for the second argument.
+     * @param <U>      second argument type parameter
+     * @param <R>      result type parameter
+     * @return the result of the function.
+     */
+    static <U, R> R applyEntityManager(final BiFunction<? super EntityManager, ? super U, ? extends R> function,
+                                       final Supplier<? extends U> supplier) {
+        return applyEntityManager(e -> function.apply(e, supplier.get()));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

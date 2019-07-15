@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
+import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.lang.StrictMath.toIntExact;
 import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
@@ -154,7 +155,10 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @return an entity manager.
      */
     EntityManager entityManager() {
-        return entityManager;
+        if (entityManagerProxy == null) {
+            entityManagerProxy = uncloseable(entityManager);
+        }
+        return entityManagerProxy;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -165,10 +169,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @return all count of the {@link #entityClass}.
      */
     final long entityCount() {
-        if (entityCount == null) {
-            entityCount = entityCount(entityManager, entityClass);
-        }
-        return entityCount;
+        return entityCount(entityManager, entityClass);
     }
 
     final U randomEntity() {
@@ -194,6 +195,5 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     @Inject
     private EntityManager entityManager;
 
-    // -----------------------------------------------------------------------------------------------------------------
-    private transient Long entityCount;
+    private EntityManager entityManagerProxy;
 }
