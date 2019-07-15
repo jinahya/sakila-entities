@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Actor.ENTITY_NAME;
 import static com.github.jinahya.sakila.persistence.FullName.ATTRIBUTE_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullName.ATTRIBUTE_NAME_LAST_NAME;
 import static com.github.jinahya.sakila.persistence.FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -75,7 +76,7 @@ class ActorService extends BaseEntityService<Actor> {
             criteriaQuery.select(root);
             if (lastName != null) {
                 criteriaQuery.where(criteriaBuilder.equal(
-                        root.get(FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME).get(FullName.ATTRIBUTE_NAME_LAST_NAME),
+                        root.get(FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME).get(ATTRIBUTE_NAME_LAST_NAME),
                         lastName));
             }
             final Expression<String> firstNamePath
@@ -107,7 +108,7 @@ class ActorService extends BaseEntityService<Actor> {
         if (lastName != null) {
             queryBuilder.append(
                     " WHERE a." + FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME + "."
-                    + FullName.ATTRIBUTE_NAME_LAST_NAME + " = :lastName");
+                    + ATTRIBUTE_NAME_LAST_NAME + " = :lastName");
         }
         queryBuilder
                 .append(" ORDER BY a." + FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME + "."
@@ -144,7 +145,7 @@ class ActorService extends BaseEntityService<Actor> {
                     " WHERE a." + ATTRIBUTE_NAME_FULL_NAME + "." + ATTRIBUTE_NAME_FIRST_NAME + " = :firstName");
         }
         queryBuilder
-                .append(" ORDER BY a." + ATTRIBUTE_NAME_FULL_NAME + "." + ATTRIBUTE_NAME_FIRST_NAME + " ")
+                .append(" ORDER BY a." + ATTRIBUTE_NAME_FULL_NAME + "." + ATTRIBUTE_NAME_LAST_NAME + " ")
                 .append(ascendingOrder ? "ASC" : "DESC");
         final String queryString = queryBuilder.toString();
         log.debug("queryString: {}", queryString);
