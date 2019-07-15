@@ -56,7 +56,7 @@
     <docker.image>jinahya/sakila-db</docker.image>
     <docker.container>sakila-db</docker.container>
     <mysql.host>127.0.0.1</mysql.host>
-    <mysql.hostPort>33306</mysql.hostPort>
+    <mysql.port>33306</mysql.port>
     <mysql.database>sakila</mysql.database>
     <mysql.user>sakila</mysql.user>
     <mysql.password>sakila</mysql.password>
