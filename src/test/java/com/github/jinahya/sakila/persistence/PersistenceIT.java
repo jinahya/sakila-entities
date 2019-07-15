@@ -42,6 +42,5 @@ class PersistenceIT {
 
     // -----------------------------------------------------------------------------------------------------------------
     @Inject
-    //@PersistenceContext
     private EntityManager entityManager;
 }

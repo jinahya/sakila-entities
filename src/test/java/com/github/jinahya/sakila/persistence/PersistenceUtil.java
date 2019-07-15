@@ -20,54 +20,48 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 
-import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
+import javax.persistence.EntityManager;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import static java.util.Objects.requireNonNull;
 
-/**
- * An abstract class for service classes.
- *
- * @param <T> entity type parameter
- */
-abstract class EntityService<T> {
+@Slf4j
+final class PersistenceUtil {
 
     // -----------------------------------------------------------------------------------------------------------------
+    private static final Method ENTITY_MANAGER_CLOSE;
 
-    /**
-     * Creates a new instance with specified entity class.
-     *
-     * @param entityClass the class of the entity to serve.
-     */
-    EntityService(final Class<? extends T> entityClass) {
-        super();
-        this.entityClass = requireNonNull(entityClass, "entityClass is null");
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns an entity manager for access persistence context.
-     *
-     * @return an entity manager.
-     */
-    EntityManager entityManager() {
-        if (entityManagerProxy == null) {
-            entityManagerProxy = uncloseable(entityManager);
+    static {
+        try {
+            ENTITY_MANAGER_CLOSE = EntityManager.class.getMethod("close");
+        } catch (final NoSuchMethodException nsme) {
+            throw new InstantiationError(nsme.getMessage());
         }
-        return entityManagerProxy;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static EntityManager uncloseable(final EntityManager entityManager) {
+        return (EntityManager) Proxy.newProxyInstance(
+                requireNonNull(entityManager, "entityManager is null").getClass().getClassLoader(),
+                new Class<?>[] {EntityManager.class},
+                (proxy, method, object) -> {
+                    if (ENTITY_MANAGER_CLOSE.equals(method)) {
+                        throw new UnsupportedOperationException("not permitted");
+                    }
+                    return method.invoke(object);
+                }
+        );
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The class of entity to serve.
+     * Creates a new instance.
      */
-    final Class<? extends T> entityClass;
-
-    @Inject
-    private EntityManager entityManager;
-
-    private EntityManager entityManagerProxy;
+    private PersistenceUtil() {
+        super();
+    }
 }
