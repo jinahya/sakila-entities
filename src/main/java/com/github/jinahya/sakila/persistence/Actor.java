@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -156,6 +157,7 @@ public class Actor extends BaseEntity implements FullNameEmbedded {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    @Valid
     @NotNull
     @Embedded
     private FullName fullName;

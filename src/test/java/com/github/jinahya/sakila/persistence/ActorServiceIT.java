@@ -77,7 +77,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
     private static Stream<Arguments> provideArgumentsWithLastName() {
-        return IntStream.range(0, current().nextInt(1, 17)).mapToObj(i -> {
+        return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ?
                                     null : randomEntity(Actor.class).getFullName().getLastName();
             final boolean ascendingOrder = current().nextBoolean();
@@ -88,7 +88,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     }
 
     private static Stream<Arguments> provideArgumentsWithFirstName() {
-        return IntStream.range(0, current().nextInt(1, 17)).mapToObj(i -> {
+        return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean()
                                     ? null : randomEntity(Actor.class).getFullName().getLastName();
             final boolean ascendingOrder = current().nextBoolean();
