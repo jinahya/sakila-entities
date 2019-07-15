@@ -1,5 +1,5 @@
 #!/bin/sh
 echo trying to stop already running container...
-sh ./docker.stop.sh
+sh ./sakila-db.stop.sh
 echo running container...
 docker run --rm -d --name ${docker.container} -p ${mysql.hostPort}:3306 ${docker.image}
