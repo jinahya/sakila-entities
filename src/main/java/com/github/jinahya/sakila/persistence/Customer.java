@@ -23,15 +23,17 @@ package com.github.jinahya.sakila.persistence;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static com.github.jinahya.sakila.persistence.FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME;
 
 /**
  * An entity class for binding {@value TABLE_NAME} table.
@@ -55,35 +57,6 @@ public class Customer extends BaseEntity {
     public static final String COLUMN_NAME_STORE_ID = "store_id";
 
     public static final String ATTRIBUTE_NAME_STORE = "store";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    public static final String ATTRIBUTE_NAME_FULL_NAME = "fullName";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-13 replace with FullName
-    public static final String COLUMN_NAME_FIRST_NAME = "first_name";
-
-    // TODO: 2019-07-13 replace with FullName
-    public static final String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
-
-    // TODO: 2019-07-13 replace with FullName
-    public static final int SIZE_MIN_FIRST_NAME = 0;
-
-    // TODO: 2019-07-13 replace with FullName
-    public static final int SIZE_MAX_FIRST_NAME = 45;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-13 replace with FullName
-    public static final String COLUMN_NAME_LAST_NAME = "last_name";
-
-    // TODO: 2019-07-13 replace with FullName
-    public static final String ATTRIBUTE_NAME_LAST_NAME = "lastName";
-
-    // TODO: 2019-07-13 replace with FullName
-    public static final int SIZE_MIN_LAST_NAME = 0;
-
-    // TODO: 2019-07-13 replace with FullName
-    public static final int SIZE_MAX_LAST_NAME = 45;
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final String COLUMN_NAME_EMAIL = "email";
@@ -122,9 +95,7 @@ public class Customer extends BaseEntity {
     public String toString() {
         return super.toString() + "{"
                + "store=" + store
-//               + ",fullName=" + fullName // TODO: 2019-07-13 uncomment
-               + ",firstName=" + firstName // TODO: 2019-07-13 replace with fullName
-               + ",lastName=" + lastName // TODO: 2019-07-13 replace with fullName
+               + ",fullName=" + fullName
                + ",email=" + email
                + ",address=" + address
                + ",active=" + active
@@ -143,35 +114,12 @@ public class Customer extends BaseEntity {
     }
 
     // -------------------------------------------------------------------------------------------------------- fullName
-    //@Transient // TODO: 7/13/2019 remove @Transient annotation
     public FullName getFullName() {
         return fullName;
     }
 
     public void setFullName(final FullName fullName) {
         this.fullName = fullName;
-    }
-
-    // ------------------------------------------------------------------------------------------------------- firstName
-    // TODO: 2019-07-13 replace with FullName
-    public String getFirstName() {
-        return firstName;
-    }
-
-    // TODO: 2019-07-13 replace with FullName
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
-
-    // -------------------------------------------------------------------------------------------------------- lastName
-    // TODO: 2019-07-13 replace with FullName
-    public String getLastName() {
-        return lastName;
-    }
-
-    // TODO: 2019-07-13 replace with FullName
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
     }
 
     // ----------------------------------------------------------------------------------------------------------- email
@@ -208,26 +156,11 @@ public class Customer extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_STORE)
     private Store store;
 
-    //@Embedded // TODO: 2019-07-13 uncomment @Embedded
-    @Transient // TODO: 7/13/2019 remove @Transient annotation
+    @Valid
+    @NotNull
+    @Embedded
     @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
     private FullName fullName;
-
-    // TODO: 2019-07-13 replace with FullName
-    @Size(max = SIZE_MAX_FIRST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
-    private String firstName;
-
-    // TODO: 2019-07-13 replace with FullName
-    @Size(max = SIZE_MAX_LAST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
-    private String lastName;
 
     @Size(max = SIZE_MAX_EMAIL)
     @Basic

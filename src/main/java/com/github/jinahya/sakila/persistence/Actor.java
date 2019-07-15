@@ -160,6 +160,7 @@ public class Actor extends BaseEntity implements FullNameEmbedded {
     @Valid
     @NotNull
     @Embedded
+    @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
     private FullName fullName;
 
     // -----------------------------------------------------------------------------------------------------------------

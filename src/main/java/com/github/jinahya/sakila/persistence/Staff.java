@@ -20,45 +20,46 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static com.github.jinahya.sakila.persistence.Staff.COLUMN_NAME_STAFF_ID;
 import static com.github.jinahya.sakila.persistence.Staff.TABLE_NAME;
+import static java.util.Optional.ofNullable;
 
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_STAFF_ID))
 @Entity
 @Table(name = TABLE_NAME)
-public class Staff extends BaseEntity {
+public class Staff extends BaseEntity implements FullNameEmbedded {
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final String TABLE_NAME = "staff";
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final String COLUMN_NAME_STAFF_ID = "staff_id";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    public static final String COLUMN_NAME_FIRST_NAME = "first_name";
-
-    public static final String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
-
-    public static final int SIZE_MAX_FIRST_NAME = 45;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    public static final String COLUMN_NAME_LAST_NAME = "last_name";
-
-    public static final String ATTRIBUTE_NAME_LAST_NAME = "lastName";
-
-    public static final int SIZE_MAX_LAST_NAME = 45;
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final String COLUMN_NAME_ADDRESS_ID = "address_id";
@@ -102,19 +103,151 @@ public class Staff extends BaseEntity {
     public static final int SIZE_MAX_PASSWORD = 40;
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Size(max = SIZE_MAX_FIRST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
-    private String firstName;
 
-    @Size(max = SIZE_MAX_LAST_NAME)
+    @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "fullName=" + fullName
+               + ",address=" + address
+               + ",picture=" + Arrays.toString(picture)
+               + ",email='" + email + '\''
+               + ",store=" + store
+               + ",active=" + active
+               + ",username=" + username
+               + ",password=" + password
+               + "}";
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public FullName getFullName() {
+        return fullName;
+    }
+
+    @Override
+    public void setFullName(final FullName fullName) {
+        this.fullName = fullName;
+    }
+
+    // --------------------------------------------------------------------------------------------------------- address
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(final Address address) {
+        this.address = address;
+    }
+
+    // --------------------------------------------------------------------------------------------------------- picture
+    public byte[] getPicture() {
+        return ofNullable(this.picture).map(v -> Arrays.copyOf(v, v.length)).orElse(null);
+    }
+
+    public void setPicture(final byte[] picture) {
+        this.picture = ofNullable(picture).map(v -> Arrays.copyOf(v, v.length)).orElse(null);
+    }
+
+    public String getPictureFormatName() throws IOException {
+        final byte[] picture = getPicture();
+        if (picture == null) {
+            return null;
+        }
+        try (ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(picture))) {
+            for (final Iterator<ImageReader> i = ImageIO.getImageReaders(iis); i.hasNext(); ) {
+                try {
+                    return i.next().getFormatName();
+                } catch (final IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_PICTURE} attribute as an image.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_PICTURE} attribute as an image; {@code null} if the value of
+     * {@link #ATTRIBUTE_NAME_PICTURE} attribute is {@code null}.
+     * @throws IOException if an I/O error occurs.
+     * @see ImageIO#read(InputStream)
+     */
+    public BufferedImage getPictureASImage() throws IOException {
+        final byte[] picture = getPicture();
+        if (picture == null) {
+            return null;
+        }
+        return ImageIO.read(new ByteArrayInputStream(picture));
+    }
+
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_PICTURE} attribute with the value from specified image.
+     *
+     * @param renderedImage a image for {@link #ATTRIBUTE_NAME_PICTURE} attribute value.
+     * @param formatName    an image format name.
+     * @return the value of {@link ImageIO#write(RenderedImage, String, OutputStream)}.
+     * @throws IOException if an I/O error occurs.
+     */
+    public boolean setPictureFromImage(@NotNull final RenderedImage renderedImage, @NotNull final String formatName)
+            throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final boolean result = ImageIO.write(renderedImage, formatName, baos);
+        setPicture(baos.toByteArray());
+        return result;
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    // ----------------------------------------------------------------------------------------------------------- store
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(final Store store) {
+        this.store = store;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------- active
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(final boolean active) {
+        this.active = active;
+    }
+
+    // -------------------------------------------------------------------------------------------------------- username
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
+    }
+
+    // -------------------------------------------------------------------------------------------------------- password
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Valid
     @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
-    private String lastName;
+    @Embedded
+    @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
+    private FullName fullName;
 
     @NotNull
     @ManyToOne(optional = false)
@@ -125,7 +258,7 @@ public class Staff extends BaseEntity {
     @Lob
     @Column(name = COLUMN_NAME_PICTURE)
     @NamedAttribute(ATTRIBUTE_NAME_PICTURE)
-    private byte[] picture;
+    private byte[] picture; // +
 
     @Size(max = SIZE_MAX_EMAIL)
     @Basic
