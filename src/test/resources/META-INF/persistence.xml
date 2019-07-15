@@ -15,6 +15,7 @@
     <class>com.github.jinahya.sakila.persistence.FilmActor</class>
     <class>com.github.jinahya.sakila.persistence.FilmCategory</class>
     <class>com.github.jinahya.sakila.persistence.FilmText</class>
+    <class>com.github.jinahya.sakila.persistence.FullName</class>
     <class>com.github.jinahya.sakila.persistence.Inventory</class>
     <class>com.github.jinahya.sakila.persistence.Language</class>
     <class>com.github.jinahya.sakila.persistence.Payment</class>
@@ -24,9 +25,9 @@
     <!--    <exclude-unlisted-classes>false</exclude-unlisted-classes>-->
     <validation-mode>CALLBACK</validation-mode>
     <properties>
-      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+<!--      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>-->
       <property name="javax.persistence.jdbc.url"
-                value="jdbc:mysql://${mysql.host}:${mysql.hostPort}/${mysql.database}"/>
+                value="jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}"/>
       <property name="javax.persistence.jdbc.user" value="${mysql.user}"/>
       <property name="javax.persistence.jdbc.password" value="${mysql.password}"/>
     </properties>

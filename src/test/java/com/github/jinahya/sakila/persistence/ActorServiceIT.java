@@ -165,10 +165,10 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     @ParameterizedTest
     void testStreamOrderByLastName(final String firstName, final boolean ascendingOrder, final Integer firstResult,
                                    final Integer maxResults) {
-        final List<Actor> stream = serviceInstance()
+        final List<Actor> list = serviceInstance()
                 .streamOrderedByLastName(firstName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
-        assertThat(stream)
+        assertThat(list)
                 .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFullName().getFirstName())).orElse(true))
                 .isSortedAccordingTo(comparingLastName(ascendingOrder))
                 .size()
