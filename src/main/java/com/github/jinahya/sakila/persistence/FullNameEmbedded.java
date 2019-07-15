@@ -22,9 +22,6 @@ interface FullNameEmbedded {
 
     // -----------------------------------------------------------------------------------------------------------------
     static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstNameNatural() {
-        if (true) {
-            return (Comparator<T>) (Comparator<?>) FullName.COMPARING_FIRST_NAME_NATURAL;
-        }
         return comparing(v -> v.getFirstName().orElse(null));
     }
 
