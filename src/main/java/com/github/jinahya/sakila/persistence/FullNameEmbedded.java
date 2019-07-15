@@ -1,6 +1,7 @@
 package com.github.jinahya.sakila.persistence;
 
 import java.util.Comparator;
+import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
@@ -15,33 +16,36 @@ interface FullNameEmbedded {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The name of the {@link FullName} attribute. The value is {@value}.
+     * The name of the attribute of {@link FullName}. The value is {@value}.
      */
     String ATTRIBUTE_NAME_FULL_NAME = "fullName";
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNameEmbedded> Comparator<T> comparingFirstNameNatural() {
-        return comparing(FullNameEmbedded::getFirstName);
+    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstNameNatural() {
+        if (true) {
+            return (Comparator<T>) (Comparator<?>) FullName.COMPARING_FIRST_NAME_NATURAL;
+        }
+        return comparing(v -> v.getFirstName().orElse(null));
     }
 
-    static <T extends FullNameEmbedded> Comparator<T> comparingFirstNameReverse() {
+    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstNameReverse() {
         return FullNameEmbedded.<T>comparingFirstNameNatural().reversed();
     }
 
-    static <T extends FullNameEmbedded> Comparator<T> comparingFirstName(final boolean natural) {
+    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstName(final boolean natural) {
         return natural ? comparingFirstNameNatural() : comparingFirstNameReverse();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNameEmbedded> Comparator<T> comparingLastNameNatural() {
-        return comparing(FullNameEmbedded::getLastName);
+    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingLastNameNatural() {
+        return comparing(v -> v.getLastName().orElse(null));
     }
 
-    static <T extends FullNameEmbedded> Comparator<T> comparingLastNameReverse() {
+    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingLastNameReverse() {
         return FullNameEmbedded.<T>comparingLastNameNatural().reversed();
     }
 
-    static <T extends FullNameEmbedded> Comparator<T> comparingLastName(final boolean natural) {
+    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingLastName(final boolean natural) {
         return natural ? comparingLastNameNatural() : comparingLastNameReverse();
     }
 
@@ -67,41 +71,43 @@ interface FullNameEmbedded {
      * Returns the current value of {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute of {@link
      * #ATTRIBUTE_NAME_FULL_NAME} attribute.
      *
-     * @return the current value of {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute of {@link
-     * #ATTRIBUTE_NAME_FULL_NAME} attribute.
+     * @return an optional of {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute of {@link #ATTRIBUTE_NAME_FULL_NAME}
+     * attribute; {@code null} if either {@link #ATTRIBUTE_NAME_FULL_NAME} attribute or {@code null} or {@link
+     * FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute is {@code null}.
      */
-    default String getFirstName() {
-        return ofNullable(getFullName()).map(FullName::getFirstName).orElse(null);
+    default Optional<String> getFirstName() {
+        return ofNullable(getFullName()).map(FullName::getFirstName);
     }
 
+    // TODO: 2019-07-15 remove!!! state changes regardless of parameter!!!
+    @Deprecated // forRemoval = true
     default void setFirstName(final String firstName) {
         ofNullable(getFullName())
                 .orElseGet(() -> {
-                    setFullName(new FullName());
+                    setFullName(new FullName()); // TODO: 2019-07-15 not good!!!
                     return getFullName();
                 })
                 .setFirstName(firstName);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    default String getLastName() {
-        return ofNullable(getFullName()).map(FullName::getLastName).orElse(null);
+    default Optional<String> getLastName() {
+        return ofNullable(getFullName()).map(FullName::getLastName);
     }
 
+    // TODO: 2019-07-15 remove!!! state changes regardless of parameter!!!
+    @Deprecated // forRemoval = true
     default void setLastName(final String lastName) {
         ofNullable(getFullName())
                 .orElseGet(() -> {
-                    setFullName(new FullName());
+                    setFullName(new FullName()); // TODO: 2019-07-15 not good!!!
                     return getFullName();
                 })
                 .setLastName(lastName);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    default String toString(final FullName.Order order, final String delimiter) {
-        return ofNullable(getFullName())
-                .map(v -> v.toString(order, delimiter))
-                .orElseThrow(() -> new IllegalStateException(
-                        "the current value of " + ATTRIBUTE_NAME_FULL_NAME + " attribute is null"));
+    default Optional<String> toString(final FullName.Order order, final String delimiter) {
+        return ofNullable(getFullName()).map(v -> v.toString(order, delimiter));
     }
 }

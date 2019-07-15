@@ -78,7 +78,8 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
     private static Stream<Arguments> provideArgumentsWithLastName() {
         return IntStream.range(0, current().nextInt(1, 17)).mapToObj(i -> {
-            final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
+            final String lastName = current().nextBoolean() ?
+                                    null : randomEntity(Actor.class).getFullName().getLastName();
             final boolean ascendingOrder = current().nextBoolean();
             final Integer firstResult = current().nextBoolean() ? null : firstResult(Actor.class);
             final Integer maxResult = current().nextBoolean() ? null : maxResults(Actor.class);
@@ -88,7 +89,8 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
 
     private static Stream<Arguments> provideArgumentsWithFirstName() {
         return IntStream.range(0, current().nextInt(1, 17)).mapToObj(i -> {
-            final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
+            final String lastName = current().nextBoolean()
+                                    ? null : randomEntity(Actor.class).getFullName().getLastName();
             final boolean ascendingOrder = current().nextBoolean();
             final Integer firstResult = current().nextBoolean() ? null : firstResult(Actor.class);
             final Integer maxResult = current().nextBoolean() ? null : maxResults(Actor.class);
@@ -119,13 +121,11 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     @ParameterizedTest
     void testStreamOrderByFirstName(final String lastName, final boolean ascendingOrder, final Integer firstResult,
                                     final Integer maxResults) {
-        log.debug("lastName: {}, ascendingOrder: {}, firstResult: {}, maxResults: {}", lastName, ascendingOrder,
-                  firstResult, maxResults);
-        final List<Actor> stream = serviceInstance()
+        final List<Actor> list = serviceInstance()
                 .streamOrderedByFirstName(lastName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
-        assertThat(stream)
-                .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getLastName())).orElse(true))
+        assertThat(list)
+                .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getFullName().getLastName())).orElse(true))
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
@@ -148,7 +148,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .streamOrderedByLastName(firstName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
         assertThat(stream)
-                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))
+                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFullName().getFirstName())).orElse(true))
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))

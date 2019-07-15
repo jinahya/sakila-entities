@@ -26,8 +26,10 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -85,6 +87,20 @@ public class FullName implements Serializable {
      * The maximum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
      */
     public static final int SIZE_MAX_LAST_NAME = 45;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator</*? super */FullName> COMPARING_FIRST_NAME_NATURAL
+            = comparing(FullName::getFirstName);
+
+    public static final Comparator</*? super */FullName> COMPARING_FIRST_NAME_REVERSE
+            = COMPARING_FIRST_NAME_NATURAL.reversed();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator</*? super */FullName> COMPARING_LAST_NAME_NATURAL
+            = comparing(FullName::getLastName);
+
+    public static final Comparator</*? super */FullName> COMPARING_LAST_NAME_REVERSE
+            = COMPARING_LAST_NAME_NATURAL.reversed();
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -190,6 +206,7 @@ public class FullName implements Serializable {
      * Returns a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined specified
      * delimiter.
      *
+     * @param delimiter the delimiter.
      * @return a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined with
      * specified delimiter.
      * @deprecated Use {@link #toString(Order, String)}
@@ -276,6 +293,11 @@ public class FullName implements Serializable {
         this.firstName = firstName;
     }
 
+    public FullName firstName(final String firstName) {
+        setFirstName(firstName);
+        return this;
+    }
+
     // -------------------------------------------------------------------------------------------------------- lastName
 
     /**
@@ -294,6 +316,11 @@ public class FullName implements Serializable {
      */
     public void setLastName(final String lastName) {
         this.lastName = lastName;
+    }
+
+    public FullName lastName(final String lastName) {
+        setLastName(lastName);
+        return this;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

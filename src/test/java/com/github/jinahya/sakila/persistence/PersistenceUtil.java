@@ -43,6 +43,13 @@ final class PersistenceUtil {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a proxy of specified entity manager whose {@link EntityManager#close()} method is prohibited.
+     *
+     * @param entityManager the entity manager.
+     * @return an uncloseable proxy of {@code entityManager}.
+     */
     static EntityManager uncloseable(final EntityManager entityManager) {
         return (EntityManager) Proxy.newProxyInstance(
                 requireNonNull(entityManager, "entityManager is null").getClass().getClassLoader(),
