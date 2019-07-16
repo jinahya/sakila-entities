@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -175,7 +176,14 @@ public class Actor extends BaseEntity implements FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-14 remove!!!
     @Deprecated
-    @ManyToMany(cascade = {/* ??? */})
+    @ManyToMany(cascade = {
+            //CascadeType.ALL,
+            //CascadeType.DETACH,
+            //CascadeType.MERGE,
+            //CascadeType.PERSIST,
+            //CascadeType.REFRESH,
+            //CascadeType.REMOVE
+    })
     @JoinTable(name = FilmActor.TABLE_NAME,
             joinColumns = {@JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID,
                     referencedColumnName = COLUMN_NAME_ACTOR_ID)},

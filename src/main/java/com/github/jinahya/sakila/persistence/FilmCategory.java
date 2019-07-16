@@ -139,7 +139,6 @@ public class FilmCategory {
     }
 
     void setLastUpdate(final Date lastUpdate) {
-        // TODO: 7/16/2019 copy!!!
         this.lastUpdate = lastUpdate;
     }
 

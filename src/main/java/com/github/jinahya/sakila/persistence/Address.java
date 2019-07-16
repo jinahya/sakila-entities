@@ -287,7 +287,7 @@ public class Address extends BaseEntity {
         return location;
     }
 
-    public void setLocation(final byte[] location) {
+    public void setLocation(final byte[] location) { // TODO: 7/16/2019 public???
         // TODO: 2019-07-12 copy!!!
         this.location = location;
     }
@@ -415,6 +415,5 @@ public class Address extends BaseEntity {
     @NotNull
     @Lob
     @Column(name = COLUMN_NAME_LOCATION, nullable = false, insertable = false, updatable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_LOCATION)
-    private Blob locationLob;
+    private Blob locationLob; // +
 }

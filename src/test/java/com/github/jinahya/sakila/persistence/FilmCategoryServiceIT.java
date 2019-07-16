@@ -43,16 +43,17 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
 
     static {
-        final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_category_category_id_film_count.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    map.put(scanner.nextInt(), scanner.nextInt());
-                }
-            }
-            CATEGORY_ID_FILM_COUNT = unmodifiableMap(map);
+            CATEGORY_ID_FILM_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_category_category_id_film_count.txt",
+                    s -> {
+                        final Map<Integer, Integer> map = new HashMap<>();
+                        while (s.hasNext()) {
+                            map.put(s.nextInt(), s.nextInt());
+                        }
+                        return map;
+                    })
+            );
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
