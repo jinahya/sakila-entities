@@ -29,12 +29,7 @@ public interface FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
-     */
-    String COLUMN_NAME_FIRST_NAME = "first_name";
-
-    /**
-     * The attribute name for {@value #COLUMN_NAME_FIRST_NAME} column. The value is {@value}.
+     * The attribute name for {@link FullNamedEntity#COLUMN_NAME_FIRST_NAME} column. The value is {@value}.
      */
     String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
 
@@ -51,12 +46,7 @@ public interface FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The table column name for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
-     */
-    String COLUMN_NAME_LAST_NAME = "last_name";
-
-    /**
-     * The object attribute name for {@value #COLUMN_NAME_LAST_NAME} column. The value is {@value}.
+     * The object attribute name for {@link FullNamedEntity#COLUMN_NAME_LAST_NAME} column. The value is {@value}.
      */
     String ATTRIBUTE_NAME_LAST_NAME = "lastName";
 
