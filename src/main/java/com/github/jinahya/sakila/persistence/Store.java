@@ -35,12 +35,21 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
 import static com.github.jinahya.sakila.persistence.Store.COLUMN_NAME_STORE_ID;
 import static com.github.jinahya.sakila.persistence.Store.TABLE_NAME;
 
+/**
+ * An entity class for {@value #TABLE_NAME} table.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_STORE_ID))
 @Entity
 @Table(name = TABLE_NAME)
 public class Store extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The target table name of this entity class. The value is {@value}.
+     */
     public static final String TABLE_NAME = "store";
 
     // -----------------------------------------------------------------------------------------------------------------

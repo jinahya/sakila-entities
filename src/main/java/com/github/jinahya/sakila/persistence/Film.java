@@ -808,10 +808,10 @@ public class Film extends BaseEntity {
     @Deprecated
     @ManyToMany
     @JoinTable(name = FilmCategory.TABLE_NAME,
-               joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
-                                          referencedColumnName = COLUMN_NAME_FILM_ID)},
-               inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
-                                                 referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
+            joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
+                    referencedColumnName = COLUMN_NAME_FILM_ID)},
+            inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
+                    referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
     @NamedAttribute(ATTRIBUTE_NAME_CATEGORIES)
     private Set<Category> categories;
 

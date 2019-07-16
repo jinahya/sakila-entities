@@ -25,3 +25,11 @@ buildNumber.properties
 
 
 *.bak
+
+
+Dockerfile
+.sakila-db.mysql.sh
+sakila-db.build.sh
+sakila-db.mysql.sh
+sakila-db.run.sh
+sakila-db.stop.sh

@@ -27,7 +27,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
@@ -46,7 +48,6 @@ public class Rental extends BaseEntity {
     public static final String COLUMN_NAME_RENTAL_ID = "rental_id";
 
     // -----------------------------------------------------------------------------------------------------------------
-
     public static final String COLUMN_NAME_RENTAL_DATE = "rental_date";
 
     public static final String ATTRIBUTE_NAME_RENTAL_DATE = "rentalDate";
@@ -82,50 +83,77 @@ public class Rental extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "rentalDate=" + rentalDate
+               + ",inventory=" + inventory
+               + ",customer=" + customer
+               + ",returnDate=" + returnDate
+               + ",staff=" + staff
+               + "}";
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @AssertTrue
+    private boolean isReturnDateAfterRentalDate() {
+        return returnDate == null || returnDate.isAfter(rentalDate);
+    }
+
+    // ------------------------------------------------------------------------------------------------------ rentalDate
     public LocalDateTime getRentalDate() {
         return rentalDate;
     }
 
-    public void setRentalDate(LocalDateTime rentalDate) {
+    public void setRentalDate(final LocalDateTime rentalDate) {
         this.rentalDate = rentalDate;
     }
 
+    // ------------------------------------------------------------------------------------------------------- inventory
     public Inventory getInventory() {
         return inventory;
     }
 
-    public void setInventory(Inventory inventory) {
+    public void setInventory(final Inventory inventory) {
         this.inventory = inventory;
     }
 
+    // -------------------------------------------------------------------------------------------------------- customer
     public Customer getCustomer() {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(final Customer customer) {
         this.customer = customer;
     }
 
+    // ------------------------------------------------------------------------------------------------------ returnDate
     public LocalDateTime getReturnDate() {
         return returnDate;
     }
 
-    public void setReturnDate(LocalDateTime returnDate) {
+    public void setReturnDate(final LocalDateTime returnDate) {
         this.returnDate = returnDate;
     }
 
+    // ----------------------------------------------------------------------------------------------------------- staff
     public Staff getStaff() {
         return staff;
     }
 
-    public void setStaff(Staff staff) {
+    public void setStaff(final Staff staff) {
         this.staff = staff;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    //@Past
+    @PastOrPresent
     @NotNull
-    @Basic(optional = false) // @Temporal(TemporalType.TIMESTAMP)
+    @Basic(optional = false)
     @Column(name = COLUMN_NAME_RENTAL_DATE, nullable = false, updatable = false)
     @NamedAttribute(ATTRIBUTE_NAME_RENTAL_DATE)
     private LocalDateTime rentalDate;
@@ -142,15 +170,14 @@ public class Rental extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_CUSTOMER)
     private Customer customer;
 
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_RETURN_DATE, nullable = false, updatable = false)
+    @Basic(optional = true)
+    @Column(name = COLUMN_NAME_RETURN_DATE, nullable = true, updatable = true)
     @NamedAttribute(ATTRIBUTE_NAME_RETURN_DATE)
     private LocalDateTime returnDate;
 
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = COLUMN_NAME_STAFF_ID, nullable = false, updatable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_RETURN_DATE)
+    @NamedAttribute(ATTRIBUTE_NAME_STAFF)
     private Staff staff;
 }

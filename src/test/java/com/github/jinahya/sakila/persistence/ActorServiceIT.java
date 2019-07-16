@@ -35,6 +35,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.FullNameEmbedded.comparingFirstName;
+import static com.github.jinahya.sakila.persistence.FullNameEmbedded.comparingLastName;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -164,12 +165,12 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     @ParameterizedTest
     void testStreamOrderByLastName(final String firstName, final boolean ascendingOrder, final Integer firstResult,
                                    final Integer maxResults) {
-        final List<Actor> stream = serviceInstance()
+        final List<Actor> list = serviceInstance()
                 .streamOrderedByLastName(firstName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
-        assertThat(stream)
+        assertThat(list)
                 .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFullName().getFirstName())).orElse(true))
-                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
+                .isSortedAccordingTo(comparingLastName(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
         ;
