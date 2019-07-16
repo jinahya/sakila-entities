@@ -56,7 +56,7 @@ class PersistenceProducer {
      * Applies an entity manager to specified function and returns the result.
      *
      * @param function the function to be applied with an entity manager.
-     * @param <R>      result type parameter.
+     * @param <R>      result type parameter
      * @return the result of the {@code function}.
      */
     static <R> R applyEntityManager(final Function<? super EntityManager, ? extends R> function) {

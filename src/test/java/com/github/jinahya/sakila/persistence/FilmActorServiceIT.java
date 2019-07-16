@@ -116,7 +116,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-12 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testCountFilmsOfSingleActor() {
         final Actor actor = randomEntity(entityManager(), Actor.class);
@@ -130,7 +129,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testListFilmsOfSingleActor() {
         // select a random actor
@@ -163,7 +161,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(4)
     void testCountFilmsWithMultipleActors() {
         // prepare a list of actors; random, distinct by id, ordered by id in ascending order.
@@ -184,7 +181,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(4)
     void testStreamFilms() {
         // prepare a list of actors; random, distinct by id, ordered by id in ascending order.
@@ -224,7 +220,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-12 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testCountActorsWithSingleActor() {
         final Film film = randomEntity(entityManager(), Film.class);
@@ -238,7 +233,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(8)
     void testListActorsWithSingleActor() {
         final Film film = randomEntity(entityManager(), Film.class);
@@ -268,7 +262,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(4)
     void testCountActorsWithMultipleActors() {
         final List<Film> films = randomEntities(
@@ -286,7 +279,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @Tag(TAG_JPQL)
     @RepeatedTest(4)
     void testStreamActors() {
         final List<Film> films = randomEntities(

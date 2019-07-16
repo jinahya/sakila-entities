@@ -75,7 +75,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
      *
      * @param entityManager an entity manager.
      * @param entityClass   the class of entities to select.
-     * @param <T>           entity type parameter.
+     * @param <T>           entity type parameter
      * @return a list of selected entities.
      * @see #randomEntities(EntityManager, Class, Function)
      */

@@ -44,7 +44,7 @@ abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
      *
      * @param object the object whose {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} field is set.
      * @param value  the value for {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
-     * @param <T>    object type type parameter.
+     * @param <T>    object type type parameter
      * @return given object.
      * @throws NoSuchFieldException   if failed to find a field.
      * @throws IllegalAccessException if failed to set the value.
