@@ -35,7 +35,7 @@ import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
-public class PersistenceProducer {
+class PersistenceProducer {
 
     // -----------------------------------------------------------------------------------------------------------------
 
