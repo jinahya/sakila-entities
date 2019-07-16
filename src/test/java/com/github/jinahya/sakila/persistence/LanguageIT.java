@@ -1,5 +1,7 @@
 package com.github.jinahya.sakila.persistence;
 
+import org.assertj.core.api.Condition;
+
 import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -49,6 +51,11 @@ class LanguageIT extends BaseEntityIT<Language> {
             throw new InstantiationError(ioe.getMessage());
         }
     }
+
+    static final Condition<String> A_NAME_IN_DATABASE = new Condition<>(NAMES::contains, "a name is in database");
+
+    static final Condition<Language> A_LANGUAGE_WHOSE_NAME_IS_IN_DATABASE = new Condition<>(
+            l -> A_NAME_IN_DATABASE.matches(l.getName()), "a language whose name is in database");
 
     // -----------------------------------------------------------------------------------------------------------------
     LanguageIT() {
