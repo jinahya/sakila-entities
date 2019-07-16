@@ -29,24 +29,12 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 abstract class EntityServiceIT<T extends EntityService<U>, U> extends EntityIT<U> {
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * A tag value for JPQL.
-     */
-    static final String TAG_JPQL = "jpql";
-
-    /**
-     * A tag value for Criteria-API.
-     */
-    static final String TAG_CRITERIA_API = "criteria-api";
-
-    // -----------------------------------------------------------------------------------------------------------------
     static int firstResult(final Class<?> entityClass) {
-        return current().nextInt(entityCountAsInt(entityClass));
+        return current().nextInt(entityCountAsInt(entityClass) << 1); // [0..entityCount()*2)
     }
 
     static int maxResults(final Class<?> entityClass) {
-        return current().nextInt(1, entityCountAsInt(entityClass)); // [1..entityCount())
+        return current().nextInt(1, entityCountAsInt(entityClass) + 10); // [1..entityCount()+10)
     }
 
     // -----------------------------------------------------------------------------------------------------------------

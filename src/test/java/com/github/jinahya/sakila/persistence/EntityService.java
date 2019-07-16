@@ -27,7 +27,7 @@ import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract class for service classes.
+ * An abstract class for entity service classes.
  *
  * @param <T> entity type parameter
  */
@@ -48,7 +48,7 @@ abstract class EntityService<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Returns an entity manager for access persistence context.
+     * Returns an entity manager for accessing persistence context.
      *
      * @return an entity manager.
      */

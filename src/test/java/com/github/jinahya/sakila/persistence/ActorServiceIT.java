@@ -131,10 +131,10 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     /**
      * Tests {@link ActorService#streamOrderedByFirstName(String, boolean, Integer, Integer)} method.
      *
-     * @param lastName       a value for {@code lastName} parameter.
-     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
-     * @param firstResult    a value for {@code firstResult} parameter.
-     * @param maxResults     a value for {@code maxResults} parameter.
+     * @param lastName       a value for {@code lastName} parameter
+     * @param ascendingOrder a value for {@code ascendingOrder} parameter
+     * @param firstResult    a value for {@code firstResult} parameter
+     * @param maxResults     a value for {@code maxResults} parameter
      */
     @MethodSource({"provideArgumentsWithLastName"})
     @ParameterizedTest

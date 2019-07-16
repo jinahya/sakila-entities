@@ -29,12 +29,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static com.github.jinahya.sakila.persistence.Language.COLUMN_NAME_LANGUAGE_ID;
 import static com.github.jinahya.sakila.persistence.Language.TABLE_NAME;
+import static java.util.Comparator.comparing;
 
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_LANGUAGE_ID, nullable = false))
 @Entity
@@ -71,6 +73,13 @@ public class Language extends BaseEntity {
     public static final int SIZE_MIN_FILMS_RECORDED = 0;
 
     public static final int SIZE_MAX_FILMS_RECORDED = Integer.MAX_VALUE;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator<Language> COMPARING_NAME = comparing(Language::getName);
+
+    public static Comparator<Language> comparingName(final boolean natural) {
+        return natural ? COMPARING_NAME : COMPARING_NAME.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
