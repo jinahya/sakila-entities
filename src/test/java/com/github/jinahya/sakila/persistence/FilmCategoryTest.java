@@ -20,7 +20,6 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;

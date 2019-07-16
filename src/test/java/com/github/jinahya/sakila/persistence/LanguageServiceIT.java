@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Language.comparingName;
-import static com.github.jinahya.sakila.persistence.LanguageIT.A_LANGUAGE_WHOSE_NAME_IS_IN_DATABASE;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
