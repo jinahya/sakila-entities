@@ -149,6 +149,11 @@ public abstract class BaseEntity {
         return lastUpdate;
     }
 
+    void setLastUpdate(final Date lastUpdate) {
+        // TODO: 7/16/2019 copy!!!
+        this.lastUpdate = lastUpdate;
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // ..._id ...INT PK NN UN AI
     @Id

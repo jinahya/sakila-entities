@@ -28,12 +28,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static com.github.jinahya.sakila.persistence.Category.COLUMN_NAME_CATEGORY_ID;
 import static com.github.jinahya.sakila.persistence.Category.TABLE_NAME;
+import static java.util.Comparator.comparing;
 
 /**
  * An entity for {@value #TABLE_NAME} table.
@@ -76,6 +78,13 @@ public class Category extends BaseEntity {
     // TODO: 2019-07-11 Remove!!!
     @Deprecated
     public static final String ATTRIBUTE_NAME_FILMS = "films";
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator<Category> COMPARING_NAME = comparing(Category::getName);
+
+    public static Comparator<Category> comparingName(final boolean natural) {
+        return natural ? COMPARING_NAME : COMPARING_NAME.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
