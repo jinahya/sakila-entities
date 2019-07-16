@@ -1,12 +1,10 @@
 package com.github.jinahya.sakila.persistence;
 
-import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static java.util.Collections.unmodifiableSortedSet;
-import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A class for integration-testing {@link Language}.
@@ -36,7 +34,7 @@ class LanguageIT extends BaseEntityIT<Language> {
     /**
      * A sorted set of values of {@link Language#ATTRIBUTE_NAME_NAME} attribute.
      */
-    private static final SortedSet<String> NAMES;
+    static final SortedSet<String> NAMES;
 
     static {
         try {
@@ -50,13 +48,6 @@ class LanguageIT extends BaseEntityIT<Language> {
         } catch (final IOException ioe) {
             throw new InstantiationError(ioe.getMessage());
         }
-    }
-
-    static String randomName() {
-        return NAMES.stream()
-                .skip(current().nextLong(NAMES.size()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("you should't see me"));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

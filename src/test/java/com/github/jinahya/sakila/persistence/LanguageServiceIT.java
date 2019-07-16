@@ -1,10 +1,12 @@
 package com.github.jinahya.sakila.persistence;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -12,7 +14,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Language.comparingName;
-import static com.github.jinahya.sakila.persistence.LanguageIT.randomName;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
@@ -47,7 +48,11 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      * @return a stream of arguments.
      */
     private static Stream<Arguments> argumentsForTestingFindByName() {
-        return range(8, 17).mapToObj(i -> arguments(current().nextInt() % 3 == 0 ? null : randomName()));
+        return range(8, 17).mapToObj(i -> arguments(
+                LanguageIT.NAMES.stream()
+                        .skip(current().nextLong(LanguageIT.NAMES.size()))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("fix me if you see me"))));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -84,6 +89,20 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
         ;
     }
 
+    // ------------------------------------------------------------------------------------------------------ findByName
+
+    /**
+     * Asserts {@link LanguageService#findByName(String)} returns empty for an unknown language.
+     */
+    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    @Disabled
+    @Test
+    void assertFindByNameReturnsEmptyIfNameIsUnknown() {
+        final String name = "Esperanto";
+        assertThat(LanguageIT.NAMES).doesNotContain(name);
+        assertThat(serviceInstance().findByName(name)).isEmpty();
+    }
+
     /**
      * Tests {@link LanguageService#findByName(String)}.
      *
@@ -93,7 +112,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
     @Disabled
     @MethodSource({"argumentsForTestingFindByName"})
     @ParameterizedTest
-    void testFindByName(final String name) {
+    void testFindByName(@NotNull final String name) {
         final Optional<Language> found = serviceInstance().findByName(name);
         if (name == null) {
             assertFalse(found.isPresent());
