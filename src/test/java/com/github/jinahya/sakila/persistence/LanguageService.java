@@ -1,10 +1,14 @@
 package com.github.jinahya.sakila.persistence;
 
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * A service for {@link Language}.
@@ -36,8 +40,12 @@ class LanguageService extends BaseEntityService<Language> {
      */
     public Stream<Language> streamOrderedByName(final boolean ascendingOrder, @PositiveOrZero final Integer firstResult,
                                                 @Positive final Integer maxResults) {
-        // TODO: 2019-07-16 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        final TypedQuery<Language> typedQuery = entityManager().createQuery(
+                "SELECT l FROM Language AS l ORDER BY l.name " + (ascendingOrder ? "ASC" : "DESC"),
+                Language.class);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultStream();
     }
 
     /**
@@ -47,7 +55,13 @@ class LanguageService extends BaseEntityService<Language> {
      * @return an optional of found entity.
      */
     public Optional<Language> findByName(@NotNull final String name) {
-        // TODO: 2019-07-16 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        final TypedQuery<Language> typedQuery = entityManager().createQuery(
+                "SELECT l FROM Language AS l WHERE l.name = :name", Language.class);
+        typedQuery.setParameter("name", name);
+        try {
+            return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
     }
 }
