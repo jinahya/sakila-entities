@@ -26,13 +26,11 @@ import javax.imageio.stream.ImageInputStream;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.awt.image.BufferedImage;
@@ -46,6 +44,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 import static com.github.jinahya.sakila.persistence.Staff.COLUMN_NAME_STAFF_ID;
 import static com.github.jinahya.sakila.persistence.Staff.TABLE_NAME;
 import static java.util.Optional.ofNullable;
@@ -53,7 +53,7 @@ import static java.util.Optional.ofNullable;
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_STAFF_ID))
 @Entity
 @Table(name = TABLE_NAME)
-public class Staff extends BaseEntity implements FullNameEmbedded {
+public class Staff extends BaseEntity implements FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final String TABLE_NAME = "staff";
@@ -107,7 +107,8 @@ public class Staff extends BaseEntity implements FullNameEmbedded {
     @Override
     public String toString() {
         return super.toString() + "{"
-               + "fullName=" + fullName
+               + "firstName=" + firstName
+               + ",lastName=" + lastName
                + ",address=" + address
                + ",picture=" + Arrays.toString(picture)
                + ",email='" + email + '\''
@@ -118,16 +119,26 @@ public class Staff extends BaseEntity implements FullNameEmbedded {
                + "}";
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
+    // ------------------------------------------------------------------------------------------------------- firstName
     @Override
-    public FullName getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
     @Override
-    public void setFullName(final FullName fullName) {
-        this.fullName = fullName;
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    // -------------------------------------------------------------------------------------------------------- lastName
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
     }
 
     // --------------------------------------------------------------------------------------------------------- address
@@ -243,11 +254,19 @@ public class Staff extends BaseEntity implements FullNameEmbedded {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Valid
+    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
     @NotNull
-    @Embedded
-    @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
-    private FullName fullName;
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
+    private String firstName;
+
+    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
+    private String lastName;
 
     @NotNull
     @ManyToOne(optional = false)

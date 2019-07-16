@@ -34,8 +34,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName0;
-import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName0;
+import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName;
+import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -146,7 +146,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
         assertThat(list)
                 .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getLastName())).orElse(true))
 //                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
-                .isSortedAccordingTo(comparingFirstName0(ascendingOrder))
+                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
         ;
@@ -169,7 +169,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .collect(toList());
         assertThat(list)
                 .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))
-                .isSortedAccordingTo(comparingLastName0(ascendingOrder))
+                .isSortedAccordingTo(comparingLastName(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
         ;

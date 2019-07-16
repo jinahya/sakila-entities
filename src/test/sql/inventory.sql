@@ -1,3 +1,4 @@
 DESC inventory;
 
-SELECT * FROM inventory;
+SELECT *
+FROM inventory;

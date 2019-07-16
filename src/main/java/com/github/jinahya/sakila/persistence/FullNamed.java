@@ -63,49 +63,50 @@ public interface FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
     Comparator<FullNamed> COMPARING_FIRST_NAME = comparing(FullNamed::getFirstName);
 
-    static Comparator</*? super */FullNamed> comparingFirstName0(final boolean natural) {
+    static Comparator<FullNamed> comparingFirstName(final boolean natural) {
         return natural ? COMPARING_FIRST_NAME : COMPARING_FIRST_NAME.reversed();
     }
 
     Comparator<FullNamed> COMPARING_LAST_NAME = comparing(FullNamed::getLastName);
 
-    static Comparator</*? super */FullNamed> comparingLastName0(final boolean natural) {
+    static Comparator<FullNamed> comparingLastName(final boolean natural) {
         return natural ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNamed> Comparator</*? super */T> comparingFirstNameNatural() {
-        return comparing(FullNamed::getFirstName);
-    }
+    // ------------------------------------------------------------------------------------------------------- firstName
 
-    static <T extends FullNamed> Comparator</*? super */T> comparingFirstNameReverse() {
-        return FullNamed.<T>comparingFirstNameNatural().reversed();
-    }
-
-    static <T extends FullNamed> Comparator</*? super */T> comparingFirstName(final boolean natural) {
-        return natural ? comparingFirstNameNatural() : comparingFirstNameReverse();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNamed> Comparator</*? super */T> comparingLastNameNatural() {
-        return comparing(FullNamed::getLastName);
-    }
-
-    static <T extends FullNamed> Comparator</*? super */T> comparingLastNameReverse() {
-        return FullNamed.<T>comparingLastNameNatural().reversed();
-    }
-
-    static <T extends FullNamed> Comparator</*? super */T> comparingLastName(final boolean natural) {
-        return natural ? comparingLastNameNatural() : comparingLastNameReverse();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     */
     String getFirstName();
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute with specified value.
+     *
+     * @param firstName new value for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     */
     void setFirstName(String firstName);
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------- lastName
+
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     */
     String getLastName();
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute with specified value.
+     *
+     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     */
     void setLastName(String lastName);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    default String format(final FullNameFormatter formatter, final String delimiter) {
+        return formatter.format(this, delimiter);
+    }
 }

@@ -1,3 +1,4 @@
 DESC store;
 
-SELECT * FROM store;
+SELECT *
+FROM store;
