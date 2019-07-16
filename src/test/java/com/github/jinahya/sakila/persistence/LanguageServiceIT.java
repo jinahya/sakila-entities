@@ -10,17 +10,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Language.comparingName;
+import static com.github.jinahya.sakila.persistence.LanguageIT.A_LANGUAGE_WHOSE_NAME_IS_IN_DATABASE;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
@@ -113,12 +111,9 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
     @MethodSource({"argumentsForTestingFindByName"})
     @ParameterizedTest
     void testFindByName(@NotNull final String name) {
-        final Optional<Language> found = serviceInstance().findByName(name);
-        if (name == null) {
-            assertFalse(found.isPresent());
-        } else {
-            assertTrue(found.isPresent());
-            assertThat(found.get()).matches(l -> name.equals(l.getName()));
-        }
+        assertThat(serviceInstance().findByName(name))
+                .isPresent()
+                .hasValueSatisfying(language -> assertThat(language.getName()).isEqualTo(name))
+        ;
     }
 }
