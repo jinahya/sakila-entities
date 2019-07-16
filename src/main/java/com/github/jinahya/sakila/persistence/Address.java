@@ -291,7 +291,7 @@ public class Address extends BaseEntity {
         return copyOf(location, location.length);
     }
 
-    public void setLocation(final byte[] location) {
+    public void setLocation(final byte[] location) { // TODO: 7/16/2019 public???
         this.location = ofNullable(location).map(v -> copyOf(v, v.length)).orElse(null);
     }
 
@@ -418,6 +418,5 @@ public class Address extends BaseEntity {
     @NotNull
     @Lob
     @Column(name = COLUMN_NAME_LOCATION, nullable = false, insertable = false, updatable = false)
-    @NamedAttribute(ATTRIBUTE_NAME_LOCATION)
-    private Blob locationLob;
+    private Blob locationLob; // +
 }

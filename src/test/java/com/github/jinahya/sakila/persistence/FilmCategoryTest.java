@@ -26,43 +26,32 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * A class for testing subclasses of {@link BaseEntity}.
+ * A class for testing {@link FilmCategory}.
  *
- * @param <T> entity type parameter
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
+class FilmCategoryTest extends EntityTest<FilmCategory> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a new instance with specified entity class.
-     *
-     * @param entityClass the entity class to test.
+     * Creates a new instance.
      */
-    BaseEntityTest(final Class<? extends T> entityClass) {
-        super(entityClass);
+    FilmCategoryTest() {
+        super(FilmCategory.class);
     }
 
-    // ------------------------------------------------------------------------------------------------------ lastUpdate
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts the default value of {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute is {@code null}.
-     */
-    @Test
-    void assertDefaultValueOfLastUpdateIsNull() {
-        assertNull(entityInstance().getLastUpdate());
-    }
-
-    /**
-     * Asserts {@link BaseEntity#getLastUpdate()} returns a copy of the current value of {@link
+     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@link
      * BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
      */
     @Test
     void assertGetLastUpdateReturnsCopy() {
-        final T entityInstance = entityInstance();
+        final FilmCategory entityInstance = entityInstance();
         final Date unexpected = new Date();
         entityInstance.setLastUpdate(unexpected);
         final Date actual = entityInstance.getLastUpdate();

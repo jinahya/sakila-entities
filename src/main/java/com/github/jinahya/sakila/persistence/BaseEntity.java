@@ -154,7 +154,7 @@ public abstract class BaseEntity {
     }
 
     void setLastUpdate(final Date lastUpdate) {
-        this.lastUpdate = ofNullable(lastUpdate).map(v -> new Date(v.getTime())).orElse(null);
+        this.lastUpdate = lastUpdate;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

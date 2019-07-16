@@ -20,6 +20,12 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 /**
  * A class for testing {@link FilmActor}.
  *
@@ -34,5 +40,20 @@ class FilmActorTest extends EntityTest<FilmActor> {
      */
     FilmActorTest() {
         super(FilmActor.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Asserts {@link FilmActor#getLastUpdate()} returns a copy of the current value of {@link
+     * BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
+     */
+    @Test
+    void assertGetLastUpdateReturnsCopy() {
+        final FilmActor entityInstance = entityInstance();
+        final Date unexpected = new Date();
+        entityInstance.setLastUpdate(unexpected);
+        final Date actual = entityInstance.getLastUpdate();
+        assertNotSame(unexpected, actual);
     }
 }

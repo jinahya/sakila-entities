@@ -134,12 +134,13 @@ public class FilmCategory {
      * @return the current value of {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
      */
     public Date getLastUpdate() {
-        // TODO: 2019-07-10 copy!!!
-        return lastUpdate;
+        if (lastUpdate == null) {
+            return null;
+        }
+        return new Date(lastUpdate.getTime());
     }
 
     void setLastUpdate(final Date lastUpdate) {
-        // TODO: 7/16/2019 copy!!!
         this.lastUpdate = lastUpdate;
     }
 

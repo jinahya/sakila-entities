@@ -34,6 +34,7 @@ import java.util.Date;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_LAST_UPDATE;
 import static com.github.jinahya.sakila.persistence.BaseEntity.COLUMN_NAME_LAST_UPDATE;
+import static java.util.Optional.ofNullable;
 
 /**
  * An entity class for {@value #TABLE_NAME} table.
@@ -77,6 +78,7 @@ public class FilmActor {
     public static final String ATTRIBUTE_NAME_FILM = "film";
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Creates a new instance.
      */
@@ -128,12 +130,10 @@ public class FilmActor {
      * @return the current value of {@code lastUpdate} attribute.
      */
     public Date getLastUpdate() {
-        // TODO: 2019-07-11 copy!!!
-        return lastUpdate;
+        return ofNullable(lastUpdate).map(v -> new Date(v.getTime())).orElse(null);
     }
 
     void setLastUpdate(final Date lastUpdate) {
-        // TODO: 7/16/2019 copy!!!
         this.lastUpdate = lastUpdate;
     }
 

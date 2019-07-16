@@ -91,8 +91,6 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     /**
      * Asserts {@link CategoryService#findByName(String)} returns empty for an unknown category.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
-    @Disabled
     @Test
     void assertFindByNameReturnsEmptyIfNameIsUnknown() {
         final String name = "周星馳";
@@ -105,8 +103,6 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
      *
      * @param name a value for {@code name} parameter.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
-    @Disabled
     @MethodSource({"argumentsForTestingFindByName"})
     @ParameterizedTest
     void testFindByName(@NotNull final String name) {
