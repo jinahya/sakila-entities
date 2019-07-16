@@ -40,6 +40,8 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * An abstract base class for entity classes.
  *
@@ -145,8 +147,14 @@ public abstract class BaseEntity {
      * @return the current value of {@link #ATTRIBUTE_NAME_LAST_UPDATE} attribute.
      */
     public Date getLastUpdate() {
-        // TODO: 2019-07-12 copy!!!
-        return lastUpdate;
+        if (lastUpdate == null) {
+            return null;
+        }
+        return new Date(lastUpdate.getTime());
+    }
+
+    void setLastUpdate(final Date lastUpdate) {
+        this.lastUpdate = ofNullable(lastUpdate).map(v -> new Date(v.getTime())).orElse(null);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

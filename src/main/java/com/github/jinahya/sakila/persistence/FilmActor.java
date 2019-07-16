@@ -132,6 +132,11 @@ public class FilmActor {
         return lastUpdate;
     }
 
+    void setLastUpdate(final Date lastUpdate) {
+        // TODO: 7/16/2019 copy!!!
+        this.lastUpdate = lastUpdate;
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     @NotNull
     @Id

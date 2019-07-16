@@ -2,7 +2,9 @@ DESC language;
 
 SELECT name, COUNT(name) AS count
 FROM language
-GROUP BY name;
+GROUP BY name
+ORDER BY count DESC;
 
 SELECT DISTINCT name
-from language;
+FROM language
+ORDER BY name ASC;

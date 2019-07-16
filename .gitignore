@@ -29,6 +29,7 @@ buildNumber.properties
 
 Dockerfile
 .sakila-db.mysql.sh
+sakila-db.address.sh
 sakila-db.build.sh
 sakila-db.mysql.sh
 sakila-db.run.sh
