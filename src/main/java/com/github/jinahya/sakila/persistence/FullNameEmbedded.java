@@ -124,7 +124,7 @@ interface FullNameEmbedded {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    default Optional<String> toString(final FullName.Order order, final String delimiter) {
+    default Optional<String> toString(final FullNameFormatter order, final String delimiter) {
         return ofNullable(getFullName()).map(v -> v.toString(order, delimiter));
     }
 }

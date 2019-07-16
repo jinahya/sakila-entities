@@ -26,18 +26,18 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import static com.github.jinahya.sakila.persistence.FullName.ATTRIBUTE_NAME_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.ATTRIBUTE_NAME_LAST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.COLUMN_NAME_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.COLUMN_NAME_LAST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.SIZE_MAX_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.SIZE_MAX_LAST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.SIZE_MIN_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullName.SIZE_MIN_LAST_NAME;
-
-@Deprecated
 @MappedSuperclass
 abstract class FullNamedBaseEntity extends BaseEntity implements FullNamed {
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "firstName=" + firstName
+               + ",lastName=" + lastName
+               + "}";
+    }
 
     // ------------------------------------------------------------------------------------------------------- firstName
     @Override

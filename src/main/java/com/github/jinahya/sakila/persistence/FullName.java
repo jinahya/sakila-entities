@@ -39,54 +39,10 @@ import static java.util.Objects.requireNonNull;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Embeddable
-public class FullName implements Serializable {
+public class FullName implements FullNamed, Serializable {
 
     // -----------------------------------------------------------------------------------------------------------------
     private static final long serialVersionUID = 672072114529715565L;
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
-     */
-    public static final String COLUMN_NAME_FIRST_NAME = "first_name";
-
-    /**
-     * The attribute name for {@value #COLUMN_NAME_FIRST_NAME} column. The value is {@value}.
-     */
-    public static final String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
-
-    /**
-     * The minimum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
-     */
-    public static final int SIZE_MIN_FIRST_NAME = 0; // TODO: 2019-07-14 empty???
-
-    /**
-     * The maximum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
-     */
-    public static final int SIZE_MAX_FIRST_NAME = 45;
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The table column name for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
-     */
-    public static final String COLUMN_NAME_LAST_NAME = "last_name";
-
-    /**
-     * The object attribute name for {@value #COLUMN_NAME_LAST_NAME} column. The value is {@value}.
-     */
-    public static final String ATTRIBUTE_NAME_LAST_NAME = "lastName";
-
-    /**
-     * The minimum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
-     */
-    public static final int SIZE_MIN_LAST_NAME = 0; // TODO: 2019-07-14 empty???
-
-    /**
-     * The maximum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
-     */
-    public static final int SIZE_MAX_LAST_NAME = 45;
 
     // -----------------------------------------------------------------------------------------------------------------
     public static final Comparator</*? super */FullName> COMPARING_FIRST_NAME_NATURAL
@@ -116,45 +72,6 @@ public class FullName implements Serializable {
         instance.setFirstName(firstName);
         instance.setLastName(lastName);
         return instance;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Constants for ordering names.
-     */
-    public enum Order {
-
-        /**
-         * A constant for formatting a full name as the {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute first.
-         */
-        FIRST_NAME_FIRST() {
-            @Override
-            String format(final FullName object, final String delimiter) {
-                return object.getFirstName() + delimiter + object.getLastName();
-            }
-        },
-
-        /**
-         * A constant for formatting a full name as the {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attribute first.
-         */
-        LAST_NAME_FIRST() {
-            @Override
-            String format(final FullName object, final String delimiter) {
-                return object.getLastName() + delimiter + object.getFirstName();
-            }
-        };
-
-        // -------------------------------------------------------------------------------------------------------------
-
-        /**
-         * Formats specified full name using specified delimiter.
-         *
-         * @param object    the full name to format.
-         * @param delimiter a delimiter between names.
-         * @return a formatted value for specified full name.
-         */
-        abstract String format(final FullName object, final String delimiter);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -209,13 +126,13 @@ public class FullName implements Serializable {
      * @param delimiter the delimiter.
      * @return a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined with
      * specified delimiter.
-     * @deprecated Use {@link #toString(Order, String)}
+     * @deprecated Use {@link #toString(FullNameFormatter, String)}
      */
     // TODO: 2019-07-13 remove!!!!
     @Deprecated // forRemoval = true
     public String getAsFirstNameFirst(@NotNull final String delimiter) {
         if (true) {
-            return toString(Order.FIRST_NAME_FIRST, delimiter);
+            return toString(FullNameFormatter.FIRST_NAME_FIRST, delimiter);
         }
         return firstName + delimiter + lastName;
     }
@@ -224,7 +141,7 @@ public class FullName implements Serializable {
      * Returns a full name as first name first delimited with a white space.
      *
      * @return a full name as first name first delimited with a white space.
-     * @deprecated Use {@link #toString(Order, String)}
+     * @deprecated Use {@link #toString(FullNameFormatter, String)}
      */
     // TODO: 2019-07-13 remove!!!
     @Deprecated // forRemoval = true
@@ -239,13 +156,13 @@ public class FullName implements Serializable {
      * @param delimiter the delimiter.
      * @return a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
      * specified delimiter.
-     * @deprecated Use {@link #toString(Order, String)}
+     * @deprecated Use {@link #toString(FullNameFormatter, String)}
      */
     // TODO: 2019-07-13 remove!!!
     @Deprecated // forRemoval = true
     public String getAsLastNameFirst(@NotNull final String delimiter) {
         if (true) {
-            return toString(Order.LAST_NAME_FIRST, delimiter);
+            return toString(FullNameFormatter.LAST_NAME_FIRST, delimiter);
         }
         return lastName + delimiter + firstName;
     }
@@ -254,7 +171,7 @@ public class FullName implements Serializable {
      * Returns a full name as last name first delimited with a comma followed by a white space.
      *
      * @return a full name as last name first delimited with a comma followed by a white space.
-     * @deprecated Use {@link #toString(Order, String)}
+     * @deprecated Use {@link #toString(FullNameFormatter, String)}
      */
     // TODO: 2019-07-13 remove!!!
     @Deprecated // forRemoval = true
@@ -269,7 +186,7 @@ public class FullName implements Serializable {
      * @param delimiter the delimiter.
      * @return a formatted full name of this object.
      */
-    public String toString(final Order order, final String delimiter) {
+    public String toString(final FullNameFormatter order, final String delimiter) {
         return requireNonNull(order, "order is null").format(this, requireNonNull(delimiter, "delimiter is null"));
     }
 
@@ -280,6 +197,7 @@ public class FullName implements Serializable {
      *
      * @return the current value of {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
      */
+    @Override
     public String getFirstName() {
         return firstName;
     }
@@ -289,6 +207,7 @@ public class FullName implements Serializable {
      *
      * @param firstName new value for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute.
      */
+    @Override
     public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
@@ -305,6 +224,7 @@ public class FullName implements Serializable {
      *
      * @return the current value of {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
      */
+    @Override
     public String getLastName() {
         return lastName;
     }
@@ -314,6 +234,7 @@ public class FullName implements Serializable {
      *
      * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
      */
+    @Override
     public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
