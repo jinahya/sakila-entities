@@ -82,19 +82,27 @@ class ActorService extends BaseEntityService<Actor> {
             return typedQuery.getResultStream();
         }
         if (current().nextBoolean()) {
+            log.debug("entityManager.open: {}, {}", entityManager().isOpen(), entityManager());
+            System.out.println(entityManager().isOpen());
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
             final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
             final Root<Actor> root = criteriaQuery.from(Actor.class);
             criteriaQuery.select(root);
             if (lastName != null) {
-                criteriaQuery.where(criteriaBuilder.equal(root.get(FullNamedBaseEntity_.firstName), lastName));
+                log.debug("entityManager.open: {}, {}", entityManager().isOpen(), entityManager());
+                System.out.println(entityManager().isOpen());
+                criteriaQuery.where(criteriaBuilder.equal(root.get(Actor_.firstName), lastName));
             }
-            final Expression<String> firstNamePath = root.get(FullNamedBaseEntity_.lastName);
+            log.debug("entityManager.open: {}, {}", entityManager().isOpen(), entityManager());
+            System.out.println(entityManager().isOpen());
+            final Expression<String> firstNamePath = root.get(Actor_.firstName);
             criteriaQuery.orderBy(
                     ascendingOrder ? criteriaBuilder.asc(firstNamePath) : criteriaBuilder.desc(firstNamePath));
             final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            log.debug("entityManager.open: {}", entityManager().isOpen());
+            System.out.println(entityManager().isOpen());
             return typedQuery.getResultStream();
         }
         final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM " + Actor.ENTITY_NAME + " AS a");

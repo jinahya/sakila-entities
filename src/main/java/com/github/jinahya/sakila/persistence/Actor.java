@@ -21,19 +21,22 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.github.jinahya.sakila.persistence.Actor.COLUMN_NAME_ACTOR_ID;
-import static com.github.jinahya.sakila.persistence.Actor.ENTITY_NAME;
 import static com.github.jinahya.sakila.persistence.Actor.TABLE_NAME;
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 
 /**
  * An entity class for binding {@value TABLE_NAME} table.
@@ -46,10 +49,10 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
-@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
-@Entity(name = ENTITY_NAME)
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Actor.COLUMN_NAME_ACTOR_ID, nullable = false))
+@Entity(name = Actor.ENTITY_NAME)
 @Table(name = TABLE_NAME)
-public class Actor extends FullNamedBaseEntity {
+public class Actor extends BaseEntity implements FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -104,30 +107,32 @@ public class Actor extends FullNamedBaseEntity {
     @Override
     public String toString() {
         return super.toString() + "{"
+               + "firstName=" + firstName
+               + ",lastName=" + lastName
                + "}";
     }
 
-//    // -------------------------------------------------------------------------------------------------------- fullName
-//
-//    /**
-//     * {@inheritDoc}
-//     *
-//     * @return {@inheritDoc}
-//     */
-//    @Override
-//    public FullName getFullName() {
-//        return fullName;
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     *
-//     * @param fullName new value for  {@link #ATTRIBUTE_NAME_FULL_NAME} attribute.
-//     */
-//    @Override
-//    public void setFullName(final FullName fullName) {
-//        this.fullName = fullName;
-//    }
+    // ------------------------------------------------------------------------------------------------------- firstName
+    @Override
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @Override
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    // -------------------------------------------------------------------------------------------------------- lastName
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
 
     // ----------------------------------------------------------------------------------------------------------- films
     // TODO: 2019-07-14 remove!!!
@@ -151,6 +156,21 @@ public class Actor extends FullNamedBaseEntity {
         }
         return filmAdded;
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
+    private String firstName;
+
+    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
+    private String lastName;
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-14 remove!!!
