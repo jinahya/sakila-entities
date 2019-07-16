@@ -23,17 +23,16 @@ package com.github.jinahya.sakila.persistence;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
-import static com.github.jinahya.sakila.persistence.FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 
 /**
  * An entity class for binding {@value TABLE_NAME} table.
@@ -41,7 +40,7 @@ import static com.github.jinahya.sakila.persistence.FullNameEmbedded.ATTRIBUTE_N
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Customer.COLUMN_NAME_CUSTOMER_ID))
 @Entity
 @Table(name = Customer.TABLE_NAME)
-public class Customer extends BaseEntity {
+public class Customer extends BaseEntity implements FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -95,7 +94,8 @@ public class Customer extends BaseEntity {
     public String toString() {
         return super.toString() + "{"
                + "store=" + store
-               + ",fullName=" + fullName
+               + "firstName=" + firstName
+               + ",lastName=" + lastName
                + ",email=" + email
                + ",address=" + address
                + ",active=" + active
@@ -113,13 +113,26 @@ public class Customer extends BaseEntity {
         this.store = store;
     }
 
-    // -------------------------------------------------------------------------------------------------------- fullName
-    public FullName getFullName() {
-        return fullName;
+    // ------------------------------------------------------------------------------------------------------- firstName
+    @Override
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(final FullName fullName) {
-        this.fullName = fullName;
+    @Override
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    // -------------------------------------------------------------------------------------------------------- lastName
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
     }
 
     // ----------------------------------------------------------------------------------------------------------- email
@@ -156,11 +169,19 @@ public class Customer extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_STORE)
     private Store store;
 
-    @Valid
+    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
     @NotNull
-    @Embedded
-    @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
-    private FullName fullName;
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
+    private String firstName;
+
+    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
+    private String lastName;
 
     @Size(max = SIZE_MAX_EMAIL)
     @Basic

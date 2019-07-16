@@ -20,10 +20,8 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import java.util.Comparator;
 import java.util.Optional;
 
-import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -31,7 +29,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-interface FullNameEmbedded {
+public interface FullNameEmbedded {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -39,32 +37,6 @@ interface FullNameEmbedded {
      * The name of the attribute of {@link FullName}. The value is {@value}.
      */
     String ATTRIBUTE_NAME_FULL_NAME = "fullName";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstNameNatural() {
-        return comparing(v -> v.getFirstName().orElse(null));
-    }
-
-    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstNameReverse() {
-        return FullNameEmbedded.<T>comparingFirstNameNatural().reversed();
-    }
-
-    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingFirstName(final boolean natural) {
-        return natural ? comparingFirstNameNatural() : comparingFirstNameReverse();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingLastNameNatural() {
-        return comparing(v -> v.getLastName().orElse(null));
-    }
-
-    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingLastNameReverse() {
-        return FullNameEmbedded.<T>comparingLastNameNatural().reversed();
-    }
-
-    static <T extends FullNameEmbedded> Comparator</*? super */T> comparingLastName(final boolean natural) {
-        return natural ? comparingLastNameNatural() : comparingLastNameReverse();
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -121,10 +93,5 @@ interface FullNameEmbedded {
                     return getFullName();
                 })
                 .setLastName(lastName);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    default Optional<String> toString(final FullNameFormatter order, final String delimiter) {
-        return ofNullable(getFullName()).map(v -> v.toString(order, delimiter));
     }
 }
