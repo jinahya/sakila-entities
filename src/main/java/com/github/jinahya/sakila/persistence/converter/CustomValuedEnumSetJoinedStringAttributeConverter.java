@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toCollection;
 public abstract class CustomValuedEnumSetJoinedStringAttributeConverter<E extends Enum<E> & CustomValuedEnum<E, String>>
         implements AttributeConverter<Set<E>, String> {
 
-    //    // -----------------------------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
     private static final Map<String, Pattern> PATTERNS = synchronizedMap(new WeakHashMap<>());
 
     /**
@@ -76,10 +76,10 @@ public abstract class CustomValuedEnumSetJoinedStringAttributeConverter<E extend
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    protected final Class<E> enumClass;
+    final Class<E> enumClass;
 
     /**
      * The delimiter for splitting or joining the database column.
      */
-    protected final String columnDelimiter;
+    final String columnDelimiter;
 }

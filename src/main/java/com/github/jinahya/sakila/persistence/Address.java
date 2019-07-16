@@ -353,7 +353,7 @@ public class Address extends BaseEntity {
         }
     }
 
-    public <U, R> R applyLocationLobStream(final BiFunction<? super InputStream, ? super U,  ? extends R> function,
+    public <U, R> R applyLocationLobStream(final BiFunction<? super InputStream, ? super U, ? extends R> function,
                                            final Supplier<? extends U> supplier)
             throws SQLException, IOException {
         if (function == null) {
