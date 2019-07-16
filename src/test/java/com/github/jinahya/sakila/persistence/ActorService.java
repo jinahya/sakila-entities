@@ -76,7 +76,7 @@ class ActorService extends BaseEntityService<Actor> {
             criteriaQuery.select(root);
             if (lastName != null) {
                 criteriaQuery.where(criteriaBuilder.equal(
-                        root.get(FullNameEmbedded.ATTRIBUTE_NAME_FULL_NAME).get(ATTRIBUTE_NAME_LAST_NAME),
+                        root.get(FullNamed.ATTRIBUTE_NAME_LAST_NAME),
                         lastName));
             }
             final Expression<String> firstNamePath
