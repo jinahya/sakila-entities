@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @MappedSuperclass
-abstract class FullNamedBaseEntity extends BaseEntity implements FullNamed {
+abstract class FullNamedBaseEntity extends BaseEntity implements FullNamedEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 

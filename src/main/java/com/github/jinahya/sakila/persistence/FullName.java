@@ -29,6 +29,14 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.ATTRIBUTE_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.ATTRIBUTE_NAME_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.SIZE_MAX_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.SIZE_MAX_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.SIZE_MIN_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.SIZE_MIN_LAST_NAME;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 

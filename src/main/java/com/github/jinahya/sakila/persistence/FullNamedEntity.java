@@ -20,28 +20,19 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import javax.persistence.Embedded;
-import javax.persistence.MappedSuperclass;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-@MappedSuperclass
-abstract class FullNameEmbeddedBaseEntity extends BaseEntity implements FullNameEmbedded {
+public interface FullNamedEntity extends FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Override
-    public FullName getFullName() {
-        return fullName;
-    }
 
-    @Override
-    public void setFullName(final FullName fullName) {
-        this.fullName = fullName;
-    }
+    /**
+     * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     */
+    String COLUMN_NAME_FIRST_NAME = "first_name";
 
     // -----------------------------------------------------------------------------------------------------------------
-    @Valid
-    @NotNull
-    @Embedded
-    private FullName fullName;
+
+    /**
+     * The table column name for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
+    String COLUMN_NAME_LAST_NAME = "last_name";
 }

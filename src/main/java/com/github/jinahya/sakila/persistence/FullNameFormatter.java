@@ -6,7 +6,7 @@ package com.github.jinahya.sakila.persistence;
 public enum FullNameFormatter {
 
     /**
-     * A constant for formatting a full name as the {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute first.
+     * A constant for formatting a full name as the {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME} attribute first.
      */
     FIRST_NAME_FIRST() {
         @Override
