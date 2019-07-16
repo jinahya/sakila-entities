@@ -84,7 +84,7 @@ public class Actor extends BaseEntity implements FullNamed {
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-12 remove!!! 
+    // TODO: 2019-07-12 remove!!!
     @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
