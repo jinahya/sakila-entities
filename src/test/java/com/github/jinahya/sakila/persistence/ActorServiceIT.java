@@ -34,8 +34,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.FullNameEmbedded.comparingFirstName;
-import static com.github.jinahya.sakila.persistence.FullNameEmbedded.comparingLastName;
+import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName0;
+import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName0;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -99,8 +99,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
     private static Stream<Arguments> provideArgumentsWithLastName() {
         return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
-            final String lastName = current().nextBoolean() ?
-                                    null : randomEntity(Actor.class).getFullName().getLastName();
+            final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
             final boolean ascendingOrder = current().nextBoolean();
             final Integer firstResult = current().nextBoolean() ? null : firstResult(Actor.class);
             final Integer maxResult = current().nextBoolean() ? null : maxResults(Actor.class);
@@ -110,8 +109,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
 
     private static Stream<Arguments> provideArgumentsWithFirstName() {
         return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
-            final String lastName = current().nextBoolean()
-                                    ? null : randomEntity(Actor.class).getFullName().getLastName();
+            final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
             final boolean ascendingOrder = current().nextBoolean();
             final Integer firstResult = current().nextBoolean() ? null : firstResult(Actor.class);
             final Integer maxResult = current().nextBoolean() ? null : maxResults(Actor.class);
@@ -146,8 +144,9 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .streamOrderedByFirstName(lastName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
         assertThat(list)
-                .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getFullName().getLastName())).orElse(true))
-                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
+                .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getLastName())).orElse(true))
+//                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
+                .isSortedAccordingTo(comparingFirstName0(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
         ;
@@ -169,8 +168,8 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .streamOrderedByLastName(firstName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
         assertThat(list)
-                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFullName().getFirstName())).orElse(true))
-                .isSortedAccordingTo(comparingLastName(ascendingOrder))
+                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))
+                .isSortedAccordingTo(comparingLastName0(ascendingOrder))
                 .size()
                 .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
         ;

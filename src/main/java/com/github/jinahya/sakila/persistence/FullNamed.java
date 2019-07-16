@@ -20,17 +20,93 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-// TODO: 2019-07-13 remove!!!
-@Deprecated
-interface FullNamed {
+import java.util.Comparator;
+
+import static java.util.Comparator.comparing;
+
+public interface FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
-    static String firstNameFirst(final FullNamed object, final String delimiter) {
-        return object.getFirstName() + delimiter + object.getLastName();
+
+    /**
+     * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     */
+    String COLUMN_NAME_FIRST_NAME = "first_name";
+
+    /**
+     * The attribute name for {@value #COLUMN_NAME_FIRST_NAME} column. The value is {@value}.
+     */
+    String ATTRIBUTE_NAME_FIRST_NAME = "firstName";
+
+    /**
+     * The minimum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     */
+    int SIZE_MIN_FIRST_NAME = 0; // TODO: 2019-07-14 empty???
+
+    /**
+     * The maximum size for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     */
+    int SIZE_MAX_FIRST_NAME = 45;
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The table column name for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
+    String COLUMN_NAME_LAST_NAME = "last_name";
+
+    /**
+     * The object attribute name for {@value #COLUMN_NAME_LAST_NAME} column. The value is {@value}.
+     */
+    String ATTRIBUTE_NAME_LAST_NAME = "lastName";
+
+    /**
+     * The minimum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
+    int SIZE_MIN_LAST_NAME = 0; // TODO: 2019-07-14 empty???
+
+    /**
+     * The maximum size for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     */
+    int SIZE_MAX_LAST_NAME = 45;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    Comparator<FullNamed> COMPARING_FIRST_NAME = comparing(FullNamed::getFirstName);
+
+    static Comparator</*? super */FullNamed> comparingFirstName0(final boolean natural) {
+        return natural ? COMPARING_FIRST_NAME : COMPARING_FIRST_NAME.reversed();
     }
 
-    static String lastNameFirst(final FullNamed object, final String delimiter) {
-        return object.getLastName() + delimiter + object.getFirstName();
+    Comparator<FullNamed> COMPARING_LAST_NAME = comparing(FullNamed::getLastName);
+
+    static Comparator</*? super */FullNamed> comparingLastName0(final boolean natural) {
+        return natural ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T extends FullNamed> Comparator</*? super */T> comparingFirstNameNatural() {
+        return comparing(FullNamed::getFirstName);
+    }
+
+    static <T extends FullNamed> Comparator</*? super */T> comparingFirstNameReverse() {
+        return FullNamed.<T>comparingFirstNameNatural().reversed();
+    }
+
+    static <T extends FullNamed> Comparator</*? super */T> comparingFirstName(final boolean natural) {
+        return natural ? comparingFirstNameNatural() : comparingFirstNameReverse();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T extends FullNamed> Comparator</*? super */T> comparingLastNameNatural() {
+        return comparing(FullNamed::getLastName);
+    }
+
+    static <T extends FullNamed> Comparator</*? super */T> comparingLastNameReverse() {
+        return FullNamed.<T>comparingLastNameNatural().reversed();
+    }
+
+    static <T extends FullNamed> Comparator</*? super */T> comparingLastName(final boolean natural) {
+        return natural ? comparingLastNameNatural() : comparingLastNameReverse();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -35,14 +35,14 @@ final class FullNameEmbeddedTests {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Provides a stream of {@link FullName.Order} for testing.
+     * Provides a stream of {@link FullNameFormatter} for testing.
      *
-     * @return a stream of {@link FullName.Order}.
+     * @return a stream of {@link FullNameFormatter}.
      */
     static Stream<Arguments> provideNameOrders() {
         return Stream.of(
-                Arguments.of(FullName.Order.FIRST_NAME_FIRST),
-                Arguments.of(FullName.Order.LAST_NAME_FIRST)
+                Arguments.of(FullNameFormatter.FIRST_NAME_FIRST),
+                Arguments.of(FullNameFormatter.LAST_NAME_FIRST)
         );
     }
 
@@ -52,8 +52,8 @@ final class FullNameEmbeddedTests {
         {
             final FullName fullName = instance.getFullName();
             if (fullName != null) {
-                final String firstNameFirst = fullName.toString(FullName.Order.FIRST_NAME_FIRST, " ");
-                final String lastNameFirst = fullName.toString(FullName.Order.LAST_NAME_FIRST, ", ");
+                final String firstNameFirst = fullName.toString(FullNameFormatter.FIRST_NAME_FIRST, " ");
+                final String lastNameFirst = fullName.toString(FullNameFormatter.LAST_NAME_FIRST, ", ");
             }
         }
         instance.setFullName(FullName.of("John", "Doggett")); // https://en.wikipedia.org/wiki/John_Doggett

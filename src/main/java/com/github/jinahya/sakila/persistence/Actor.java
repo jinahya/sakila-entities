@@ -22,14 +22,11 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,7 +49,7 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ACTOR_ID, nullable = false))
 @Entity(name = ENTITY_NAME)
 @Table(name = TABLE_NAME)
-public class Actor extends BaseEntity implements FullNameEmbedded {
+public class Actor extends FullNamedBaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -107,31 +104,30 @@ public class Actor extends BaseEntity implements FullNameEmbedded {
     @Override
     public String toString() {
         return super.toString() + "{"
-               + "fullName=" + fullName
                + "}";
     }
 
-    // -------------------------------------------------------------------------------------------------------- fullName
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return {@inheritDoc}
-     */
-    @Override
-    public FullName getFullName() {
-        return fullName;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param fullName new value for  {@link #ATTRIBUTE_NAME_FULL_NAME} attribute.
-     */
-    @Override
-    public void setFullName(final FullName fullName) {
-        this.fullName = fullName;
-    }
+//    // -------------------------------------------------------------------------------------------------------- fullName
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @return {@inheritDoc}
+//     */
+//    @Override
+//    public FullName getFullName() {
+//        return fullName;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @param fullName new value for  {@link #ATTRIBUTE_NAME_FULL_NAME} attribute.
+//     */
+//    @Override
+//    public void setFullName(final FullName fullName) {
+//        this.fullName = fullName;
+//    }
 
     // ----------------------------------------------------------------------------------------------------------- films
     // TODO: 2019-07-14 remove!!!
@@ -155,13 +151,6 @@ public class Actor extends BaseEntity implements FullNameEmbedded {
         }
         return filmAdded;
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    @Valid
-    @NotNull
-    @Embedded
-    @NamedAttribute(ATTRIBUTE_NAME_FULL_NAME)
-    private FullName fullName;
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-14 remove!!!
