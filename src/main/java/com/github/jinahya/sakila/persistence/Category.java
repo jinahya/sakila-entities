@@ -23,12 +23,8 @@ package com.github.jinahya.sakila.persistence;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -217,27 +213,6 @@ public class Category extends BaseEntity {
             fetch = FetchType.LAZY, // default
             mappedBy = Film.ATTRIBUTE_NAME_CATEGORIES,
             targetEntity = Film.class // default; void.class
-            )
-    @JoinTable(
-            name = FilmCategory.TABLE_NAME,
-            joinColumns = {
-                    @JoinColumn(
-                            name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
-                            referencedColumnName = COLUMN_NAME_CATEGORY_ID,
-                            nullable = false
-                    )
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(
-                            name = FilmCategory.COLUMN_NAME_FILM_ID,
-                            referencedColumnName = Film.COLUMN_NAME_FILM_ID,
-                            nullable = false
-                    )
-            },
-            foreignKey = @ForeignKey(ConstraintMode.PROVIDER_DEFAULT), // default
-            inverseForeignKey = @ForeignKey(ConstraintMode.PROVIDER_DEFAULT), // default
-            uniqueConstraints = {}, // default
-            indexes = {} // default
             )
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
     private Set<Film> films;

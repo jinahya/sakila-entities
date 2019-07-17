@@ -20,11 +20,14 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -33,6 +36,12 @@ import javax.validation.constraints.PastOrPresent;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static com.github.jinahya.sakila.persistence.Payment.COLUMN_NAME_PAYMENT_ID;
+
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_PAYMENT_ID, nullable = false))
+@Entity
+@Table(name = Payment.TABLE_NAME)
 public class Payment extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------

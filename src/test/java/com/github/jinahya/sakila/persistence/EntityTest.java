@@ -70,7 +70,7 @@ public abstract class EntityTest<T> {
      *
      * @param entityClass the entity class to test.
      */
-    public EntityTest(final Class<? extends T> entityClass) {
+    public EntityTest(final Class<T> entityClass) {
         super();
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
     }
@@ -92,9 +92,9 @@ public abstract class EntityTest<T> {
      *
      * @return a new instance of {@link #entityClass}.
      */
-    T entityInstance() {
+    final T entityInstance() {
         try {
-            final Constructor<? extends T> constructor = entityClass.getDeclaredConstructor();
+            final Constructor<T> constructor = entityClass.getDeclaredConstructor();
             if (!constructor.isAccessible()) {
                 constructor.setAccessible(true);
             }
@@ -109,5 +109,5 @@ public abstract class EntityTest<T> {
     /**
      * The class of the entity to test.
      */
-    final Class<? extends T> entityClass;
+    final Class<T> entityClass;
 }

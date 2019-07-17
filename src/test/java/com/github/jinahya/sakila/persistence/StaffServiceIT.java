@@ -26,6 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 class StaffServiceIT extends BaseEntityServiceIT<StaffService, Staff> {
 
     // -----------------------------------------------------------------------------------------------------------------
+    static final long STAFF_COUNT = entityCount(Staff.class);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static Staff randomStaff() {
+        return randomEntity(Staff.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     StaffServiceIT() {
         super(StaffService.class, Staff.class);
     }

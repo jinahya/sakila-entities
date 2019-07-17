@@ -51,6 +51,9 @@ final class PersistenceUtil {
      * @return an uncloseable proxy of {@code entityManager}.
      */
     static EntityManager uncloseable(final EntityManager entityManager) {
+        if (false && entityManager.getClass().getName().startsWith("org.apache")) {
+            return entityManager;
+        }
         return (EntityManager) Proxy.newProxyInstance(
                 requireNonNull(entityManager, "entityManager is null").getClass().getClassLoader(),
                 new Class<?>[] {EntityManager.class},

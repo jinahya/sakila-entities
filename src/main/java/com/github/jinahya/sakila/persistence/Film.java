@@ -479,7 +479,7 @@ public class Film extends BaseEntity {
      * A converter class for converting between a set of {@link SpecialFeature}s and comma separated columns.
      */
     @Converter
-    public static class SpecialFeatureAttributeConverter
+    public static class SpecialFeaturesAttributeConverter
             extends CustomValuedEnumSetJoinedStringAttributeConverter<SpecialFeature> {
 
         // -------------------------------------------------------------------------------------------------------------
@@ -487,7 +487,7 @@ public class Film extends BaseEntity {
         /**
          * Creates a new instance.
          */
-        public SpecialFeatureAttributeConverter() {
+        public SpecialFeaturesAttributeConverter() {
             super(SpecialFeature.class, ",");
         }
     }
@@ -798,7 +798,7 @@ public class Film extends BaseEntity {
 
     //@Enumerated(EnumType.ORDINAL)
     //@Enumerated(EnumType.STRING)
-    @Convert(converter = SpecialFeatureAttributeConverter.class)
+    @Convert(converter = SpecialFeaturesAttributeConverter.class)
     @Column(name = COLUMN_NAME_SPECIAL_FEATURES, nullable = true)
     @NamedAttribute(ATTRIBUTE_NAME_SPECIAL_FEATURES)
     private Set<SpecialFeature> specialFeatures;

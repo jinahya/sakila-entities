@@ -20,17 +20,26 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestReporter;
+
 import javax.persistence.EntityManager;
+import javax.persistence.metamodel.SingularAttribute;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.BaseEntity.comparingId;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.LongStream.rangeClosed;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract class for testing subclasses of {@link BaseEntityService}.
@@ -92,7 +101,25 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
      * @param serviceClass the service class to test.
      * @param entityClass  the entity class of the {@code serviceClass}.
      */
-    BaseEntityServiceIT(final Class<? extends T> serviceClass, final Class<? extends U> entityClass) {
+    BaseEntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
         super(serviceClass, entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link BaseEntityService#listSortedById(boolean, Integer, Integer)}.
+     */
+    @RepeatedTest(16)
+    void testListSortedById(final TestReporter reporter) {
+        final boolean ascendingOrder = current().nextBoolean();
+        final Integer firstResult = current().nextBoolean() ? null : firstResult();
+        final Integer maxResults = current().nextBoolean() ? null : maxResults();
+        reporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
+        reporter.publishEntry("firstResult", Objects.toString(firstResult));
+        reporter.publishEntry("maxResults", Objects.toString(maxResults));
+        final List<U> list = serviceInstance().listSortedById(ascendingOrder, firstResult, maxResults);
+        assertThat(list).isSortedAccordingTo(comparingId(ascendingOrder));
+        ofNullable(maxResults).ifPresent(v -> assertThat(list).hasSizeLessThanOrEqualTo(v));
     }
 }

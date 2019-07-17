@@ -64,7 +64,7 @@ public class FilmCategoryId implements Serializable {
      * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
      */
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -72,7 +72,7 @@ public class FilmCategoryId implements Serializable {
             return false;
         }
         final FilmCategoryId that = (FilmCategoryId) obj;
-        return getFilm() == that.getFilm() && getCategory() == that.getCategory();
+        return Objects.equals(getFilm(), that.getFilm()) && Objects.equals(getCategory(), that.getCategory());
     }
 
     /**
@@ -86,27 +86,27 @@ public class FilmCategoryId implements Serializable {
     }
 
     // ------------------------------------------------------------------------------------------------------------ film
-    public int getFilm() {
+    public Integer getFilm() {
         return film;
     }
 
-    public void setFilm(final int film) {
+    public void setFilm(final Integer film) {
         this.film = film;
     }
 
     // -------------------------------------------------------------------------------------------------------- category
-    public int getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public void setCategory(final int category) {
+    public void setCategory(final Integer category) {
         this.category = category;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     @NamedAttribute(FilmCategory.ATTRIBUTE_NAME_FILM)
-    private int film;
+    private Integer film;
 
     @NamedAttribute(FilmCategory.ATTRIBUTE_NAME_CATEGORY)
-    private int category;
+    private Integer category;
 }
