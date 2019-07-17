@@ -22,9 +22,17 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * An abstract class for entity service classes.
@@ -40,9 +48,34 @@ abstract class EntityService<T> {
      *
      * @param entityClass the class of the entity to serve.
      */
-    EntityService(final Class<? extends T> entityClass) {
+    EntityService(final Class<T> entityClass) {
         super();
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns the number of entities of {@link #entityClass}.
+     *
+     * @return the total number of entities.
+     */
+    public long size() {
+        if (current().nextBoolean()) {
+            final Query query = entityManager.createQuery("SELECT e FROM " + entityName() + " AS e");
+            return (Long) query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Long> typedQuery = entityManager.createQuery(
+                    "SELECT e FROM " + entityName() + " AS e", Long.class);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<? extends T> root = criteriaQuery.from(entityClass);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -52,7 +85,7 @@ abstract class EntityService<T> {
      *
      * @return an entity manager.
      */
-    EntityManager entityManager() {
+    final EntityManager entityManager() {
         if (entityManagerProxy == null) {
             entityManagerProxy = uncloseable(entityManager);
         }
@@ -62,12 +95,38 @@ abstract class EntityService<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Returns the name of the entity from {@link EntityManagerFactory#getMetamodel()}.
+     *
+     * @return the name of the entity.
+     * @see EntityManager#getEntityManagerFactory()
+     * @see EntityManagerFactory#getMetamodel()
+     * @see javax.persistence.metamodel.Metamodel#entity(Class)
+     * @see EntityType#getName()
+     */
+    final String entityName() {
+        if (entityName == null) {
+            try {
+                final EntityManagerFactory entityManagerFactory = entityManager().getEntityManagerFactory();
+                final EntityType<? extends T> entityType = entityManagerFactory.getMetamodel().entity(entityClass);
+                entityName = entityType.getName();
+            } catch (final Exception e) { // OpenJPA
+                entityName = entityClass.getSimpleName();
+            }
+        }
+        return entityName;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * The class of entity to serve.
      */
-    final Class<? extends T> entityClass;
+    final Class<T> entityClass;
 
     @Inject
     private EntityManager entityManager;
 
-    private EntityManager entityManagerProxy;
+    private transient EntityManager entityManagerProxy;
+
+    private transient String entityName;
 }

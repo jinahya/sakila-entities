@@ -41,7 +41,7 @@ abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
      *
      * @param entityClass the entity class to test.
      */
-    BaseEntityTest(final Class<? extends T> entityClass) {
+    BaseEntityTest(final Class<T> entityClass) {
         super(entityClass);
     }
 

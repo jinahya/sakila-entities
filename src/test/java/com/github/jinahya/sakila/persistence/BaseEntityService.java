@@ -20,13 +20,26 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.ManagedType;
+import javax.persistence.metamodel.SingularAttribute;
+import java.util.List;
+
+import static java.util.Optional.ofNullable;
+import static java.util.concurrent.ThreadLocalRandom.current;
+
 /**
  * An abstract class for service classes of {@link BaseEntity}.
  *
- * @param <T> entity type parameter
+ * @param <EntityType> entity type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> {
+abstract class BaseEntityService<EntityType extends BaseEntity> extends EntityService<EntityType> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +48,80 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
      *
      * @param entityClass the entity class to server for.
      */
-    BaseEntityService(final Class<? extends T> entityClass) {
+    BaseEntityService(final Class<EntityType> entityClass) {
         super(entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns the managed type of {@link #entityClass}.
+     *
+     * @return the managed type of {@link #entityClass}.
+     */
+    final ManagedType<EntityType> managedType() {
+        return entityManager()
+                .getEntityManagerFactory()
+                .getMetamodel()
+                .managedType(entityClass);
+    }
+
+    final <AttribyteType> SingularAttribute<? super EntityType, AttribyteType> singularAttribute(
+            final String name, final Class<AttribyteType> type) {
+        return managedType().getSingularAttribute(name, type);
+    }
+
+    final SingularAttribute<? super EntityType, Integer> idAttribute() {
+        return singularAttribute(BaseEntity.ATTRIBUTE_NAME_ID, Integer.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public List<EntityType> listSortedById(final boolean ascendingOrder, final Integer firstResult,
+                                           final Integer maxResults) {
+        final String entityName = entityName();
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT e"
+                    + " FROM " + entityName() + " AS e"
+                    + " ORDER BY e." + BaseEntity.ATTRIBUTE_NAME_ID + " " + (ascendingOrder ? "ASC" : "DESC"));
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<EntityType> resultList = (List<EntityType>) query.getResultList();
+            return resultList;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(
+                    "SELECT e"
+                    + " FROM " + entityName + " AS e"
+                    + " ORDER BY e." + BaseEntity.ATTRIBUTE_NAME_ID + " " + (ascendingOrder ? "ASC" : "DESC"),
+                    entityClass);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            final Root<EntityType> from = criteriaQuery.from(entityClass);
+            criteriaQuery.select(from);
+            final Path<Integer> id = from.get(BaseEntity.ATTRIBUTE_NAME_ID); // attribute name
+            criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(id) : criteriaBuilder.desc(id));
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<EntityType> from = criteriaQuery.from(entityClass);
+        criteriaQuery.select(from);
+        //final Path<Integer> id = from.get(BaseEntity_.id); // metamodel attribute // doesn't work with EclipseLink
+        final Path<Integer> id = from.get(idAttribute());
+        criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(id) : criteriaBuilder.desc(id));
+        final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 }

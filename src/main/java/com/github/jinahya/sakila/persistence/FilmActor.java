@@ -141,14 +141,14 @@ public class FilmActor {
     @NotNull
     @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = COLUMN_NAME_ACTOR_ID, nullable = false)
+    @JoinColumn(name = COLUMN_NAME_ACTOR_ID, referencedColumnName = Actor.COLUMN_NAME_ACTOR_ID, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_ACTOR)
     private Actor actor;
 
     @NotNull
     @Id
     @ManyToOne(optional = false)
-    @JoinColumn(name = COLUMN_NAME_FILM_ID, nullable = false)
+    @JoinColumn(name = COLUMN_NAME_FILM_ID, referencedColumnName = Film.COLUMN_NAME_FILM_ID, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_FILM)
     private Film film;
 

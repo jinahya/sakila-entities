@@ -72,7 +72,7 @@ public class FilmActorId implements Serializable {
             return false;
         }
         final FilmActorId that = (FilmActorId) obj;
-        return getActor() == that.getActor() && getFilm() == that.getFilm();
+        return Objects.equals(getActor(), that.getActor()) && Objects.equals(getFilm(), that.getFilm());
     }
 
     /**
@@ -86,27 +86,27 @@ public class FilmActorId implements Serializable {
     }
 
     // ----------------------------------------------------------------------------------------------------------- actor
-    public int getActor() {
+    public Integer getActor() {
         return actor;
     }
 
-    public void setActor(final int actor) {
+    public void setActor(final Integer actor) {
         this.actor = actor;
     }
 
     // ------------------------------------------------------------------------------------------------------------ film
-    public int getFilm() {
+    public Integer getFilm() {
         return film;
     }
 
-    public void setFilm(final int film) {
+    public void setFilm(final Integer film) {
         this.film = film;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     @NamedAttribute(FilmActor.ATTRIBUTE_NAME_ACTOR)
-    private int actor;
+    private Integer actor;
 
     @NamedAttribute(FilmActor.ATTRIBUTE_NAME_FILM)
-    private int film;
+    private Integer film;
 }

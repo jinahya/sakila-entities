@@ -1,3 +1,20 @@
+DESC address;
+
+SELECT DISTINCT a.district AS district, c.city AS city, t.country AS country
+FROM address AS a
+         INNER JOIN city AS c ON a.city_id = c.city_id
+         INNER JOIN country AS t ON c.country_id = t.country_id
+ORDER BY country, city, district
+;
+
+SELECT DISTINCT t.country AS country, c.city AS city, a.district AS district
+FROM country AS t
+         LEFT JOIN city AS c ON c.country_id = t.country_id
+         LEFT JOIN address AS a ON a.city_id = c.city_id
+ORDER BY country, city, district
+;
+
+
 -- ------------------------------------------------------------------------------------------------------ print location
 SELECT s.txt                                                             AS 'TXT',
        s.bin                                                             AS 'BIN',

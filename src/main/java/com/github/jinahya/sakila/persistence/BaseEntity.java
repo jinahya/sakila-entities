@@ -40,6 +40,8 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
+
 /**
  * An abstract base class for entity classes.
  *
@@ -72,7 +74,11 @@ public abstract class BaseEntity {
     /**
      * A comparator for comparing entities with {@link #ATTRIBUTE_NAME_ID} attribute.
      */
-    public static final Comparator<? super BaseEntity> COMPARING_ID = Comparator.comparing(BaseEntity::getId);
+    public static final Comparator<BaseEntity> COMPARING_ID = comparing(BaseEntity::getId);
+
+    public static Comparator<BaseEntity> comparingId(final boolean natural) {
+        return natural ? COMPARING_ID : COMPARING_ID.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     public static <T extends BaseEntity> Stream<T> select(
