@@ -25,12 +25,15 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
@@ -123,6 +126,48 @@ class CountryService extends BaseEntityService<Country> {
      */
     public List<Country> listOrderedByCountry(final boolean ascendingOrder, final Integer firstResult,
                                               final Integer maxResults) {
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT c FROM Country AS c ORDER BY " + (ascendingOrder ? "ASC" : "DESC"));
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<Country> resultList = (List<Country>) query.getResultList();
+            return resultList;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Country> typedQuery = entityManager().createQuery(
+                    "SELECT c FROM Country AS c ORDER BY " + (ascendingOrder ? "ASC" : "DESC"), Country.class);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+            final Root<Country> from = criteriaQuery.from(Country.class);
+            criteriaQuery.select(from);
+            final Path<String> countryPath = from.get(Country.ATTRIBUTE_NAME_COUNTRY);
+            final Order order = ascendingOrder ? criteriaBuilder.asc(countryPath) : criteriaBuilder.desc(countryPath);
+            criteriaQuery.orderBy(order);
+            final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+        final Root<Country> from = criteriaQuery.from(Country.class);
+        criteriaQuery.select(from);
+        //final SingularAttribute<? super Country, String> attribute = Country_.country;
+        final SingularAttribute<? super Country, String> attribute
+                = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
+        final Path<String> countryPath = from.get(attribute);
+        final Order order = ascendingOrder ? criteriaBuilder.asc(countryPath) : criteriaBuilder.desc(countryPath);
+        criteriaQuery.orderBy(order);
+        final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 }
