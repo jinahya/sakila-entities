@@ -201,7 +201,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * Tests {@link EntityService#size()} method.
      */
     @Test
-    void testCount() {
+    void testSize() {
         final long expected = entityCount(entityClass);
         final long actual = serviceInstance().size();
         assertEquals(expected, actual);

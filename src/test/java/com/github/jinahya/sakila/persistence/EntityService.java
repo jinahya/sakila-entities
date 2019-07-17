@@ -62,17 +62,17 @@ abstract class EntityService<T> {
      */
     public long size() {
         if (current().nextBoolean()) {
-            final Query query = entityManager.createQuery("SELECT e FROM " + entityName() + " AS e");
+            final Query query = entityManager.createQuery("SELECT COUNT(e) FROM " + entityName() + " AS e");
             return (Long) query.getSingleResult();
         }
         if (current().nextBoolean()) {
             final TypedQuery<Long> typedQuery = entityManager.createQuery(
-                    "SELECT e FROM " + entityName() + " AS e", Long.class);
+                    "SELECT COUNT(e) FROM " + entityName() + " AS e", Long.class);
             return typedQuery.getSingleResult();
         }
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-        final Root<? extends T> root = criteriaQuery.from(entityClass);
+        final Root<T> root = criteriaQuery.from(entityClass);
         criteriaQuery.select(criteriaBuilder.count(root));
         final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
