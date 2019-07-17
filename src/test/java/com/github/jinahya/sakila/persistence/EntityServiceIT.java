@@ -64,7 +64,10 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     static <R> R applyResourceStream(@NotNull final String name,
                                      @NotNull final Function<? super InputStream, ? extends R> function)
             throws IOException {
-        try (InputStream stream = ActorServiceIT.class.getResourceAsStream(name)) {
+        try (InputStream stream = EntityServiceIT.class.getResourceAsStream(name)) {
+            if (stream == null) {
+                throw new RuntimeException("no resource for " + name);
+            }
             return function.apply(stream);
         }
     }
