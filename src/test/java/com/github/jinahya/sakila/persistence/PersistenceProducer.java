@@ -86,13 +86,10 @@ class PersistenceProducer {
     // -----------------------------------------------------------------------------------------------------------------
     @Produces
     public EntityManager produceEntityManager() {
-        final EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        log.debug("producing {}", entityManager);
-        return entityManager;
+        return ENTITY_MANAGER_FACTORY.createEntityManager();
     }
 
     public void disposeEntityManager(@Disposes final EntityManager entityManager) {
-        log.debug("disposing {}", entityManager);
         entityManager.close();
     }
 }
