@@ -21,11 +21,9 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestReporter;
 
 import javax.persistence.EntityManager;
-import javax.persistence.metamodel.SingularAttribute;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
