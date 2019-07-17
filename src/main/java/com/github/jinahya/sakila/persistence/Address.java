@@ -25,21 +25,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.github.jinahya.sakila.persistence.Address.COLUMN_NAME_ADDRESS_ID;
 import static com.github.jinahya.sakila.persistence.Address.TABLE_NAME;
@@ -339,35 +332,6 @@ public class Address extends BaseEntity {
         setLocation(buffer.array());
     }
 
-    // ----------------------------------------------------------------------------------------------------- locationLob
-    public <R> R applyLocationLobStream(final Function<? super InputStream, ? extends R> function)
-            throws SQLException, IOException {
-        if (function == null) {
-            throw new NullPointerException("function is null");
-        }
-        if (locationLob == null) {
-            throw new IllegalStateException("location lob is currently null");
-        }
-        try (final InputStream binaryStream = locationLob.getBinaryStream()) {
-            return function.apply(binaryStream);
-        }
-    }
-
-    public <U, R> R applyLocationLobStream(final BiFunction<? super InputStream, ? super U, ? extends R> function,
-                                           final Supplier<? extends U> supplier)
-            throws SQLException, IOException {
-        if (function == null) {
-            throw new NullPointerException("function is null");
-        }
-        if (supplier == null) {
-            throw new NullPointerException("supplier is null");
-        }
-        if (locationLob == null) {
-            throw new IllegalStateException("location lob is currently null");
-        }
-        return applyLocationLobStream(v -> function.apply(v, supplier.get()));
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     @Size(min = SIZE_MIN_ADDRESS, max = SIZE_MAX_ADDRESS)
     @NotNull
@@ -411,9 +375,4 @@ public class Address extends BaseEntity {
     @Column(name = COLUMN_NAME_LOCATION, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_LOCATION)
     private byte[] location; // +
-
-    @NotNull
-    @Lob
-    @Column(name = COLUMN_NAME_LOCATION, nullable = false, insertable = false, updatable = false)
-    private Blob locationLob; // +
 }
