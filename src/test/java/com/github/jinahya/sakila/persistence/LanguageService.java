@@ -1,15 +1,5 @@
 package com.github.jinahya.sakila.persistence;
 
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Optional.ofNullable;
-
 /**
  * A service for {@link Language}.
  *
@@ -29,6 +19,23 @@ class LanguageService extends BaseEntityService<Language> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
+     *
+     * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME} attribute to match.
+     * @return an optional of found entity.
+     */
+    public Optional<Language> findByName(@NotNull final String name) {
+        final TypedQuery<Language> typedQuery = entityManager().createQuery(
+                "SELECT l FROM Language AS l WHERE l.name = :name", Language.class);
+        typedQuery.setParameter("name", name);
+        try {
+            return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Returns a stream of languages ordered by {@link Language#ATTRIBUTE_NAME_NAME} attribute in the order indicated by
      * specified flag.
      *
@@ -46,22 +53,5 @@ class LanguageService extends BaseEntityService<Language> {
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultStream();
-    }
-
-    /**
-     * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
-     *
-     * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME} attribute to match.
-     * @return an optional of found entity.
-     */
-    public Optional<Language> findByName(@NotNull final String name) {
-        final TypedQuery<Language> typedQuery = entityManager().createQuery(
-                "SELECT l FROM Language AS l WHERE l.name = :name", Language.class);
-        typedQuery.setParameter("name", name);
-        try {
-            return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
-        } catch (final NoResultException nre) {
-            return Optional.empty();
-        }
     }
 }
