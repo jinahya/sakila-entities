@@ -29,12 +29,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static com.github.jinahya.sakila.persistence.Country.COLUMN_NAME_COUNTRY_ID;
 import static com.github.jinahya.sakila.persistence.Country.TABLE_NAME;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -101,6 +103,14 @@ public class Country extends BaseEntity {
     // TODO: 2019-07-12 remove!!!
     @Deprecated // forRemoval = true
     public static final int SIZE_MAX_CITIES = Integer.MAX_VALUE;
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator<Country> COMPARING_COUNTRY = comparing(Country::getCountry);
+
+    public static Comparator<Country> comparaingCountry(final boolean natural) {
+        return natural ? COMPARING_COUNTRY : COMPARING_COUNTRY.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
