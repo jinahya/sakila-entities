@@ -46,5 +46,5 @@ public abstract class CustomValuedEnumAttributeConverter<E extends Enum<E> & Cus
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    protected final Class<E> enumClass;
+    final Class<E> enumClass;
 }
