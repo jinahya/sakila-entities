@@ -20,9 +20,18 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A service for {@link Country}.
@@ -51,7 +60,55 @@ class CountryService extends BaseEntityService<Country> {
      * @return an optional found entity; empty if not found.
      */
     public Optional<Country> findByCountry(@NotNull final String country) {
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager()
+                    .createQuery("SELECT c FROM Country AS c WHERE c.country = :country")
+                    .setParameter("country", country);
+            try {
+                final Country found = (Country) query.getSingleResult(); // May throw NonUniqueResultException
+                return Optional.of(found);
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Country> typedQuery = entityManager()
+                    .createQuery("SELECT c FROM Country AS c WHERE c.country = :country", Country.class)
+                    .setParameter("country", country);
+            try {
+                final Country found = typedQuery.getSingleResult(); // May throw NonUniqueResultException
+                return Optional.of(found);
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+            final Root<Country> from = criteriaQuery.from(Country.class);
+            criteriaQuery.select(from);
+            criteriaQuery.where(criteriaBuilder.equal(from.get(Country.ATTRIBUTE_NAME_COUNTRY), country));
+            final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
+            try {
+                return Optional.of(typedQuery.getSingleResult()); // May throw NonUniqueResultException
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+        final Root<Country> from = criteriaQuery.from(Country.class);
+        criteriaQuery.select(from);
+        //final SingularAttribute<Country, String> countryAttribute = Country_.country; // TODO: 2019-07-17 check with EclipseLink
+        final SingularAttribute<? super Country, String> countryAttribute
+                = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(countryAttribute), country));
+        final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
+        try {
+            return Optional.of(typedQuery.getSingleResult()); // May throw NonUniqueResultException
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
     }
 
     /**

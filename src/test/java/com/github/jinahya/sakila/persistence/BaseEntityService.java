@@ -66,8 +66,8 @@ abstract class BaseEntityService<EntityType extends BaseEntity> extends EntitySe
                 .managedType(entityClass);
     }
 
-    final <AttribyteType> SingularAttribute<? super EntityType, AttribyteType> singularAttribute(
-            final String name, final Class<AttribyteType> type) {
+    final <AttributeType> SingularAttribute<? super EntityType, AttributeType> singularAttribute(
+            final String name, final Class<AttributeType> type) {
         return managedType().getSingularAttribute(name, type);
     }
 
