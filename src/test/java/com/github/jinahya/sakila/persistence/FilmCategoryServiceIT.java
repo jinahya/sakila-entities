@@ -21,12 +21,10 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSortedMap;
 
 /**
  * A class for testing {@link FilmCategoryService}.
@@ -38,22 +36,23 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * A map of category id and film count.
+     * An unmodifiable sorted map of category id and film count.
      */
-    static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
+    static final SortedMap<Integer, Integer> CATEGORY_ID_FILM_COUNT;
 
     static {
         try {
-            CATEGORY_ID_FILM_COUNT = unmodifiableMap(applyResourceScanner(
+            CATEGORY_ID_FILM_COUNT = unmodifiableSortedMap(applyResourceScanner(
                     "film_category_category_id_film_count.txt",
                     s -> {
-                        final Map<Integer, Integer> map = new HashMap<>();
+                        final SortedMap<Integer, Integer> map = new TreeMap<>();
                         while (s.hasNext()) {
-                            map.put(s.nextInt(), s.nextInt());
+                            final Integer categoryId = s.nextInt();
+                            final Integer previous = map.put(categoryId, s.nextInt());
+                            assert previous == null : "duplicate film id: " + categoryId;
                         }
                         return map;
-                    })
-            );
+                    }));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -63,21 +62,23 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * A map of film id and category count.
+     * An unmodifiable sorted map of film id and category count.
      */
-    static final Map<Integer, Integer> FILM_ID_CATEGORY_COUNT;
+    static final SortedMap<Integer, Integer> FILM_ID_CATEGORY_COUNT;
 
     static {
-        final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_film_id_category_count.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    map.put(scanner.nextInt(), scanner.nextInt());
-                }
-            }
-            FILM_ID_CATEGORY_COUNT = unmodifiableMap(map);
+            FILM_ID_CATEGORY_COUNT = unmodifiableSortedMap(applyResourceScanner(
+                    "film_category_film_id_category_count.txt",
+                    s -> {
+                        final SortedMap<Integer, Integer> map = new TreeMap<>();
+                        while (s.hasNext()) {
+                            final Integer filmId = s.nextInt();
+                            final Integer previous = map.put(filmId, s.nextInt());
+                            assert previous == null : "duplicate film id: " + filmId;
+                        }
+                        return map;
+                    }));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
