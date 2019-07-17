@@ -99,6 +99,9 @@ public class City extends BaseEntity {
      */
     public static final String COLUMN_NAME_COUNTRY_ID = "country_id";
 
+    /**
+     * The entity column name for {@link #COLUMN_NAME_COUNTRY_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_COUNTRY = "country";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -112,7 +115,7 @@ public class City extends BaseEntity {
 
     // TODO: 2019-07-10  remove!!!
     @Deprecated // forRemoval = true
-    public static final int SIZE_MAX_ADDRESSES = Integer.MAX_VALUE;
+    public static final int SIZE_MAX_ADDRESSES = Integer.MAX_VALUE; // TODO: 2019-07-17 what???
 
     // -----------------------------------------------------------------------------------------------------------------
 

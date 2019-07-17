@@ -23,7 +23,12 @@ package com.github.jinahya.sakila.persistence;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -61,21 +66,48 @@ public class Category extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The column name for {@link #ATTRIBUTE_NAME_ID} attribute. The value is {@value}.
+     * The primary key column name of {@link #TABLE_NAME} table. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each category in the table.
+     * </blockquote>
+     * {@code TINYINT(3) PK NN UN AI}
      */
     public static final String COLUMN_NAME_CATEGORY_ID = "category_id";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@link #ATTRIBUTE_NAME_NAME} attribute. The value is {@value}.
+     * <blockquote>
+     * The name of the category.
+     * </blockquote>
+     * {@code VARCHAR(25) NN}
+     */
     public static final String COLUMN_NAME_NAME = "name";
 
+    /**
+     * The length of the {@link #COLUMN_NAME_NAME} column. The value is {@value}.
+     */
+    public static final int COLUMN_LENGTH_NAME = 25;
+
+    /**
+     * The entity attribute name for {@link #COLUMN_NAME_NAME} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_NAME = "name";
 
-    public static final int SIZE_MIN_NAME = 0; // empty?
+    public static final int SIZE_MIN_NAME = 0; // TODO: 2019-07-17 empty???
 
-    public static final int SIZE_MAX_NAME = 25;
+    /**
+     * The maximum length of {@link #ATTRIBUTE_NAME_NAME} attribute. The value is {@value}.
+     */
+    public static final int SIZE_MAX_NAME = COLUMN_LENGTH_NAME; // TODO: 2019-07-17 column vs attribute length ???
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-11 Remove!!!
+
+    /**
+     * The entity attribute name for those films categorized by this category. The value is {@value}.
+     */
+    // TODO: 2019-07-11 remove!!!
     @Deprecated
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
@@ -134,7 +166,7 @@ public class Category extends BaseEntity {
      * @return a set of films categories to this category.
      * @deprecated Going to be removed!!!
      */
-    // TODO: 2019-07-11 Remove!!!
+    // TODO: 2019-07-11 remove!!!
     @Deprecated // forRemoval = true
     public Set<Film> getFilms() {
         if (films == null) {
@@ -149,13 +181,13 @@ public class Category extends BaseEntity {
      * @param film the film to be categorized this this category.
      * @return {@code true} if specified film is not already categorized to this category; {@code false} otherwise.
      */
-    // TODO: 2019-07-11 Remove!!!
+    // TODO: 2019-07-11 remove!!!
     @Deprecated // forRemoval = true
     public boolean addFilm(final Film film) {
         if (film == null) {
             throw new NullPointerException("film is null");
         }
-        final boolean filmAdded = getFilms().add(film);
+        final boolean filmAdded = getFilms().add(film); // TODO: 2019-07-17 equals/hashCode???
         if (!film.getCategories().contains(this)) {
             final boolean addedToFilm = film.addCategory(this);
         }
@@ -166,14 +198,47 @@ public class Category extends BaseEntity {
     @Size(min = SIZE_MIN_NAME, max = SIZE_MAX_NAME)
     @NotNull
     @Basic(optional = false)
-    @Column(name = COLUMN_NAME_NAME, nullable = false)
+    @Column(name = COLUMN_NAME_NAME, length = COLUMN_LENGTH_NAME, nullable = false)
     @NamedAttribute(ATTRIBUTE_NAME_NAME)
     private String name;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-11 Remove!!!
+    // TODO: 2019-07-11 remove!!!
     @Deprecated // forRemoval = true
-    @ManyToMany(mappedBy = Film.ATTRIBUTE_NAME_CATEGORIES)
+    @ManyToMany(
+            cascade = {
+                    //CascadeType.ALL,
+                    //CascadeType.DETACH,
+                    //CascadeType.MERGE,
+                    //CascadeType.PERSIST,
+                    //CascadeType.REFRESH,
+                    //CascadeType.REMOVE
+            },
+            fetch = FetchType.LAZY, // default
+            mappedBy = Film.ATTRIBUTE_NAME_CATEGORIES,
+            targetEntity = Film.class // default; void.class
+            )
+    @JoinTable(
+            name = FilmCategory.TABLE_NAME,
+            joinColumns = {
+                    @JoinColumn(
+                            name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
+                            referencedColumnName = COLUMN_NAME_CATEGORY_ID,
+                            nullable = false
+                    )
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = FilmCategory.COLUMN_NAME_FILM_ID,
+                            referencedColumnName = Film.COLUMN_NAME_FILM_ID,
+                            nullable = false
+                    )
+            },
+            foreignKey = @ForeignKey(ConstraintMode.PROVIDER_DEFAULT), // default
+            inverseForeignKey = @ForeignKey(ConstraintMode.PROVIDER_DEFAULT), // default
+            uniqueConstraints = {}, // default
+            indexes = {} // default
+            )
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
     private Set<Film> films;
 }

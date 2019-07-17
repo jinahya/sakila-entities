@@ -205,13 +205,13 @@ public class Store extends BaseEntity {
     private Address address;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-10 Remove this field.
+    // TODO: 2019-07-10 remove!!!
     @Deprecated // forRemoval = true
     @OneToMany(mappedBy = Staff.ATTRIBUTE_NAME_STORE)
     @NamedAttribute(ATTRIBUTE_NAME_STAFFS)
     private Set<Staff> staffs;
 
-    // TODO: 2019-07-10 Remove this field.
+    // TODO: 2019-07-10 remove!!!
     @Deprecated // forRemoval = true
     @OneToMany(mappedBy = Customer.ATTRIBUTE_NAME_STORE)
     @NamedAttribute(ATTRIBUTE_NAME_STAFFS)

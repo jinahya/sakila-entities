@@ -244,10 +244,10 @@ public class Address extends BaseEntity {
 
     public void setCity(final City city) {
         if (this.city != null) {
-            final boolean removedFromOldCity = this.city.getAddresses().remove(this); // TODO: 2019-07-12 equals???
+            final boolean removedFromOldCity = this.city.getAddresses().remove(this); // TODO: 2019-07-12 equality???
         }
         this.city = city;
-        if (this.city != null && !this.city.getAddresses().contains(this)) { // TODO: 2019-07-12 equals???
+        if (this.city != null && !this.city.getAddresses().contains(this)) { // TODO: 2019-07-12 equality???
             this.city.addAddress(this);
         }
     }

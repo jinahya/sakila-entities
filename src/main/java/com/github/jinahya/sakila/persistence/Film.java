@@ -695,9 +695,9 @@ public class Film extends BaseEntity {
         if (category == null) {
             throw new NullPointerException("category is null");
         }
-        final boolean categoryAdded = getCategories().add(category);
+        final boolean categoryAdded = getCategories().add(category); // TODO: 2019-07-17 equals/hashCode???
         if (!category.getFilms().contains(this)) {
-            final boolean filmAdded = category.addFilm(this);
+            final boolean addedToCategory = category.addFilm(this);
         }
         return categoryAdded;
     }
@@ -808,10 +808,10 @@ public class Film extends BaseEntity {
     @Deprecated
     @ManyToMany
     @JoinTable(name = FilmCategory.TABLE_NAME,
-            joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
-                    referencedColumnName = COLUMN_NAME_FILM_ID)},
-            inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
-                    referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
+               joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
+                                          referencedColumnName = COLUMN_NAME_FILM_ID)},
+               inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
+                                                 referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
     @NamedAttribute(ATTRIBUTE_NAME_CATEGORIES)
     private Set<Category> categories;
 

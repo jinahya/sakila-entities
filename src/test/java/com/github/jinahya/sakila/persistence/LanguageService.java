@@ -23,6 +23,7 @@ class LanguageService extends BaseEntityService<Language> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
      *
@@ -49,5 +50,4 @@ class LanguageService extends BaseEntityService<Language> {
         // TODO: 2019-07-16 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
-
 }
