@@ -23,6 +23,16 @@ class LanguageService extends BaseEntityService<Language> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    /**
+     * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
+     *
+     * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME} attribute to match.
+     * @return an optional of found entity.
+     */
+    public Optional<Language> findByName(@NotNull final String name) {
+        // TODO: 2019-07-16 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
 
     /**
      * Returns a stream of languages ordered by {@link Language#ATTRIBUTE_NAME_NAME} attribute in the order indicated by
@@ -40,14 +50,4 @@ class LanguageService extends BaseEntityService<Language> {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    /**
-     * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
-     *
-     * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME} attribute to match.
-     * @return an optional of found entity.
-     */
-    public Optional<Language> findByName(@NotNull final String name) {
-        // TODO: 2019-07-16 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
-    }
 }
