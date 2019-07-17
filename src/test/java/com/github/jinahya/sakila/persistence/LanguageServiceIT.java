@@ -61,31 +61,6 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
         super(LanguageService.class, Language.class);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Tests {@link LanguageService#streamOrderedByName(boolean, Integer, Integer)} method.
-     *
-     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
-     * @param firstResult    a value for {@code firstResult} parameter.
-     * @param maxResults     a value for {@code maxResults} parameter.
-     */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
-    @Disabled
-    @MethodSource({"argumentsForTestingStreamOrderedByName"})
-    @ParameterizedTest
-    void testStreamOrderedByName(final boolean ascendingOrder, @PositiveOrZero final Integer firstResult,
-                                 @Positive final Integer maxResults) {
-        final List<Language> list = serviceInstance()
-                .streamOrderedByName(ascendingOrder, firstResult, maxResults)
-                .collect(toList());
-        assertThat(list)
-                .isNotNull()
-                .isSortedAccordingTo(comparingName(ascendingOrder))
-                .hasSizeLessThan(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
-        ;
-    }
-
     // ------------------------------------------------------------------------------------------------------ findByName
 
     /**
@@ -109,6 +84,30 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
         assertThat(serviceInstance().findByName(name))
                 .isPresent()
                 .hasValueSatisfying(language -> assertThat(language.getName()).isEqualTo(name))
+        ;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link LanguageService#streamOrderedByName(boolean, Integer, Integer)} method.
+     *
+     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
+     * @param firstResult    a value for {@code firstResult} parameter.
+     * @param maxResults     a value for {@code maxResults} parameter.
+     */
+    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    @Disabled
+    @MethodSource({"argumentsForTestingStreamOrderedByName"})
+    @ParameterizedTest
+    void testStreamOrderedByName(final boolean ascendingOrder, @PositiveOrZero final Integer firstResult,
+                                 @Positive final Integer maxResults) {
+        final Stream<Language> stream = serviceInstance().streamOrderedByName(ascendingOrder, firstResult, maxResults);
+        final List<Language> list = stream.collect(toList());
+        assertThat(list)
+                .isNotNull()
+                .isSortedAccordingTo(comparingName(ascendingOrder))
+                .hasSizeLessThan(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
         ;
     }
 }
