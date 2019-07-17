@@ -1,5 +1,15 @@
 package com.github.jinahya.sakila.persistence;
 
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.Optional.ofNullable;
+
 /**
  * A service for {@link Language}.
  *
