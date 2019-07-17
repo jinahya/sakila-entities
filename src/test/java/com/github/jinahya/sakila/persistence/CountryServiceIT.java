@@ -29,8 +29,9 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
                     s -> {
                         final SortedSet<String> set = new TreeSet<>();
                         while (s.hasNext()) {
-                            final boolean added = set.add(s.next());
-                            assert added;
+                            final String country = s.nextLine();
+                            final boolean added = set.add(country);
+                            assert added : "duplicate country: " + country;
                         }
                         return set;
                     })
