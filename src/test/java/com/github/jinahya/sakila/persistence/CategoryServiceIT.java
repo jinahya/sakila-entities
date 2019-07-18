@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

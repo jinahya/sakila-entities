@@ -29,8 +29,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 

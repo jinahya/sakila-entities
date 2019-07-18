@@ -35,8 +35,8 @@ import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.Actor.TABLE_NAME;
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 
 /**
  * An entity class for binding {@value TABLE_NAME} table.

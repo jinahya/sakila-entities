@@ -104,7 +104,6 @@ public class Country extends BaseEntity {
     @Deprecated // forRemoval = true
     public static final int SIZE_MAX_CITIES = Integer.MAX_VALUE;
 
-
     // -----------------------------------------------------------------------------------------------------------------
     public static final Comparator<Country> COMPARING_COUNTRY = comparing(Country::getCountry);
 

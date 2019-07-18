@@ -20,19 +20,73 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-public interface FullNamedEntity extends FullNamed {
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+@MappedSuperclass
+abstract class FullNamedEntity implements FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * The database column name for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
      */
-    String COLUMN_NAME_FIRST_NAME = "first_name";
+    public static final String COLUMN_NAME_FIRST_NAME = "first_name";
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * The database column name for {@link #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
      */
-    String COLUMN_NAME_LAST_NAME = "last_name";
+    public static final String COLUMN_NAME_LAST_NAME = "last_name";
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "firstName=" + firstName
+               + ",lastName=" + lastName
+               + "}";
+    }
+
+    // ------------------------------------------------------------------------------------------------------- firstName
+    @Override
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @Override
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    // -------------------------------------------------------------------------------------------------------- lastName
+    @Override
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
+    private String firstName;
+
+    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
+    @NotNull
+    @Basic(optional = false)
+    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
+    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
+    private String lastName;
 }
