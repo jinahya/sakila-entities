@@ -28,12 +28,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
@@ -182,11 +180,11 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Provides arguments for {@link #testFindByName(String, String)} method.
+     * Provides arguments for {@link #testListSortedByIdInAscendingOrder(String, String, Integer, Integer)} method.
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> provideArgumentsForTestFindByName() {
+    private static Stream<Arguments> provideArgumentsForTestListSortedByIdInAscendingOrder() {
         return IntStream.range(1, current().nextInt(8, 17))
                 .mapToObj(i -> randomActor())
                 .map(v -> arguments(v.getFirstName(), v.getLastName()));
@@ -234,32 +232,41 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts {@link ActorService#findByName(String, String)} returns an empty for an unknown.
+     * Asserts {@link ActorService#listSortedByIdInAscendingOrder(String, String, Integer, Integer)} returns an empty
+     * for an unknown.
      */
     // TODO: 2019-07-18 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
-    void assertFindByNameReturnsEmptyForUnknown() {
-        assertThat(serviceInstance().findByName("John", "Wayne")).isEmpty();
+    void assertListSortedByIdInAscendingOrderReturnsEmptyForUnknown() {
+        assertThat(serviceInstance().listSortedByIdInAscendingOrder("John", "Wayne", null, null)).isEmpty();
     }
 
     /**
-     * Tests {@link ActorService#findByName(String, String) finaByName(firstName, lastName)} method with given values.
+     * Tests {@link ActorService#listSortedByIdInAscendingOrder(String, String, Integer, Integer) list(firstName,
+     * lastName, firstResult, maxResults)} method with given values.
      *
-     * @param firstName a value for {@code firstName} parameter.
-     * @param lastName  a value for {@code lastName} parameter.
+     * @param firstName   a value for {@code firstName} parameter.
+     * @param lastName    a value for {@code lastName} parameter.
+     * @param firstResult a value for {@code firstResult} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
      */
     // TODO: 2019-07-18 enable, assert fails, implement, and assert passes.
     @Disabled
-    @MethodSource({"provideArgumentsForTestFindByName"})
+    @MethodSource({"provideArgumentsForTestListSortedByIdInAscendingOrder"})
     @ParameterizedTest
-    void testFindByName(@NotNull final String firstName, @NotNull final String lastName) {
-        final Optional<Actor> found = serviceInstance().findByName(firstName, lastName);
-        assertThat(found)
+    void testListSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
+                                            @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
+        final List<Actor> list = serviceInstance().listSortedByIdInAscendingOrder(
+                firstName, lastName, firstResult, maxResults);
+        assertThat(list)
                 .isNotEmpty()
-                .hasValueSatisfying(actor -> assertThat(actor).firstNamedAs(firstName).lastNamedAs(lastName))
+                .isSortedAccordingTo(BaseEntity.COMPARING_ID)
+                .hasSizeLessThanOrEqualTo(2) // SUSAN DAVIS
         ;
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Tests {@link ActorService#listSortedByFirstName(String, boolean, Integer, Integer)
@@ -285,6 +292,8 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Tests {@link ActorService#listSortedByLastName(String, boolean, Integer, Integer)} method with given arguments.
