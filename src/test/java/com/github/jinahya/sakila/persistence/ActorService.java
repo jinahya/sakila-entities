@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.NoResultException;
@@ -57,26 +56,43 @@ class ActorService extends BaseEntityService<Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Finds the actor whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute and {@link
-     * Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute match to specified values.
+     * Lists actors whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute and {@link
+     * Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute match to specified values ordered by {@link
+     * BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending order.
      *
-     * @param firstName a value for {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute to match.
-     * @param lastName  a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute to match.
-     * @return an optional of found actor; empty if not found.
+     * @param firstName   a value for {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute to match; {@code null}
+     *                    for skipping matching.
+     * @param lastName    a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute to match; {@code null}
+     *                    for skipping matching.
+     * @param firstResult position of the first result, numbered from 0.
+     * @param maxResults  maximum number of results to retrieve.
+     * @return a list of actors.
      */
-    public Optional<Actor> findByName(@NotNull final String firstName, @NotNull final String lastName) {
+    public List<Actor> listSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
+                                                      @Nullable final Integer firstResult,
+                                                      @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
-            final String queryString
-                    = "SELECT a FROM Actor AS a WHERE a.firstName = :firstName AND a.lastName = :lastName";
-            final Query query = entityManager().createQuery(queryString);
-            query.setParameter("firstName", firstName);
-            query.setParameter("lastName", lastName);
-            try {
-                final Actor actor = (Actor) query.getSingleResult(); // NoResultException, NonUniqueResultException
-                return Optional.of(actor);
-            } catch (final NoResultException nre) {
-                return Optional.empty();
+            final StringBuilder queryBuider = new StringBuilder("SELECT a FROM Actor AS a");
+            if (firstName != null || lastName != null) {
+                queryBuider.append(" WHERE");
+                if (firstName != null) {
+                    queryBuider.append(" a.firstName = :firstName");
+                    if (lastName != null) {
+                        queryBuider.append(" AND");
+                    }
+                }
+                if (lastName != null) {
+                    queryBuider.append(" lastName = :lastName");
+                }
             }
+            queryBuider.append(" ORDER BY a.id ASC");
+            final String queryString = queryBuider.toString();
+            final Query query = entityManager().createQuery(queryString);
+            ofNullable(firstName).ifPresent(v -> query.setParameter("firstName", v));
+            ofNullable(lastName).ifPresent(v -> query.setParameter("lastName", v));
+            @SuppressWarnings({"unchecked"})
+            final List<Actor> list = query.getResultList();
+            return list;
         }
         if (current().nextBoolean()) {
             final String queryString
