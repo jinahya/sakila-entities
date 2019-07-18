@@ -29,7 +29,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
@@ -58,11 +58,11 @@ class ActorService extends BaseEntityService<Actor> {
 
     /**
      * Finds the actor whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute and {@link
-     * Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute match to specified values, respectively.
+     * Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute match to specified values.
      *
      * @param firstName a value for {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute to match.
      * @param lastName  a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute to match.
-     * @return an optional of found entity; empty if not found.
+     * @return an optional of found actor; empty if not found.
      */
     public Optional<Actor> findByName(@NotNull final String firstName, @NotNull final String lastName) {
         if (current().nextBoolean()) {
@@ -138,30 +138,59 @@ class ActorService extends BaseEntityService<Actor> {
     }
 
     /**
-     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} attribute matches to specified
-     * value, ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending indicated by
-     * specified flag.
+     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} attributes match to specified
+     * value, ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute in either ascending order or
+     * descending order indicated by specified flag.
      *
-     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to match; may be {@code null}.
+     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} to match; {@code null} for
+     *                       skipping the criterion.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
-     * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
-     * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
+     * @param firstResult    position of the first result, numbered from 0.
+     * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
     public List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
                                              @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
-            final Root<Actor> root = criteriaQuery.from(Actor.class);
-            criteriaQuery.select(root);
+            final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
+                    .append(Actor.ENTITY_NAME)
+                    .append(" AS a");
             if (lastName != null) {
-                criteriaQuery.where(criteriaBuilder.equal(root.get(FullNamed.ATTRIBUTE_NAME_LAST_NAME), lastName));
+                queryBuilder.append(" WHERE a.lastName = :lastName");
             }
-            final Expression<String> firstNamePath = root.get(FullNamed.ATTRIBUTE_NAME_FIRST_NAME);
-            criteriaQuery.orderBy(
-                    ascendingOrder ? criteriaBuilder.asc(firstNamePath) : criteriaBuilder.desc(firstNamePath));
-            final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
+            queryBuilder.append(" ORDER BY a.firstName ");
+            if (ascendingOrder) {
+                queryBuilder.append("ASC");
+            } else {
+                queryBuilder.append("DESC");
+            }
+            final Query query = entityManager().createQuery(queryBuilder.toString());
+            if (lastName != null) {
+                query.setParameter("lastName", lastName);
+            }
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<Actor> resultList = query.getResultList();
+            return resultList;
+        }
+        if (current().nextBoolean()) {
+            final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
+                    .append(Actor.ENTITY_NAME)
+                    .append(" AS a");
+            if (lastName != null) {
+                queryBuilder.append(" WHERE a.lastName = :lastName");
+            }
+            queryBuilder.append(" ORDER BY a.firstName ");
+            if (ascendingOrder) {
+                queryBuilder.append("ASC");
+            } else {
+                queryBuilder.append("DESC");
+            }
+            final TypedQuery<Actor> typedQuery = entityManager().createQuery(queryBuilder.toString(), Actor.class);
+            if (lastName != null) {
+                typedQuery.setParameter("lastName", lastName);
+            }
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
@@ -169,63 +198,138 @@ class ActorService extends BaseEntityService<Actor> {
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
             final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
-            final Root<Actor> root = criteriaQuery.from(Actor.class);
-            criteriaQuery.select(root);
+            final Root<Actor> actor = criteriaQuery.from(Actor.class);
+            criteriaQuery.select(actor);
             if (lastName != null) {
-                criteriaQuery.where(criteriaBuilder.equal(root.get(Actor_.firstName), lastName));
+                criteriaQuery.where(criteriaBuilder.equal(actor.get(FullNamed.ATTRIBUTE_NAME_LAST_NAME), lastName));
             }
-            final Expression<String> firstNamePath = root.get(Actor_.firstName);
-            criteriaQuery.orderBy(
-                    ascendingOrder ? criteriaBuilder.asc(firstNamePath) : criteriaBuilder.desc(firstNamePath));
+            final Path<String> firstName = actor.get(FullNamed.ATTRIBUTE_NAME_FIRST_NAME);
+            if (ascendingOrder) {
+                criteriaQuery.orderBy(criteriaBuilder.asc(firstName));
+            } else {
+                criteriaBuilder.desc(firstName);
+            }
             final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
         }
-        final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM " + Actor.ENTITY_NAME + " AS a");
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
+        final Root<Actor> actor = criteriaQuery.from(Actor.class);
+        criteriaQuery.select(actor);
         if (lastName != null) {
-            queryBuilder.append(
-                    " WHERE a." + FullNamed.ATTRIBUTE_NAME_LAST_NAME + " = :lastName");
+//            criteriaQuery.where(criteriaBuilder.equal(actor.get(Actor_.firstName), lastName));
+            criteriaQuery.where(criteriaBuilder.equal(
+                    actor.get(singularAttribute(FullNamed.ATTRIBUTE_NAME_LAST_NAME, String.class)), lastName));
         }
-        queryBuilder
-                .append(" ORDER BY a." + FullNamed.ATTRIBUTE_NAME_FIRST_NAME + " ")
-                .append(ascendingOrder ? "ASC" : "DESC");
-        final String queryString = queryBuilder.toString();
-        log.debug("queryString: {}", queryString);
-        final TypedQuery<Actor> typedQuery = entityManager().createQuery(queryString, Actor.class);
-        if (lastName != null) {
-            typedQuery.setParameter("lastName", lastName);
+//        final Path<String> firstName = actor.get(Actor_.firstName);
+        final Path<String> firstName = actor.get(singularAttribute(FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class));
+        if (ascendingOrder) {
+            criteriaQuery.orderBy(criteriaBuilder.asc(firstName));
+        } else {
+            criteriaQuery.orderBy(criteriaBuilder.desc(firstName));
         }
+        final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();
     }
 
     /**
-     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attributes match to specified value,
-     * ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending indicated by specified
-     * flag.
+     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME firstName} attributes match to
+     * specified value, ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} in either ascending order or
+     * descending order indicated by specified flag.
      *
-     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to match; may be {@code null}.
+     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} to match; {@code null} for
+     *                       skipping the criterion.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
-     * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
-     * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
+     * @param firstResult    position of the first result, numbered from 0.
+     * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
     public List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
-        final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM " + Actor.ENTITY_NAME + " AS a");
-        if (firstName != null) {
-            queryBuilder.append(
-                    " WHERE a." + FullNamed.ATTRIBUTE_NAME_FIRST_NAME + " = :firstName");
+        if (current().nextBoolean()) {
+            final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
+                    .append(Actor.ENTITY_NAME)
+                    .append(" AS a");
+            if (firstName != null) {
+                queryBuilder.append(" WHERE a.firstName = :firstName");
+            }
+            queryBuilder.append(" ORDER BY a.lastName ");
+            if (ascendingOrder) {
+                queryBuilder.append("ASC");
+            } else {
+                queryBuilder.append("DESC");
+            }
+            final Query query = entityManager().createQuery(queryBuilder.toString());
+            if (firstName != null) {
+                query.setParameter("firstName", firstName);
+            }
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<Actor> resultList = query.getResultList();
+            return resultList;
         }
-        queryBuilder
-                .append(" ORDER BY a." + FullNamed.ATTRIBUTE_NAME_LAST_NAME + " ")
-                .append(ascendingOrder ? "ASC" : "DESC");
-        final String queryString = queryBuilder.toString();
-        log.debug("queryString: {}", queryString);
-        final TypedQuery<Actor> typedQuery = entityManager().createQuery(queryString, Actor.class);
-        ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
+        if (current().nextBoolean()) {
+            final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
+                    .append(Actor.ENTITY_NAME)
+                    .append(" AS a");
+            if (firstName != null) {
+                queryBuilder.append(" WHERE a.firstName = :firstName");
+            }
+            queryBuilder.append(" ORDER BY a.lastName ");
+            if (ascendingOrder) {
+                queryBuilder.append("ASC");
+            } else {
+                queryBuilder.append("DESC");
+            }
+            final TypedQuery<Actor> typedQuery = entityManager().createQuery(queryBuilder.toString(), Actor.class);
+            if (firstName != null) {
+                typedQuery.setParameter("firstName", firstName);
+            }
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
+            final Root<Actor> actor = criteriaQuery.from(Actor.class);
+            criteriaQuery.select(actor);
+            if (firstName != null) {
+                criteriaQuery.where(criteriaBuilder.equal(actor.get(FullNamed.ATTRIBUTE_NAME_FIRST_NAME), firstName));
+            }
+            final Path<String> lastName = actor.get(FullNamed.ATTRIBUTE_NAME_LAST_NAME);
+            if (ascendingOrder) {
+                criteriaQuery.orderBy(criteriaBuilder.asc(lastName));
+            } else {
+                criteriaBuilder.desc(lastName);
+            }
+            final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
+        final Root<Actor> actor = criteriaQuery.from(Actor.class);
+        criteriaQuery.select(actor);
+        if (firstName != null) {
+//            criteriaQuery.where(criteriaBuilder.equal(actor.get(Actor_.lastName), firstName));
+            criteriaQuery.where(criteriaBuilder.equal(
+                    actor.get(singularAttribute(FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class)), firstName));
+        }
+//        final Path<String> lastName = actor.get(Actor_.lastName);
+        final Path<String> lastName = actor.get(singularAttribute(FullNamed.ATTRIBUTE_NAME_LAST_NAME, String.class));
+        if (ascendingOrder) {
+            criteriaQuery.orderBy(criteriaBuilder.asc(lastName));
+        } else {
+            criteriaQuery.orderBy(criteriaBuilder.desc(lastName));
+        }
+        final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();

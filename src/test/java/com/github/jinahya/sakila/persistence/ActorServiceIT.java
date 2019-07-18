@@ -21,7 +21,7 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -175,7 +175,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> arguments_testFindByName() {
+    private static Stream<Arguments> provideArgumentsForTestFindByName() {
         return IntStream.range(1, current().nextInt(8, 17))
                 .mapToObj(i -> randomActor())
                 .map(v -> arguments(v.getFirstName(), v.getLastName()));
@@ -186,7 +186,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> argumentsForTestListSortedByFirstName() {
+    private static Stream<Arguments> provideArgumentsForTestListSortedByFirstName() {
         return IntStream.range(1, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
             final boolean ascendingOrder = current().nextBoolean();
@@ -201,7 +201,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> argumentsForTestListSortedByLastName() {
+    private static Stream<Arguments> provideArgumentsForTestListSortedByLastName() {
         return IntStream.range(1, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
             final boolean ascendingOrder = current().nextBoolean();
@@ -236,9 +236,9 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      * @param firstName a value for {@code firstName} parameter.
      * @param lastName  a value for {@code lastName} parameter.
      */
-    @MethodSource({"arguments_testFindByName"})
+    @MethodSource({"provideArgumentsForTestFindByName"})
     @ParameterizedTest
-    void testFindByName(@NotNull final String firstName, final String lastName) {
+    void testFindByName(@NotNull final String firstName, @NotNull final String lastName) {
         final Optional<Actor> found = serviceInstance().findByName(firstName, lastName);
         assertThat(found)
                 .isNotEmpty()
@@ -255,12 +255,10 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-18 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @MethodSource({"argumentsForTestListSortedByFirstName"})
+    @MethodSource({"provideArgumentsForTestListSortedByFirstName"})
     @ParameterizedTest
-    void testListSortedByFirstName(final String lastName, final boolean ascendingOrder, final Integer firstResult,
-                                   final Integer maxResults) {
+    void testListSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
+                                   @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         final List<Actor> list = serviceInstance()
                 .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
@@ -273,19 +271,17 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     }
 
     /**
-     * Tests {@link ActorService#listSortedByLastName(String, boolean, Integer, Integer)} method.
+     * Tests {@link ActorService#listSortedByLastName(String, boolean, Integer, Integer)} method with given arguments.
      *
      * @param firstName      a value for {@code firstName} parameter.
      * @param ascendingOrder a value for {@code ascendingOrder} parameter.
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-18 enable, asert fails, implement, and assert passes.
-    @Disabled
-    @MethodSource({"argumentsForTestListSortedByLastName"})
+    @MethodSource({"provideArgumentsForTestListSortedByLastName"})
     @ParameterizedTest
-    void testListSortedByLastName(final String firstName, final boolean ascendingOrder, final Integer firstResult,
-                                  final Integer maxResults) {
+    void testListSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
+                                  @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         final List<Actor> list = serviceInstance()
                 .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
