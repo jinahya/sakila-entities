@@ -44,8 +44,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_LAST_NAME;
 import static com.github.jinahya.sakila.persistence.Staff.COLUMN_NAME_STAFF_ID;
 import static com.github.jinahya.sakila.persistence.Staff.TABLE_NAME;
 import static java.util.Optional.ofNullable;

@@ -35,8 +35,8 @@ import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.Actor.TABLE_NAME;
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
-import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity2.COLUMN_NAME_LAST_NAME;
 
 /**
  * An entity class for binding {@value TABLE_NAME} table.
@@ -79,6 +79,8 @@ public class Actor extends BaseEntity implements FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * The primary key column name of this entity. The value is {@value}.
+     * <p>
      * {@code SMALLINT(5) PK NN UN AI}
      */
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";

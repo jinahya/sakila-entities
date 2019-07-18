@@ -25,14 +25,14 @@ public interface FullNamedEntity extends FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The column name for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
+     * The database column name for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute. The value is {@value}.
      */
     String COLUMN_NAME_FIRST_NAME = "first_name";
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The table column name for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
+     * The database column name for {@link #ATTRIBUTE_NAME_LAST_NAME} attribute. The value is {@value}.
      */
     String COLUMN_NAME_LAST_NAME = "last_name";
 }
