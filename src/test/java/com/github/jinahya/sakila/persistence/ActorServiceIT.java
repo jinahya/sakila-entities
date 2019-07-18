@@ -26,17 +26,19 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Scanner;
+import java.util.NavigableMap;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName;
-import static java.util.Collections.unmodifiableSet;
+import static java.util.Collections.unmodifiableNavigableMap;
+import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,20 +54,21 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * A set of first names.
+     * An unmodifiable sorted set of first names in {@link Actor#TABLE_NAME} table.
      */
-    static final Set<String> FIRST_NAMES;
+    static final SortedSet<String> FIRST_NAMES;
 
     static {
-        final Set<String> set = new LinkedHashSet<>();
         try {
-            try (InputStream stream = ActorServiceIT.class.getResourceAsStream("actor_set_first_name.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    set.add(scanner.next());
+            FIRST_NAMES = unmodifiableSortedSet(applyResourceScanner("actor_set_first_name.txt", s -> {
+                final SortedSet<String> set = new TreeSet<>();
+                while (s.hasNext()) {
+                    final String firstName = s.nextLine();
+                    final boolean added = set.add(firstName);
+                    assert added : "duplicate first name: " + firstName;
                 }
-            }
-            FIRST_NAMES = unmodifiableSet(set);
+                return set;
+            }));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -75,20 +78,21 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * A set of last names.
+     * An unmodifiable sorted set of last names in {@link Actor#TABLE_NAME} table.
      */
     static final Set<String> LAST_NAMES;
 
     static {
-        final Set<String> set = new LinkedHashSet<>();
         try {
-            try (InputStream stream = ActorServiceIT.class.getResourceAsStream("actor_set_last_name.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    set.add(scanner.next());
+            LAST_NAMES = unmodifiableSortedSet(applyResourceScanner("actor_set_last_name.txt", s -> {
+                final SortedSet<String> set = new TreeSet<>();
+                while (s.hasNext()) {
+                    final String lastName = s.nextLine();
+                    final boolean added = set.add(lastName);
+                    assert added : "duplicate last name: " + lastName;
                 }
-            }
-            LAST_NAMES = unmodifiableSet(set);
+                return set;
+            }));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -96,6 +100,67 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * An unmodifiable navigable map of first names and counts.
+     */
+    static final NavigableMap<String, Integer> FIRST_NAMES_AND_COUNTS;
+
+    static {
+        try {
+            FIRST_NAMES_AND_COUNTS = unmodifiableNavigableMap(applyResourceScanner(
+                    "actor_map_first_name_count.txt",
+                    s -> {
+                        final NavigableMap<String, Integer> map = new TreeMap<>();
+                        while (s.hasNext()) {
+                            final String key = s.nextLine();
+                            final int value = s.nextInt();
+                            final Integer previousValue = map.put(key, value);
+                            assert previousValue == null : "duplicate first name: " + key;
+                        }
+                        return map;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    /**
+     * An unmodifiable navigable map of last names and counts.
+     */
+    static final NavigableMap<String, Integer> LAST_NAMES_AND_COUNTS;
+
+    static {
+        try {
+            LAST_NAMES_AND_COUNTS = unmodifiableNavigableMap(applyResourceScanner(
+                    "actor_map_last_name_count.txt",
+                    s -> {
+                        final NavigableMap<String, Integer> map = new TreeMap<>();
+                        while (s.hasNext()) {
+                            final String key = s.nextLine();
+                            final int value = s.nextInt();
+                            final Integer previousValue = map.put(key, value);
+                            assert previousValue == null : "duplicate last name: " + key;
+                        }
+                        return map;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Provides arguments for {@link #testListSortedByFirstName(String, boolean, Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
     private static Stream<Arguments> argumentsForTestListSortedByFirstName() {
         return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
@@ -106,6 +171,11 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
         });
     }
 
+    /**
+     * Provides arguments for {@link #testListSortedByLastName(String, boolean, Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
     private static Stream<Arguments> argumentsForTestListSortedByLastName() {
         return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
