@@ -20,7 +20,10 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A service class for {@link Actor}.
@@ -41,36 +44,46 @@ class ActorService extends BaseEntityService<Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Returns a list of actors, which each {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attribute <i>optionally</i>
-     * matches to specified value, ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or
-     * descending indicated by specified flag.
+     * Finds the actor whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} attribute and {@link
+     * Actor#ATTRIBUTE_NAME_LAST_NAME} attribute match to specified values.
      *
-     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
-     *                       {@code null}.
-     * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
-     * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
-     * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
-     * @return a list of, optionally matched, actors.
+     * @param firstName a value for {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} attribute to match.
+     * @param lastName  a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME} attribute to match.
+     * @return an optional of found entity; empty if not found.
      */
-    public List<Actor> listSortedByFirstName(final String lastName, final boolean ascendingOrder,
-                                             final Integer firstResult, final Integer maxResults) {
+    public Optional<Actor> findByName(final String firstName, final String lastName) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Returns a list of actors, which each {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attribute <i>optionally</i>
-     * matches to specified value, ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or
-     * descending indicated by specified flag.
+     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attributes match to specified value,
+     * ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending indicated by specified
+     * flag.
      *
-     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to <i>optionally</i> match; may be
-     *                       {@code null}.
+     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to match; may be {@code null}.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
      * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
      * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
-     * @return a list of, optionally matched, actors.
+     * @return a list of actors.
      */
-    public List<Actor> listSortedByLastName(final String firstName, final boolean ascendingOrder,
-                                            final Integer firstResult, final Integer maxResults) {
+    public List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
+                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
+     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attributes match to specified value,
+     * ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending indicated by specified
+     * flag.
+     *
+     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to match; may be {@code null}.
+     * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
+     * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
+     * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
+     * @return a list of actors.
+     */
+    public List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
+                                            @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 }

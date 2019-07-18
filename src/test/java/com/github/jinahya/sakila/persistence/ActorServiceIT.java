@@ -22,13 +22,16 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.NavigableMap;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -36,6 +39,7 @@ import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName;
 import static java.util.Collections.unmodifiableNavigableMap;
@@ -43,6 +47,7 @@ import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * A class for testing {@link ActorService}.
@@ -51,6 +56,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final int ACTOR_COUNT_AS_INT = entityCountAsInt(Actor.class);
+
+    public static Actor randomActor() {
+        return randomEntity(Actor.class);
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -159,6 +171,17 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Provides arguments for {@link #testFindByName(String, String)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> arguments_testFindByName() {
+        return IntStream.range(1, current().nextInt(8, 17))
+                .mapToObj(i -> randomActor())
+                .map(v -> arguments(v.getFirstName(), v.getLastName()));
+    }
+
+    /**
      * Provides arguments for {@link #testListSortedByFirstName(String, boolean, Integer, Integer)} method.
      *
      * @return a stream of arguments.
@@ -200,14 +223,39 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link ActorService#listSortedByFirstName(String, boolean, Integer, Integer)} method.
-     *
-     * @param lastName       a value for {@code lastName} parameter
-     * @param ascendingOrder a value for {@code ascendingOrder} parameter
-     * @param firstResult    a value for {@code firstResult} parameter
-     * @param maxResults     a value for {@code maxResults} parameter
+     * Asserts {@link ActorService#findByName(String, String)} returns an empty for an unknown.
      */
-    // TODO: 2019-07-18 enable, asert fails, implement, and assert passes.
+    @Test
+    void assertFindByNameReturnsEmptyForUnknown() {
+        assertThat(serviceInstance().findByName("John", "Wayne")).isEmpty();
+    }
+
+    /**
+     * Tests {@link ActorService#findByName(String, String) finaByName(firstName, lastName)} method with given values.
+     *
+     * @param firstName a value for {@code firstName} parameter.
+     * @param lastName  a value for {@code lastName} parameter.
+     */
+    @MethodSource({"arguments_testFindByName"})
+    @ParameterizedTest
+    void testFindByName(@NotNull final String firstName, final String lastName) {
+        final Optional<Actor> found = serviceInstance().findByName(firstName, lastName);
+        assertThat(found)
+                .isNotEmpty()
+                .hasValueSatisfying(actor -> assertThat(actor).firstNamedAs(firstName).lastNamedAs(lastName))
+        ;
+    }
+
+    /**
+     * Tests {@link ActorService#listSortedByFirstName(String, boolean, Integer, Integer)
+     * listSortedByFirstName(lastName, ascendingOrder, firstResult, lastResult)} method with given arguments.
+     *
+     * @param lastName       a value for {@code lastName} parameter.
+     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
+     * @param firstResult    a value for {@code firstResult} parameter.
+     * @param maxResults     a value for {@code maxResults} parameter.
+     */
+    // TODO: 2019-07-18 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestListSortedByFirstName"})
     @ParameterizedTest
