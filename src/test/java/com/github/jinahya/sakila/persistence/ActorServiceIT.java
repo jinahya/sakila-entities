@@ -97,7 +97,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    private static Stream<Arguments> provideArgumentsWithLastName() {
+    private static Stream<Arguments> argumentsForTestListSortedByFirstName() {
         return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
             final boolean ascendingOrder = current().nextBoolean();
@@ -107,7 +107,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
         });
     }
 
-    private static Stream<Arguments> provideArgumentsWithFirstName() {
+    private static Stream<Arguments> argumentsForTestListSortedByLastName() {
         return IntStream.range(0, current().nextInt(8, 17)).mapToObj(i -> {
             final String lastName = current().nextBoolean() ? null : randomEntity(Actor.class).getLastName();
             final boolean ascendingOrder = current().nextBoolean();
@@ -129,19 +129,19 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link ActorService#streamOrderedByFirstName(String, boolean, Integer, Integer)} method.
+     * Tests {@link ActorService#listSortedByFirstName(String, boolean, Integer, Integer)} method.
      *
      * @param lastName       a value for {@code lastName} parameter
      * @param ascendingOrder a value for {@code ascendingOrder} parameter
      * @param firstResult    a value for {@code firstResult} parameter
      * @param maxResults     a value for {@code maxResults} parameter
      */
-    @MethodSource({"provideArgumentsWithLastName"})
+    @MethodSource({"argumentsForTestListSortedByFirstName"})
     @ParameterizedTest
-    void testStreamOrderByFirstName(final String lastName, final boolean ascendingOrder, final Integer firstResult,
-                                    final Integer maxResults) {
+    void testListSortedByFirstName(final String lastName, final boolean ascendingOrder, final Integer firstResult,
+                                   final Integer maxResults) {
         final List<Actor> list = serviceInstance()
-                .streamOrderedByFirstName(lastName, ascendingOrder, firstResult, maxResults)
+                .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
         assertThat(list)
                 .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getLastName())).orElse(true))
@@ -153,19 +153,19 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     }
 
     /**
-     * Tests {@link ActorService#streamOrderedByLastName(String, boolean, Integer, Integer)} method.
+     * Tests {@link ActorService#listSortedByLastName(String, boolean, Integer, Integer)} method.
      *
      * @param firstName      a value for {@code firstName} parameter.
      * @param ascendingOrder a value for {@code ascendingOrder} parameter.
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    @MethodSource({"provideArgumentsWithFirstName"})
+    @MethodSource({"argumentsForTestListSortedByLastName"})
     @ParameterizedTest
-    void testStreamOrderByLastName(final String firstName, final boolean ascendingOrder, final Integer firstResult,
-                                   final Integer maxResults) {
+    void testListSortedByLastName(final String firstName, final boolean ascendingOrder, final Integer firstResult,
+                                  final Integer maxResults) {
         final List<Actor> list = serviceInstance()
-                .streamOrderedByLastName(firstName, ascendingOrder, firstResult, maxResults)
+                .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults)
                 .collect(toList());
         assertThat(list)
                 .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))

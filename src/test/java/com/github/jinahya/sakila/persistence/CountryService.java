@@ -115,17 +115,17 @@ class CountryService extends BaseEntityService<Country> {
     }
 
     /**
-     * Returns a stream of countries ordered by {@link Country#ATTRIBUTE_NAME_COUNTRY} attribute in either ascending or
-     * descending indicated by specified flag.
+     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY} attribute in either ascending or descending
+     * indicated by specified flag.
      *
      * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
      *                       descending order.
      * @param firstResult    the position of the first result to retrieve.
      * @param maxResults     the maximum number of results to retrieve.
-     * @return a stream of countries.
+     * @return a list of countries.
      */
-    public List<Country> listOrderedByCountry(final boolean ascendingOrder, final Integer firstResult,
-                                              final Integer maxResults) {
+    public List<Country> listSortedByCountry(final boolean ascendingOrder, final Integer firstResult,
+                                             final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT c FROM Country AS c ORDER BY " + (ascendingOrder ? "ASC" : "DESC"));

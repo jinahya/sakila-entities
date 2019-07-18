@@ -63,8 +63,8 @@ class ActorService extends BaseEntityService<Actor> {
      * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
      * @return a stream of, optionally matched, actors.
      */
-    public Stream<Actor> streamOrderedByFirstName(final String lastName, final boolean ascendingOrder,
-                                                  final Integer firstResult, final Integer maxResults) {
+    public Stream<Actor> listSortedByFirstName(final String lastName, final boolean ascendingOrder,
+                                               final Integer firstResult, final Integer maxResults) {
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
             final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
@@ -128,8 +128,8 @@ class ActorService extends BaseEntityService<Actor> {
      * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
      * @return a stream of, optionally matched, actors.
      */
-    public Stream<Actor> streamOrderedByLastName(final String firstName, final boolean ascendingOrder,
-                                                 final Integer firstResult, final Integer maxResults) {
+    public Stream<Actor> listSortedByLastName(final String firstName, final boolean ascendingOrder,
+                                              final Integer firstResult, final Integer maxResults) {
         final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM " + Actor.ENTITY_NAME + " AS a");
         if (firstName != null) {
             queryBuilder.append(
