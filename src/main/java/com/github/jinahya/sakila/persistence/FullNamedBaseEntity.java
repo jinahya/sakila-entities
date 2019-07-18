@@ -26,8 +26,11 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
+import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
+
 @MappedSuperclass
-abstract class FullNamedBaseEntity extends BaseEntity implements FullNamedEntity {
+abstract class FullNamedBaseEntity extends BaseEntity implements FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
 
