@@ -12,5 +12,6 @@ FROM country;
 SELECT DISTINCT country
 FROM country;
 
-SELECT country FROM country
+SELECT country
+FROM country
 ORDER BY country ASC;
