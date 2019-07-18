@@ -1,9 +1,11 @@
 package com.github.jinahya.sakila.persistence;
 
 import org.assertj.core.api.AbstractAssert;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
 
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -41,6 +43,11 @@ abstract class FullNamedAssert<T extends FullNamedAssert<T, U>, U extends FullNa
         return (T) this;
     }
 
+    @Deprecated
+    public T firstNamedAsNullable(@Nullable final String expectedFirstNameNullable) {
+        return firstNamedAs(ofNullable(expectedFirstNameNullable).orElseGet(actual::getFirstName));
+    }
+
     public T hasSameFirstNameWith(@NotNull final FullNamed whoseFirstNameExpected) {
         return firstNamedAs(whoseFirstNameExpected.getFirstName());
     }
@@ -50,6 +57,11 @@ abstract class FullNamedAssert<T extends FullNamedAssert<T, U>, U extends FullNa
     public T lastNamedAs(@NotNull final String expectedLastName) {
         isNotNull().satisfies(v -> assertThat(v.getLastName()).isNotNull().isEqualTo(expectedLastName));
         return (T) this;
+    }
+
+    @Deprecated
+    public T lastNamedAsNullable(@Nullable final String expectedLastNameNullable) {
+        return lastNamedAs(ofNullable(expectedLastNameNullable).orElseGet(actual::getLastName));
     }
 
     public T hasSameLastNameWith(@NotNull final FullNamed whoseLastNameExpected) {

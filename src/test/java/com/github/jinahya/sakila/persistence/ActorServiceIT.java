@@ -31,9 +31,8 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.NavigableMap;
+import java.util.NavigableSet;
 import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
@@ -43,7 +42,7 @@ import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName;
 import static java.util.Collections.unmodifiableNavigableMap;
-import static java.util.Collections.unmodifiableSortedSet;
+import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,23 +57,33 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    public static final int ACTOR_COUNT_AS_INT = entityCountAsInt(Actor.class);
 
-    public static Actor randomActor() {
+    /**
+     * The total number of actors in database. The value is {@value}.
+     */
+    static final int ACTOR_COUNT_AS_INT = entityCountAsInt(Actor.class);
+
+    /**
+     * Returns a random actor picked from the database.
+     *
+     * @return a random actor picked from the database.
+     */
+    static Actor randomActor() {
         return randomEntity(Actor.class);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable sorted set of first names in {@link Actor#TABLE_NAME} table.
+     * An unmodifiable navigable set of {@link FullNamedEntity#COLUMN_NAME_FIRST_NAME first_name} column values of
+     * {@link Actor#TABLE_NAME actor} table.
      */
-    static final SortedSet<String> FIRST_NAMES;
+    static final NavigableSet<String> FIRST_NAMES;
 
     static {
         try {
-            FIRST_NAMES = unmodifiableSortedSet(applyResourceScanner("actor_set_first_name.txt", s -> {
-                final SortedSet<String> set = new TreeSet<>();
+            FIRST_NAMES = unmodifiableNavigableSet(applyResourceScanner("actor_set_first_name.txt", s -> {
+                final NavigableSet<String> set = new TreeSet<>();
                 while (s.hasNext()) {
                     final String firstName = s.nextLine();
                     final boolean added = set.add(firstName);
@@ -91,14 +100,15 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable sorted set of last names in {@link Actor#TABLE_NAME} table.
+     * An unmodifiable navigable set of {@link FullNamedEntity#COMPARING_LAST_NAME last_name} column values of {@link
+     * Actor#TABLE_NAME actor} table.
      */
-    static final Set<String> LAST_NAMES;
+    static final NavigableSet<String> LAST_NAMES;
 
     static {
         try {
-            LAST_NAMES = unmodifiableSortedSet(applyResourceScanner("actor_set_last_name.txt", s -> {
-                final SortedSet<String> set = new TreeSet<>();
+            LAST_NAMES = unmodifiableNavigableSet(applyResourceScanner("actor_set_last_name.txt", s -> {
+                final NavigableSet<String> set = new TreeSet<>();
                 while (s.hasNext()) {
                     final String lastName = s.nextLine();
                     final boolean added = set.add(lastName);
@@ -262,11 +272,10 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
         final List<Actor> list = serviceInstance()
                 .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
-                .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getLastName())).orElse(true))
-//                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
+                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertThat(actor).lastNamedAs(v)))
                 .size()
-                .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
+                .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
     }
 
@@ -285,10 +294,10 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
         final List<Actor> list = serviceInstance()
                 .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
-                .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))
                 .isSortedAccordingTo(comparingLastName(ascendingOrder))
+                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertThat(actor).firstNamedAs(v)))
                 .size()
-                .matches(s -> ofNullable(maxResults).map(v -> s <= v).orElse(true))
+                .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
     }
 }

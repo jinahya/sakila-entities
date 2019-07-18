@@ -35,3 +35,15 @@ SELECT first_name, last_name, COUNT(1) AS count FROM actor
 GROUP BY first_name, last_name
 ORDER BY count DESC;
 
+
+SELECT * FROM actor
+WHERE first_name = 'SUSAN' AND last_name = "DAVIS"
+;
+
+-- ----------------------------------------------------------------------------------- first_name, last_name, name_count
+SELECT first_name, last_name, COUNT(1) AS name_count
+FROM actor
+GROUP BY first_name, last_name
+ORDER BY name_count DESC
+;
+

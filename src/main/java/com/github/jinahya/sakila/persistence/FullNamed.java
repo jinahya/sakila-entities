@@ -65,14 +65,14 @@ public interface FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
     Comparator<FullNamed> COMPARING_FIRST_NAME = comparing(FullNamed::getFirstName);
 
-    static Comparator<FullNamed> comparingFirstName(final boolean natural) {
-        return natural ? COMPARING_FIRST_NAME : COMPARING_FIRST_NAME.reversed();
+    static Comparator<FullNamed> comparingFirstName(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_FIRST_NAME : COMPARING_FIRST_NAME.reversed();
     }
 
     Comparator<FullNamed> COMPARING_LAST_NAME = comparing(FullNamed::getLastName);
 
-    static Comparator<FullNamed> comparingLastName(final boolean natural) {
-        return natural ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
+    static Comparator<FullNamed> comparingLastName(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
