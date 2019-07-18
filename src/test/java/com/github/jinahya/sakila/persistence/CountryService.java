@@ -128,7 +128,7 @@ class CountryService extends BaseEntityService<Country> {
                                              final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
-                    "SELECT c FROM Country AS c ORDER BY " + (ascendingOrder ? "ASC" : "DESC"));
+                    "SELECT c FROM Country AS c ORDER BY c.country " + (ascendingOrder ? "ASC" : "DESC"));
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
             @SuppressWarnings({"unchecked"})
@@ -137,7 +137,8 @@ class CountryService extends BaseEntityService<Country> {
         }
         if (current().nextBoolean()) {
             final TypedQuery<Country> typedQuery = entityManager().createQuery(
-                    "SELECT c FROM Country AS c ORDER BY " + (ascendingOrder ? "ASC" : "DESC"), Country.class);
+                    "SELECT c FROM Country AS c ORDER BY c.country " + (ascendingOrder ? "ASC" : "DESC"),
+                    Country.class);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
@@ -159,10 +160,10 @@ class CountryService extends BaseEntityService<Country> {
         final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
         final Root<Country> from = criteriaQuery.from(Country.class);
         criteriaQuery.select(from);
-        //final SingularAttribute<? super Country, String> attribute = Country_.country;
-        final SingularAttribute<? super Country, String> attribute
+        //final SingularAttribute<? super Country, String> countryAttribute = Country_.country;
+        final SingularAttribute<? super Country, String> countryAttribute
                 = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
-        final Path<String> countryPath = from.get(attribute);
+        final Path<String> countryPath = from.get(countryAttribute);
         final Order order = ascendingOrder ? criteriaBuilder.asc(countryPath) : criteriaBuilder.desc(countryPath);
         criteriaQuery.orderBy(order);
         final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
