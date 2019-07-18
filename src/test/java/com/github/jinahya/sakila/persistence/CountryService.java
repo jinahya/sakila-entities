@@ -68,7 +68,7 @@ class CountryService extends BaseEntityService<Country> {
                     .createQuery("SELECT c FROM Country AS c WHERE c.country = :country")
                     .setParameter("country", country);
             try {
-                final Country found = (Country) query.getSingleResult(); // May throw NonUniqueResultException
+                final Country found = (Country) query.getSingleResult(); // NonUniqueResultException
                 return Optional.of(found);
             } catch (final NoResultException nre) {
                 return Optional.empty();
@@ -79,7 +79,7 @@ class CountryService extends BaseEntityService<Country> {
                     .createQuery("SELECT c FROM Country AS c WHERE c.country = :country", Country.class)
                     .setParameter("country", country);
             try {
-                final Country found = typedQuery.getSingleResult(); // May throw NonUniqueResultException
+                final Country found = typedQuery.getSingleResult(); // NonUniqueResultException
                 return Optional.of(found);
             } catch (final NoResultException nre) {
                 return Optional.empty();
@@ -93,7 +93,7 @@ class CountryService extends BaseEntityService<Country> {
             criteriaQuery.where(criteriaBuilder.equal(from.get(Country.ATTRIBUTE_NAME_COUNTRY), country));
             final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
             try {
-                return Optional.of(typedQuery.getSingleResult()); // May throw NonUniqueResultException
+                return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
@@ -108,7 +108,7 @@ class CountryService extends BaseEntityService<Country> {
         criteriaQuery.where(criteriaBuilder.equal(from.get(countryAttribute), country));
         final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
         try {
-            return Optional.of(typedQuery.getSingleResult()); // May throw NonUniqueResultException
+            return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
         } catch (final NoResultException nre) {
             return Optional.empty();
         }

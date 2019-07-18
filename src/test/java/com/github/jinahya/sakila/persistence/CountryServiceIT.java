@@ -20,7 +20,6 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -127,8 +126,6 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      *
      * @param country a value for {@code country} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
-    @Disabled
     @MethodSource({"argumentsForTestFindByCountry"})
     @ParameterizedTest
     void testFindByCountry(@NotNull final String country) {
@@ -145,8 +142,6 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
-    @Disabled
     @MethodSource({"argumentsForTestListSortedByCountry"})
     @ParameterizedTest
     void testListSortedByCountry(final boolean ascendingOrder, final Integer firstResult, final Integer maxResults) {
