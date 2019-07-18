@@ -20,7 +20,9 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.validation.constraints.NotNull;
 import java.util.Comparator;
+import java.util.Objects;
 
 import static java.util.Comparator.comparing;
 
@@ -71,6 +73,27 @@ public interface FullNamed {
 
     static Comparator<FullNamed> comparingLastName(final boolean natural) {
         return natural ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Indicates whether specified two objects have same values for both {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute
+     * and {@link #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     *
+     * @param o1 the first object to compare.
+     * @param o2 the second object to compare.
+     * @return {@code true} if two objects have same names; {@code false} otherwise.
+     */
+    static boolean equals(@NotNull final FullName o1, @NotNull final FullName o2) {
+        if (o1 == null) {
+            throw new NullPointerException("o1 is null");
+        }
+        if (o2 == null) {
+            throw new NullPointerException("o2 is null");
+        }
+        return Objects.equals(o1.getFirstName(), o2.getFirstName())
+               && Objects.equals(o1.getLastName(), o2.getLastName());
     }
 
     // ------------------------------------------------------------------------------------------------------- firstName

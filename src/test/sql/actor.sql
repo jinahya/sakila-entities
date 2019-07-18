@@ -30,3 +30,8 @@ SELECT *
 FROM actor
 WHERE last_name = (SELECT last_name FROM actor ORDER BY RAND() LIMIT 1);
 
+
+SELECT first_name, last_name, COUNT(1) AS count FROM actor
+GROUP BY first_name, last_name
+ORDER BY count DESC;
+

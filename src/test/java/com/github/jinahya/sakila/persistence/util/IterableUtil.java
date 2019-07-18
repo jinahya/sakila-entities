@@ -22,6 +22,16 @@ package com.github.jinahya.sakila.persistence.util;
 
 import java.util.Comparator;
 
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.reverseOrder;
+
+/**
+ * A utility class for {@link Iterable}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @deprecated Use <a href="https://joel-costigliola.github.io/assertj/">AssertJ</a>
+ */
+@Deprecated // forRemoval = true
 public final class IterableUtil {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -33,7 +43,9 @@ public final class IterableUtil {
      * @param comparator the comparator to compare elements in {@code iterable}.
      * @param <T>        element type parameter
      * @return {@code true} if {@code iterable} is sorted; {@code false} otherwise.
+     * @deprecated se {@link org.assertj.core.api.AbstractListAssert}
      */
+    @Deprecated
     public static <T> boolean isSorted(final Iterable<? extends T> iterable, final Comparator<? super T> comparator) {
         boolean beforeFirst = true;
         T previous = null;
@@ -58,10 +70,11 @@ public final class IterableUtil {
      * @param <T>      element type parameter
      * @return {@code true} if {@code iterable} is sorted in natural order; {@code false} otherwise.
      * @see Comparator#naturalOrder()
+     * @see #isSorted(Iterable, Comparator)
      */
     public static <T extends Comparable<? super T>> boolean isSortedInNaturalOrder(
             final Iterable<? extends T> iterable) {
-        return isSorted(iterable, Comparator.naturalOrder());
+        return isSorted(iterable, naturalOrder());
     }
 
     /**
@@ -71,13 +84,18 @@ public final class IterableUtil {
      * @param <T>      element type parameter
      * @return {@code true} if {@code iterable} is sorted in reverse order; {@code false} otherwise.
      * @see Comparator#reverseOrder()
+     * @see #isSorted(Iterable, Comparator)
      */
     public static <T extends Comparable<? super T>> boolean isSortedInReverseOrder(
             final Iterable<? extends T> iterable) {
-        return isSorted(iterable, Comparator.reverseOrder());
+        return isSorted(iterable, reverseOrder());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance.
+     */
     private IterableUtil() {
         super();
     }

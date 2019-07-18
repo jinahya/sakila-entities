@@ -25,6 +25,13 @@ import java.util.Comparator;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * A utility for assertions.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @deprecated
+ */
+@Deprecated // forRemoval = true
 public final class AssertionsUtil {
 
     // -----------------------------------------------------------------------------------------------------------------
