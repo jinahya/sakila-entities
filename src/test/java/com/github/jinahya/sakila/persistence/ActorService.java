@@ -27,7 +27,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
-import java.util.stream.Stream;
+
+import java.util.List;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -63,8 +64,8 @@ class ActorService extends BaseEntityService<Actor> {
      * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
      * @return a stream of, optionally matched, actors.
      */
-    public Stream<Actor> listSortedByFirstName(final String lastName, final boolean ascendingOrder,
-                                               final Integer firstResult, final Integer maxResults) {
+    public List<Actor> listSortedByFirstName(final String lastName, final boolean ascendingOrder,
+                                             final Integer firstResult, final Integer maxResults) {
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
             final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
@@ -79,7 +80,7 @@ class ActorService extends BaseEntityService<Actor> {
             final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultStream();
+            return typedQuery.getResultList();
         }
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
@@ -95,7 +96,7 @@ class ActorService extends BaseEntityService<Actor> {
             final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultStream();
+            return typedQuery.getResultList();
         }
         final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM " + Actor.ENTITY_NAME + " AS a");
         if (lastName != null) {
@@ -113,7 +114,7 @@ class ActorService extends BaseEntityService<Actor> {
         }
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultStream();
+        return typedQuery.getResultList();
     }
 
     /**
@@ -128,8 +129,8 @@ class ActorService extends BaseEntityService<Actor> {
      * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
      * @return a stream of, optionally matched, actors.
      */
-    public Stream<Actor> listSortedByLastName(final String firstName, final boolean ascendingOrder,
-                                              final Integer firstResult, final Integer maxResults) {
+    public List<Actor> listSortedByLastName(final String firstName, final boolean ascendingOrder,
+                                            final Integer firstResult, final Integer maxResults) {
         final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM " + Actor.ENTITY_NAME + " AS a");
         if (firstName != null) {
             queryBuilder.append(
@@ -144,6 +145,6 @@ class ActorService extends BaseEntityService<Actor> {
         ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultStream();
+        return typedQuery.getResultList();
     }
 }
