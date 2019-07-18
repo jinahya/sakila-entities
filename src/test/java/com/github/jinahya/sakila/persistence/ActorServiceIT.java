@@ -141,8 +141,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     void testListSortedByFirstName(final String lastName, final boolean ascendingOrder, final Integer firstResult,
                                    final Integer maxResults) {
         final List<Actor> list = serviceInstance()
-                .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults)
-                .collect(toList());
+                .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .allMatch(a -> ofNullable(lastName).map(v -> v.equals(a.getLastName())).orElse(true))
 //                .isSortedAccordingTo(comparingFirstName(ascendingOrder))
@@ -165,8 +164,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     void testListSortedByLastName(final String firstName, final boolean ascendingOrder, final Integer firstResult,
                                   final Integer maxResults) {
         final List<Actor> list = serviceInstance()
-                .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults)
-                .collect(toList());
+                .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .allMatch(a -> ofNullable(firstName).map(v -> v.equals(a.getFirstName())).orElse(true))
                 .isSortedAccordingTo(comparingLastName(ascendingOrder))
