@@ -58,13 +58,13 @@ class FilmActorService extends EntityService<FilmActor> {
     }
 
     /**
-     * Lists films mapped to specified actor ordered by {@link BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending
+     * Lists films of specified actor ordered by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR} attribute in descending
      * order.
      *
-     * @param actor       the actor to match.
-     * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}
-     * @param maxResults  a value for {@link TypedQuery#setMaxResults(int)}
-     * @return a list of films.
+     * @param actor       the actor whose films are listed.
+     * @param firstResult position of the first result, numbered from 0.
+     * @param maxResults  maximum number of results to retrieve.
+     * @return a list of films of {@code actor}.
      */
     public @NotNull List<Film> listFilms(@NotNull final Actor actor, @PositiveOrZero final Integer firstResult,
                                          @Positive final Integer maxResults) {

@@ -73,7 +73,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     static {
         try {
             COUNTRIES = unmodifiableSortedSet(applyResourceScanner(
-                    "country_set_country.txt",
+                    "country_list_country.txt",
                     s -> {
                         final SortedSet<String> set = new TreeSet<>();
                         while (s.hasNext()) {

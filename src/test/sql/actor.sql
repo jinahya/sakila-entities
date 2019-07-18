@@ -1,33 +1,26 @@
 desc actor;
 
+-- ------------------------------------------------------------------------------------------------- distinct first_name
 SELECT DISTINCT first_name
 FROM actor
 ORDER BY first_name;
 
-SELECT *
+-- ----------------------------------------------------------------------------------------------- first_name with count
+SELECT first_name, COUNT(first_name) AS count
 FROM actor
-ORDER BY first_name ASC;
+GROUP BY first_name
+ORDER BY count DESC, first_name ASC;
 
+-- -------------------------------------------------------------------------------------------------- distinct last_name
 SELECT DISTINCT last_name
 FROM actor
 ORDER BY last_name;
 
-SELECT *
+-- ------------------------------------------------------------------------------------------------ last_name with count
+SELECT last_name, COUNT(last_name) AS count
 FROM actor
-ORDER BY last_name ASC;
-
-
-DELIMITER //
-CREATE FUNCTION RANDOM_FIRST_NAME()
-    RETURNS STRING
-BEGIN
-    RETURN
-(SELECT actor.first_name
- FROM actor
- ORDER BY RAND()
- LIMIT 1)
-END//
-DELIMITER ;
+GROUP BY last_name
+ORDER BY count DESC, last_name ASC;
 
 SELECT *
 FROM actor

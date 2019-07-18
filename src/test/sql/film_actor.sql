@@ -7,9 +7,14 @@ SELECT a.actor_id, COUNT(fa.film_id) AS film_count
 FROM actor AS a
          LEFT JOIN film_actor AS fa ON a.actor_id = fa.actor_id
 GROUP BY a.actor_id
-ORDER BY film_count DESC
+ORDER BY film_count DESC, actor_id ASC
 ;
-
+-- ------------------------------------------------------------------------------------------------- actor_id_film_count
+SELECT actor_id, COUNT(film_id) AS film_count
+FROM film_actor
+GROUP BY actor_id
+ORDER BY film_count DESC, actor_id ASC
+;
 -- --------------------------------------------------------------------------------------------- count films of an actor
 SELECT COUNT(film_id)
 FROM film_actor
@@ -47,6 +52,11 @@ GROUP BY f.film_id
 ORDER BY actor_count DESC
 ;
 
+SELECT film_id, COUNT(actor_id) AS actor_count
+FROM film_actor
+GROUP BY film_id
+ORDER BY actor_count DESC, film_id ASC
+;
 -- ---------------------------------------------------------------------------------------------- count actors of a film
 SELECT a.*
 FROM film_actor AS fa
