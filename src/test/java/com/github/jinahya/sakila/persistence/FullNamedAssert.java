@@ -31,10 +31,10 @@ abstract class FullNamedAssert<T extends FullNamedAssert<T, U>, U extends FullNa
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts that the current {@code actual} is not {@code null} and its current value of {@link
-     * FullNamed#ATTRIBUTE_NAME_FIRST_NAME} attribute is equal to specified value.
+     * Asserts that the current {@link #actual} is not {@code null} and its current value of {@link
+     * FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute is equal to specified value.
      *
-     * @param expectedFirstName an expected value for {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     * @param expectedFirstName an expected value of {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute.
      * @return this assert.
      */
     @SuppressWarnings({"unchecked"})
@@ -45,7 +45,7 @@ abstract class FullNamedAssert<T extends FullNamedAssert<T, U>, U extends FullNa
 
     @Deprecated
     public T firstNamedAsNullable(@Nullable final String expectedFirstNameNullable) {
-        return firstNamedAs(ofNullable(expectedFirstNameNullable).orElseGet(actual::getFirstName);
+        return firstNamedAs(ofNullable(expectedFirstNameNullable).orElseGet(actual::getFirstName));
     }
 
     public T hasSameFirstNameWith(@NotNull final FullNamed whoseFirstNameExpected) {

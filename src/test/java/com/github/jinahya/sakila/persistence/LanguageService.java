@@ -20,6 +20,8 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -45,9 +47,9 @@ class LanguageService extends BaseEntityService<Language> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
+     * Finds the language whose {@link Language#ATTRIBUTE_NAME_NAME name} attribute matches to specified value.
      *
-     * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME} attribute to match.
+     * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME name} attribute to match.
      * @return an optional of found entity.
      */
     public Optional<Language> findByName(@NotNull final String name) {
@@ -65,8 +67,9 @@ class LanguageService extends BaseEntityService<Language> {
      * @param maxResults     an optional value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
      * @return a stream of, optionally paged, languages.
      */
-    public Stream<Language> streamOrderedByName(final boolean ascendingOrder, @PositiveOrZero final Integer firstResult,
-                                                @Positive final Integer maxResults) {
+    public Stream<Language> streamOrderedByName(final boolean ascendingOrder,
+                                                @PositiveOrZero @Nullable final Integer firstResult,
+                                                @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-16 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
