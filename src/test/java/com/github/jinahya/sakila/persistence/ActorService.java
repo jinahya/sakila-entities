@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -44,26 +45,27 @@ class ActorService extends BaseEntityService<Actor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Finds the actor whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} attribute and {@link
-     * Actor#ATTRIBUTE_NAME_LAST_NAME} attribute match to specified values.
+     * Finds the actor whose {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute and {@link
+     * Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute match to specified values.
      *
-     * @param firstName a value for {@link Actor#ATTRIBUTE_NAME_FIRST_NAME} attribute to match.
-     * @param lastName  a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME} attribute to match.
-     * @return an optional of found entity; empty if not found.
+     * @param firstName a value for {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute to match.
+     * @param lastName  a value for {@link Actor#ATTRIBUTE_NAME_LAST_NAME lastName} attribute to match.
+     * @return an optional of found actor; empty if not found.
      */
-    public Optional<Actor> findByName(final String firstName, final String lastName) {
+    public Optional<Actor> findByName(@NotNull final String firstName, @NotNull final String lastName) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME} attributes match to specified value,
-     * ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in either ascending or descending indicated by specified
-     * flag.
+     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} attributes match to specified
+     * value, ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute in either ascending order or
+     * descending order indicated by specified flag.
      *
-     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to match; may be {@code null}.
+     * @param lastName       a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} to match; {@code null} for
+     *                       skipping the criterion.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
-     * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
-     * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
+     * @param firstResult    position of the first result, numbered from 0.
+     * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
     public List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
@@ -72,14 +74,15 @@ class ActorService extends BaseEntityService<Actor> {
     }
 
     /**
-     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} attributes match to specified value,
-     * ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME} in either ascending or descending indicated by specified
-     * flag.
+     * Returns a list of actors, whose {@link FullName#ATTRIBUTE_NAME_FIRST_NAME firstName} attributes match to
+     * specified value, ordered by {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} in either ascending order or
+     * descending order indicated by specified flag.
      *
-     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME} to match; may be {@code null}.
+     * @param firstName      a value for {@link FullName#ATTRIBUTE_NAME_LAST_NAME lastName} to match; {@code null} for
+     *                       skipping the criterion.
      * @param ascendingOrder {@code true} for ascending order; {@code false} for descending order.
-     * @param firstResult    a value for {@link javax.persistence.TypedQuery#setFirstResult(int)}
-     * @param maxResults     a value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
+     * @param firstResult    position of the first result, numbered from 0.
+     * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
     public List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
