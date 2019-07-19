@@ -67,11 +67,11 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
     static <R> R applyResourceStream(@NotNull final String name,
                                      @NotNull final Function<? super InputStream, ? extends R> function)
             throws IOException {
-        try (InputStream stream = EntityServiceIT.class.getResourceAsStream(name)) {
+        try (InputStream stream = EntityServiceIT.class.getResourceAsStream(requireNonNull(name, "name is null"))) {
             if (stream == null) {
                 throw new RuntimeException("no resource for " + name);
             }
-            return function.apply(stream);
+            return requireNonNull(function, "function is null").apply(stream);
         }
     }
 
@@ -109,7 +109,7 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
      * Counts the total number of entities of specified class.
      *
      * @param entityManager an entity manager.
-     * @param entityClass   the entity class to count.
+     * @param entityClass   the class whose entities are counted.
      * @return the number of all entities of specified class.
      */
     static long entityCount(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
@@ -130,6 +130,10 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
                 return count;
             });
         }
+    }
+
+    static int entityCountAsInt(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
+        return toIntExact(entityCount(entityManager, entityClass));
     }
 
     /**
@@ -156,7 +160,7 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Selects a random entity of specified class.
+     * Choose a random entity of specified class from the database;
      *
      * @param entityManager an entity manager.
      * @param entityClass   the entity class to select.
@@ -168,7 +172,7 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         criteriaQuery.select(criteriaQuery.from(entityClass));
         final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(toIntExact(current().nextLong(entityCount(entityManager, entityClass))));
+        typedQuery.setFirstResult(current().nextInt(entityCountAsInt(entityManager, entityClass)));
         typedQuery.setMaxResults(1);
         return typedQuery.getSingleResult();
     }

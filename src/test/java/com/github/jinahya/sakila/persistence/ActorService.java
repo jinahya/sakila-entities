@@ -289,7 +289,6 @@ class ActorService extends BaseEntityService<Actor> {
     public List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
-            log.debug("query...");
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
                     .append(Actor.ENTITY_NAME)
                     .append(" AS a");
@@ -313,7 +312,6 @@ class ActorService extends BaseEntityService<Actor> {
             return resultList;
         }
         if (current().nextBoolean()) {
-            log.debug("typed query...");
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
                     .append(Actor.ENTITY_NAME)
                     .append(" AS a");
@@ -335,7 +333,6 @@ class ActorService extends BaseEntityService<Actor> {
             return typedQuery.getResultList();
         }
         if (current().nextBoolean()) {
-            log.debug("criteria query... with name");
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
             final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
             final Root<Actor> actor = criteriaQuery.from(Actor.class);
@@ -354,7 +351,6 @@ class ActorService extends BaseEntityService<Actor> {
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
         }
-        log.debug("criteria query... with path");
         final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
         final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
         final Root<Actor> actor = criteriaQuery.from(Actor.class);
