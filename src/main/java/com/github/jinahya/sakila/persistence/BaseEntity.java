@@ -33,14 +33,18 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract base class for entity classes.
@@ -81,19 +85,46 @@ public abstract class BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    public static <T extends BaseEntity> Stream<T> select(
+    private static <T extends BaseEntity, R> R query(
             final EntityManager entityManager, final Class<T> entityClass,
             final BiFunction<CriteriaBuilder, Root<T>, Collection<? extends Predicate>> predicatesFunction,
-            final UnaryOperator<TypedQuery<T>> queryOperator) {
-        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            final Function<? super TypedQuery<T>, ? extends R> queryFunction) {
+        final CriteriaBuilder criteriaBuilder
+                = requireNonNull(entityManager, "entityManager is null").getCriteriaBuilder();
+        final CriteriaQuery<T> criteriaQuery
+                = criteriaBuilder.createQuery(requireNonNull(entityClass, "entityClass is null"));
         final Root<T> root = criteriaQuery.from(entityClass);
-        final Collection<? extends Predicate> predicates = predicatesFunction.apply(criteriaBuilder, root);
-        if (!predicates.isEmpty()) {
-            criteriaQuery.where((Predicate[]) predicates.toArray());
+        final Collection<? extends Predicate> predicates
+                = requireNonNull(predicatesFunction, "predicatesFunction is null").apply(criteriaBuilder, root);
+        if (predicates != null && !predicates.isEmpty()) {
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
         }
-        final TypedQuery<T> typedQuery = queryOperator.apply(entityManager.createQuery(criteriaQuery));
-        return typedQuery.getResultStream();
+        final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+        return requireNonNull(queryFunction, "queryFunction is null").apply(typedQuery);
+    }
+
+    static <T extends BaseEntity> T find(
+            @NotNull final EntityManager entityManager, @NotNull final Class<T> entityClass,
+            @NotNull final BiFunction<CriteriaBuilder, Root<T>, Collection<? extends Predicate>> predicatesFunction,
+            @NotNull final UnaryOperator<TypedQuery<T>> queryOperator) {
+        return query(entityManager, entityClass, predicatesFunction,
+                     q -> requireNonNull(queryOperator, "queryOperator is null").apply(q).getSingleResult());
+    }
+
+    static <T extends BaseEntity> List<T> list(
+            @NotNull final EntityManager entityManager, @NotNull final Class<T> entityClass,
+            @NotNull final BiFunction<CriteriaBuilder, Root<T>, Collection<? extends Predicate>> predicatesFunction,
+            @NotNull final UnaryOperator<TypedQuery<T>> queryOperator) {
+        return query(entityManager, entityClass, predicatesFunction,
+                     q -> requireNonNull(queryOperator, "queryOperator is null").apply(q).getResultList());
+    }
+
+    static <T extends BaseEntity> Stream<T> select(
+            @NotNull final EntityManager entityManager, @NotNull final Class<T> entityClass,
+            @NotNull final BiFunction<CriteriaBuilder, Root<T>, Collection<? extends Predicate>> predicatesFunction,
+            @NotNull final UnaryOperator<TypedQuery<T>> queryOperator) {
+        return query(entityManager, entityClass, predicatesFunction,
+                     q -> requireNonNull(queryOperator, "queryOperator is null").apply(q).getResultStream());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
