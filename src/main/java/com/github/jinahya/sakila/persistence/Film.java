@@ -46,6 +46,8 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,6 +57,8 @@ import static com.github.jinahya.sakila.persistence.Film.TABLE_NAME;
 import static java.lang.Math.toIntExact;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * An entity class for {@value #TABLE_NAME} table.
@@ -395,7 +399,7 @@ public class Film extends BaseEntity {
      * <p>
      * Can be zero or more of: Trailers, Commentaries, Deleted Scenes, Behind the Scenes.
      * </blockquote>
-     * {@code SET('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')}
+     * {@code SET('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes') NULL}
      **/
     public static final String COLUMN_NAME_SPECIAL_FEATURES = "special_features";
 
@@ -671,12 +675,24 @@ public class Film extends BaseEntity {
     }
 
     // ------------------------------------------------------------------------------------------------- specialFeatures
-    public Set<SpecialFeature> getSpecialFeatures() {
+    public String getSpecialFeatures() {
         return specialFeatures;
     }
 
-    public void setSpecialFeatures(final Set<SpecialFeature> specialFeatures) {
+    public void setSpecialFeatures(final String specialFeatures) {
         this.specialFeatures = specialFeatures;
+    }
+
+    public Set<SpecialFeature> getSpecialFeaturesAsEnumSet() {
+        return ofNullable(getSpecialFeatures())
+                .map(v -> Arrays.stream(v.split(",")).map(SpecialFeature::valueOf)
+                        .collect(toCollection(() -> EnumSet.noneOf(SpecialFeature.class)))).orElse(null);
+    }
+
+    public void setSpecialFeaturesAsEnumSet(final EnumSet<SpecialFeature> specialFeaturesAsEnumSet) {
+        this.specialFeatures = ofNullable(specialFeaturesAsEnumSet)
+                .map(a -> a.stream().map(SpecialFeature::getDatabaseColumn).collect(joining(",")))
+                .orElse(null);
     }
 
     // ------------------------------------------------------------------------------------------------------ categories
@@ -796,12 +812,11 @@ public class Film extends BaseEntity {
     @NamedAttribute(ATTRIBUTE_NAME_RATING)
     private Rating rating;
 
-    //@Enumerated(EnumType.ORDINAL)
-    //@Enumerated(EnumType.STRING)
-    @Convert(converter = SpecialFeaturesAttributeConverter.class)
+    //@Convert(converter = SpecialFeaturesAttributeConverter.class)
     @Column(name = COLUMN_NAME_SPECIAL_FEATURES, nullable = true)
     @NamedAttribute(ATTRIBUTE_NAME_SPECIAL_FEATURES)
-    private Set<SpecialFeature> specialFeatures;
+    //private Set<SpecialFeature> specialFeatures;
+    private String specialFeatures;
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-11 remove!!!
