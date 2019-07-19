@@ -139,8 +139,6 @@ class ActorService extends BaseEntityService<Actor> {
                 criteriaQuery.where(predicates.toArray(new Predicate[0]));
             }
             final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
-            ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
-            ofNullable(lastName).ifPresent(v -> typedQuery.setParameter("lastName", v));
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
@@ -168,8 +166,6 @@ class ActorService extends BaseEntityService<Actor> {
             criteriaQuery.where(predicates.toArray(new Predicate[0]));
         }
         final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
-        ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
-        ofNullable(lastName).ifPresent(v -> typedQuery.setParameter("lastName", v));
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();

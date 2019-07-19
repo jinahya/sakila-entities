@@ -2,6 +2,12 @@ desc film_actor;
 
 -- =====================================================================================================================
 
+SELECT actor_id, COUNT(1) AS film_count
+FROM film_actor
+GROUP BY actor_id
+ORDER BY film_count DESC
+;
+
 -- ------------------------------------------------------------------------------------------  count films of each actor
 SELECT a.actor_id, COUNT(fa.film_id) AS film_count
 FROM actor AS a
