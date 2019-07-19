@@ -20,15 +20,20 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A service class for {@link FilmActor}.
@@ -49,21 +54,48 @@ class FilmActorService extends EntityService<FilmActor> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Counts films mapped to specified actor.
+     * Counts all films that specified actor played.
      *
      * @param actor the actor whose films are counted.
-     * @return the number of films mapped to specified actor.
+     * @return the number of films {@code actor} played.
      */
     public @PositiveOrZero long countFilms(@NotNull final Actor actor) {
-        return entityManager()
-                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class)
-                .setParameter("actor", actor)
-                .getSingleResult();
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor");
+            query.setParameter("actor", actor);
+            return (long) query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Long> typedQuery = entityManager().createQuery(
+                    "SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.actor = :actor", Long.class);
+            typedQuery.setParameter("actor", actor);
+            return typedQuery.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+            final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
+            criteriaQuery.select(criteriaBuilder.count(from));
+            criteriaQuery.where(criteriaBuilder.equal(from.get(FilmActor.ATTRIBUTE_NAME_ACTOR), actor));
+            final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
+        criteriaQuery.select(criteriaBuilder.count(from));
+        //final SingularAttribute<FilmActor, Actor> actorAttribute = FilmActor_.actor;
+        final SingularAttribute<? super FilmActor, Actor> actorAttribute
+                = singularAttribute(entityClass, FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(actorAttribute), actor));
+        final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     /**
-     * Lists films of specified actor ordered by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR} attribute in descending
-     * order.
+     * Lists films that specified actor played, sorted by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR releaseYear} attribute
+     * in descending order.
      *
      * @param actor       the actor whose films are listed.
      * @param firstResult position of the first result, numbered from 0.
@@ -72,56 +104,56 @@ class FilmActorService extends EntityService<FilmActor> {
      */
     public @NotNull List<Film> listFilms(@NotNull final Actor actor, @PositiveOrZero final Integer firstResult,
                                          @Positive final Integer maxResults) {
-        final TypedQuery<Film> typedQuery = entityManager().createQuery(
-                "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.id ASC",
-                Film.class);
-        typedQuery.setParameter("actor", actor);
-        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear DESC");
+            query.setParameter("actor", actor);
+            @SuppressWarnings({"unchecked"})
+            final List<Film> films = query.getResultList();
+            return films;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Film> typedQuery = entityManager().createQuery(
+                    "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear DESC",
+                    Film.class);
+            typedQuery.setParameter("actor", actor);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Film> criteriaQuery = criteriaBuilder.createQuery(Film.class);
+            final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
+            criteriaQuery.select(from.get(FilmActor.ATTRIBUTE_NAME_FILM));
+            criteriaQuery.where(criteriaBuilder.equal(from.get(FilmActor.ATTRIBUTE_NAME_ACTOR), actor));
+            criteriaQuery.orderBy(criteriaBuilder.desc(
+                    from.get(FilmActor.ATTRIBUTE_NAME_FILM).get(Film.ATTRIBUTE_NAME_RELEASE_YEAR)));
+            final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Film> criteriaQuery = criteriaBuilder.createQuery(Film.class);
+        final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
+//        final SingularAttribute<FilmActor, Film> filmAttribute = FilmActor_.film;
+        final SingularAttribute<? super FilmActor, Film> filmAttribute
+                = singularAttribute(FilmActor.class, FilmActor.ATTRIBUTE_NAME_FILM, Film.class);
+        criteriaQuery.select(from.get(filmAttribute));
+//        final SingularAttribute<FilmActor, Actor> actorAttribute = FilmActor_.actor;
+        final SingularAttribute<? super FilmActor, Actor> actorAttribute
+                = singularAttribute(FilmActor.class, FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(actorAttribute), actor));
+//        final SingularAttribute<Film, Integer> releaseYearAttribute = Film_.releaseYear;
+        final SingularAttribute<? super Film, Integer> releaseYearAttribute
+                = singularAttribute(Film.class, Film.ATTRIBUTE_NAME_RELEASE_YEAR, Integer.class);
+        final Path<Integer> releaseYearPath = from.get(filmAttribute).get(releaseYearAttribute);
+        criteriaQuery.orderBy(criteriaBuilder.desc(releaseYearPath));
+        final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
         return typedQuery.getResultList();
-    }
-
-    /**
-     * Counts distinct films mapped to any of specified actors.
-     *
-     * @param actors the actors whose films are counted.
-     * @return the number of distinct films mapped to any of specified actors.
-     */
-    public @PositiveOrZero long countFilms(@NotNull final Collection<@NotNull ? extends Actor> actors) {
-        return entityManager()
-                .createQuery("SELECT COUNT(DISTINCT fa) FROM FilmActor AS fa WHERE fa.actor IN :actors", Long.class)
-                .setParameter("actors", actors).setParameter("actors", actors)
-                .getSingleResult();
-    }
-
-    /**
-     * Returns a stream of distinct films mapped to any of specified actors ordered by {@link
-     * BaseEntity#ATTRIBUTE_NAME_ID} in ascending order.
-     *
-     * @param actors      the actors to match.
-     * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}
-     * @param maxResults  a value for {@link TypedQuery#setMaxResults(int)}
-     * @return a stream of distinct films mapped to any of specified actors.
-     */
-    public @NotNull Stream<Film> streamFilms(@NotNull final Collection<@NotNull ? extends Actor> actors,
-                                             @PositiveOrZero final Integer firstResult,
-                                             @Positive final Integer maxResults) {
-        final TypedQuery<Film> typedQuery = entityManager()
-                .createQuery("SELECT DISTINCT fa.film"
-                             + " FROM FilmActor AS fa"
-                             + " WHERE fa.actor IN :actors"
-                             + " ORDER BY fa.film.id",
-                             Film.class)
-                .setParameter("actors", actors).setParameter("actors", actors);
-        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultStream();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Count actors mapped to specified film.
+     * Count all actors played in specified film.
      *
      * @param film the film to match.
      * @return the number of actors mapped to specified film.
@@ -134,7 +166,8 @@ class FilmActorService extends EntityService<FilmActor> {
     }
 
     /**
-     * Lists actors mapped to specified film ordered by {@link FullName#ATTRIBUTE_NAME_FIRST_NAME} in ascending order.
+     * Lists actors played in specified film ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} in ascending
+     * order.
      *
      * @param film        the film to match.
      * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}.
@@ -150,42 +183,5 @@ class FilmActorService extends EntityService<FilmActor> {
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();
-    }
-
-    /**
-     * Count distinct actors mapped to any of specified films.
-     *
-     * @param films the films to match.
-     * @return the number of actors mapped to specified film.
-     */
-    public @PositiveOrZero long countActors(@NotNull final Collection<@NotNull ? extends Film> films) {
-        return entityManager()
-                .createQuery("SELECT COUNT(DISTINCT fa) FROM FilmActor AS fa WHERE fa.film IN :films", Long.class)
-                .setParameter("films", films)
-                .getSingleResult();
-    }
-
-    /**
-     * Returns a stream of distinct actors mapped to any of specified films ordered by {@link
-     * BaseEntity#ATTRIBUTE_NAME_ID} attribute in ascending order.
-     *
-     * @param films       the films to match.
-     * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}.
-     * @param maxResults  a value for {@link TypedQuery#setMaxResults(int)}.
-     * @return a stream of distinct actors mapped to any of specified films.
-     */
-    public @NotNull Stream<Actor> streamActors(@NotNull final Collection<@NotNull ? extends Film> films,
-                                               @PositiveOrZero final Integer firstResult,
-                                               @Positive final Integer maxResults) {
-        final TypedQuery<Actor> typedQuery = entityManager()
-                .createQuery("SELECT DISTINCT fa.actor"
-                             + " FROM FilmActor AS fa"
-                             + " WHERE fa.film IN :films"
-                             + " ORDER BY fa.actor.id ASC",
-                             Actor.class)
-                .setParameter("films", films);
-        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultStream();
     }
 }

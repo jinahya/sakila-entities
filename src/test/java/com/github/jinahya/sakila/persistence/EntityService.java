@@ -29,6 +29,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.ManagedType;
+import javax.persistence.metamodel.SingularAttribute;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
@@ -80,6 +82,26 @@ abstract class EntityService<T> {
      */
     static String entityName(@NotNull final Class<?> entityClass) {
         return PersistenceProducer.applyEntityManager(m -> entityName(m, entityClass));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X> ManagedType<X> managedType(final EntityManager entityManager, final Class<X> entityClass) {
+        return entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
+    }
+
+    static <X> ManagedType<X> managedType(final Class<X> entityClass) {
+        return PersistenceProducer.applyEntityManager(v -> managedType(v, entityClass));
+    }
+
+    static <X, A> SingularAttribute<? super X, A> singularAttribute(final EntityManager entityManager,
+                                                                    final Class<X> entityClass, final String name,
+                                                                    final Class<A> type) {
+        return managedType(entityManager, entityClass).getSingularAttribute(name, type);
+    }
+
+    static <X, A> SingularAttribute<? super X, A> singularAttribute(final Class<X> entityClass, final String name,
+                                                                    final Class<A> type) {
+        return PersistenceProducer.applyEntityManager(v -> singularAttribute(v, entityClass, name, type));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

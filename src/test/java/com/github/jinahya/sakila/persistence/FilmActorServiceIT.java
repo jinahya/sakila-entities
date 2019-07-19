@@ -22,26 +22,25 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.BaseEntity.COMPARING_ID;
-import static com.github.jinahya.sakila.persistence.BaseEntityServiceIT.DISTINCT_BY_ID;
-import static com.github.jinahya.sakila.persistence.BaseEntityServiceIT.randomEntities;
-import static com.github.jinahya.sakila.persistence.util.AssertionsUtil.assertSorted;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A class for testing {@link FilmActorService}.
@@ -75,6 +74,10 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
         }
     }
 
+    static int filmCount(final Actor actor) {
+        return ACTOR_ID_FILM_COUNT.get(requireNonNull(actor, "actor is null").getId());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -99,6 +102,19 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
         }
     }
 
+    static int actorCount(final Film film) {
+        return FILM_ID_ACTOR_COUNT.get(requireNonNull(film, "film is null").getId());
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    private static Stream<Arguments> actorArgumentsStream() {
+        return IntStream.range(1, 16).mapToObj(i -> randomEntity(Actor.class)).map(Arguments::of);
+    }
+
+    private static Stream<Arguments> filmArgumentsStream() {
+        return IntStream.range(1, 16).mapToObj(i -> randomEntity(Film.class)).map(Arguments::of);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -112,12 +128,12 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
 
     /**
      * Tests {@link FilmActorService#countFilms(Actor)} method.
+     *
+     * @param actor an actor to test with.
      */
-    // TODO: 2019-07-12 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @RepeatedTest(8)
-    void testCountFilmsOfSingleActor() {
-        final Actor actor = randomEntity(entityManager(), Actor.class);
+    @MethodSource({"actorArgumentsStream"})
+    @ParameterizedTest
+    void testCountFilms(final Actor actor) {
         final long expected = ACTOR_ID_FILM_COUNT.get(actor.getId());
         final long actual = serviceInstance().countFilms(actor);
         assertEquals(expected, actual);
@@ -125,90 +141,33 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
 
     /**
      * Tests {@link FilmActorService#listFilms(Actor, Integer, Integer)} method.
+     *
+     * @param actor an actor to test with.
      */
-    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @RepeatedTest(8)
-    void testListFilmsOfSingleActor() {
-        // select a random actor
-        final Actor actor = randomEntity(entityManager(), Actor.class);
+    @MethodSource({"actorArgumentsStream"})
+    @ParameterizedTest
+    void testListFilms(final Actor actor) {
         {
-            // test for all films of the actor.
             final List<Film> films = serviceInstance().listFilms(actor, null, null);
-            assertEquals(ACTOR_ID_FILM_COUNT.get(actor.getId()), films.size());
-            assertSorted(films, COMPARING_ID);
+            assertThat(films)
+                    .isSortedAccordingTo(comparing(Film::getReleaseYear).reversed())
+                    .hasSize(filmCount(actor))
+            ;
         }
         {
-            // test for paged films of the actor.
-            int total = 0;
+            int filmCount = 0;
             final int maxResults = current().nextInt(1, 17); // [1..16]
             for (int firstResult = 0; true; firstResult += maxResults) {
-                final List<Film> page = serviceInstance().listFilms(actor, firstResult, maxResults);
-                assertTrue(page.size() <= maxResults);
-                assertSorted(page, COMPARING_ID);
-                total += page.size();
-                if (page.size() < maxResults) {
+                final List<Film> films = serviceInstance().listFilms(actor, firstResult, maxResults);
+                assertThat(films)
+                        .isSortedAccordingTo(comparing(Film::getReleaseYear).reversed())
+                        .size().satisfies(s -> assertThat(s).isLessThanOrEqualTo(maxResults));
+                filmCount += films.size();
+                if (films.size() < maxResults) {
                     break;
                 }
             }
-            assertEquals(ACTOR_ID_FILM_COUNT.get(actor.getId()), total);
-        }
-    }
-
-    /**
-     * Tests {@link FilmActorService#countFilms(Collection)} method.
-     */
-    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @RepeatedTest(4)
-    void testCountFilmsWithMultipleActors() {
-        // prepare a list of actors; random, distinct by id, ordered by id in ascending order.
-        final List<Actor> actors = randomEntities(
-                entityManager(), Actor.class, s -> s.sorted(COMPARING_ID).collect(toList()));
-        // map films for each actor, distinct by id, sorted by id in ascending order, count them.
-        final long expected = actors.stream()
-                .flatMap(a -> serviceInstance().listFilms(a, null, null).stream())
-                .filter(DISTINCT_BY_ID)
-                .count();
-        // compare the results.
-        final long actual = serviceInstance().countFilms(actors);
-        assertEquals(expected, actual);
-    }
-
-    /**
-     * Tests {@link FilmActorService#streamFilms(Collection, Integer, Integer)} method.
-     */
-    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @RepeatedTest(4)
-    void testStreamFilms() {
-        // prepare a list of actors; random, distinct by id, ordered by id in ascending order.
-        final List<Actor> actors = randomEntities(
-                entityManager(), Actor.class, s -> s.sorted(COMPARING_ID).collect(toList()));
-        // map films for each actor, distinct by id, sorted by id in ascending order, collect them.
-        final List<Film> films = actors.stream()
-                .flatMap(a -> serviceInstance().listFilms(a, null, null).stream())
-                .filter(DISTINCT_BY_ID)
-                .collect(toList());
-        {
-            // test for the whole films.
-            final List<Film> actual = serviceInstance().streamFilms(actors, null, null).collect(toList());
-            assertIterableEquals(films, actual);
-        }
-        {
-            // test for paged films.
-            final int maxResults = current().nextInt(1, 17); // [1..16]
-            for (int firstResult = 0; true; firstResult += maxResults) {
-                final List<Film> actual
-                        = serviceInstance().streamFilms(actors, firstResult, maxResults).collect(toList());
-                assertTrue(actual.size() <= maxResults);
-                assertSorted(actual, COMPARING_ID);
-                if (actual.size() < maxResults) {
-                    break;
-                }
-                final List<Film> expected = films.subList(firstResult, firstResult + actual.size());
-                assertIterableEquals(expected, actual);
-            }
+            assertEquals(filmCount(actor), filmCount);
         }
     }
 
@@ -216,12 +175,14 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
 
     /**
      * Tests {@link FilmActorService#countActors(Film)}} method.
+     *
+     * @param film a film to test with.
      */
     // TODO: 2019-07-12 enable, assert fails, implement, and assert passes.
     @Disabled
-    @RepeatedTest(8)
-    void testCountActorsWithSingleActor() {
-        final Film film = randomEntity(entityManager(), Film.class);
+    @MethodSource({"filmArgumentsStream"})
+    @ParameterizedTest
+    void testCountActors(final Film film) {
         final long expected = FILM_ID_ACTOR_COUNT.get(film.getId());
         final long actual = serviceInstance().countActors(film);
         assertEquals(expected, actual);
@@ -229,80 +190,35 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
 
     /**
      * Tests {@link FilmActorService#listActors(Film, Integer, Integer)} method.
+     *
+     * @param film a film to test with.
      */
     // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
     @Disabled
-    @RepeatedTest(8)
-    void testListActorsWithSingleActor() {
-        final Film film = randomEntity(entityManager(), Film.class);
+    @MethodSource({"filmArgumentsStream"})
+    @ParameterizedTest
+    void testListActors(final Film film) {
         {
             final List<Actor> actors = serviceInstance().listActors(film, null, null);
-            assertEquals(FILM_ID_ACTOR_COUNT.get(film.getId()), actors.size());
-            assertSorted(actors, COMPARING_ID);
+            assertThat(actors)
+                    .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME)
+                    .hasSize(actorCount(film))
+            ;
         }
         {
-            int total = 0;
+            int actorCount = 0;
             final int maxResults = current().nextInt(1, 17); // [1..16]
             for (int firstResult = 0; true; firstResult += maxResults) {
-                final List<Actor> page = serviceInstance().listActors(film, firstResult, maxResults);
-                assertTrue(page.size() <= maxResults);
-                assertSorted(page, COMPARING_ID);
-                total += page.size();
-                if (page.size() < maxResults) {
+                final List<Actor> actors = serviceInstance().listActors(film, firstResult, maxResults);
+                assertThat(actors)
+                        .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME)
+                        .size().satisfies(s -> assertThat(s).isLessThanOrEqualTo(maxResults));
+                actorCount += actors.size();
+                if (actors.size() < maxResults) {
                     break;
                 }
             }
-            assertEquals(FILM_ID_ACTOR_COUNT.get(film.getId()), total);
-        }
-    }
-
-    /**
-     * Tests {@link FilmActorService#countActors(Collection)} method.
-     */
-    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @RepeatedTest(4)
-    void testCountActorsWithMultipleActors() {
-        final List<Film> films = randomEntities(
-                entityManager(), Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
-        final long expected = films.stream()
-                .flatMap(f -> serviceInstance().listActors(f, null, null).stream())
-                .filter(DISTINCT_BY_ID)
-                .count();
-        final long actual = serviceInstance().countActors(films);
-        assertEquals(expected, actual);
-    }
-
-    /**
-     * Tests {@link FilmActorService#streamActors(Collection, Integer, Integer)} method.
-     */
-    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
-    @Disabled
-    @RepeatedTest(4)
-    void testStreamActors() {
-        final List<Film> films = randomEntities(
-                entityManager(), Film.class, s -> s.sorted(COMPARING_ID).collect(toList()));
-        final List<Actor> actors = films.stream()
-                .flatMap(f -> serviceInstance().listActors(f, null, null).stream())
-                .filter(DISTINCT_BY_ID)
-                .collect(toList());
-        {
-            final List<Actor> actual = serviceInstance().streamActors(films, null, null).collect(toList());
-            assertIterableEquals(actors, actual);
-        }
-        {
-            final int maxResults = current().nextInt(1, 17); // [1..16]
-            for (int firstResult = 0; true; firstResult += maxResults) {
-                final List<Actor> actual
-                        = serviceInstance().streamActors(films, firstResult, maxResults).collect(toList());
-                assertTrue(actual.size() <= maxResults);
-                assertSorted(actual, COMPARING_ID);
-                if (actual.size() < maxResults) {
-                    break;
-                }
-                final List<Actor> expected = actors.subList(firstResult, firstResult + actual.size());
-                assertIterableEquals(expected, actual);
-            }
+            assertEquals(actorCount(film), actorCount);
         }
     }
 }
