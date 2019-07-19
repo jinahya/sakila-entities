@@ -62,7 +62,7 @@ public abstract class CustomValuedEnumSetJoinedStringAttributeConverter<E extend
     @Override
     public String convertToDatabaseColumn(final Set<E> attribute) {
         return ofNullable(attribute)
-                .map(a -> a.stream().map(CustomValuedEnum::getDatabaseColumn).collect(joining(columnDelimiter)))
+                .map(a -> a.stream().map(E::getDatabaseColumn).collect(joining(columnDelimiter)))
                 .orElse(null);
     }
 
