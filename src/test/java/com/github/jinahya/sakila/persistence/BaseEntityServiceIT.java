@@ -20,7 +20,9 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
 import javax.persistence.EntityManager;
@@ -45,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * An abstract class for testing subclasses of {@link BaseEntityService}.
  *
  * @param <ServiceType> service type parameter
- * @param <EntityType> entity type parameter
+ * @param <EntityType>  entity type parameter
  */
 abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityType>, EntityType extends BaseEntity>
         extends EntityServiceIT<ServiceType, EntityType> {
@@ -109,8 +111,21 @@ abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityT
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Rests {@link BaseEntityService#findById(int)}.
+     * Asserts {@link BaseEntityService#findById(int)} method returns an empty optional for unknown id.
      */
+    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @Test
+    void assertFindByIdReturnsEmptyForUnknownId() {
+        final Optional<EntityType> found = serviceInstance().findById(Integer.MIN_VALUE);
+        assertThat(found).isEmpty();
+    }
+
+    /**
+     * Tests {@link BaseEntityService#findById(int)}.
+     */
+    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
+    @Disabled
     @RepeatedTest(16)
     void testFindById() {
         final EntityType randomEntity = randomEntity();
@@ -125,17 +140,23 @@ abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityT
 
     /**
      * Tests {@link BaseEntityService#listSortedByIdIn(boolean, Integer, Integer)}.
+     *
+     * @param testReporter a test reporter.
      */
+    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
+    @Disabled
     @RepeatedTest(16)
-    void testListSortedById(final TestReporter reporter) {
+    void testListSortedById(final TestReporter testReporter) {
         final boolean ascendingOrder = current().nextBoolean();
         final Integer firstResult = current().nextBoolean() ? null : firstResult();
         final Integer maxResults = current().nextBoolean() ? null : maxResults();
-        reporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
-        reporter.publishEntry("firstResult", Objects.toString(firstResult));
-        reporter.publishEntry("maxResults", Objects.toString(maxResults));
+        testReporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
+        testReporter.publishEntry("firstResult", Objects.toString(firstResult));
+        testReporter.publishEntry("maxResults", Objects.toString(maxResults));
         final List<EntityType> list = serviceInstance().listSortedByIdIn(ascendingOrder, firstResult, maxResults);
-        assertThat(list).isSortedAccordingTo(comparingId(ascendingOrder));
-        ofNullable(maxResults).ifPresent(v -> assertThat(list).hasSizeLessThanOrEqualTo(v));
+        assertThat(list)
+                .isSortedAccordingTo(comparingId(ascendingOrder))
+                .size().satisfies(s -> ofNullable(maxResults).ifPresent(m -> assertThat(s).isLessThanOrEqualTo(m)))
+        ;
     }
 }
