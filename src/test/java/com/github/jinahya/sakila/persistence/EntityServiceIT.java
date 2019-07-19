@@ -50,7 +50,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({WeldJunit5Extension.class})
-abstract class EntityServiceIT<T extends EntityService<U>, U> {
+abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, EntityType> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @see #serviceClass
      * @see #entityClass
      */
-    EntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
+    EntityServiceIT(final Class<ServiceType> serviceClass, final Class<EntityType> entityClass) {
         super();
         this.serviceClass = requireNonNull(serviceClass, "serviceClass is null");
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
@@ -223,7 +223,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      *
      * @return an instance of {@link #serviceClass}.
      */
-    final @NotNull T serviceInstance() {
+    final @NotNull ServiceType serviceInstance() {
         return serviceInstance.select(serviceClass).get();
     }
 
@@ -248,7 +248,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      *
      * @return a random entity from the database.
      */
-    final @NotNull U randomEntity() {
+    final @NotNull EntityType randomEntity() {
         return randomEntity(entityManager(), entityClass);
     }
 
@@ -266,12 +266,12 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     /**
      * The service class to test.
      */
-    final Class<T> serviceClass;
+    final Class<ServiceType> serviceClass;
 
     /**
      * The entity class of {@link #serviceClass}.
      */
-    final Class<U> entityClass;
+    final Class<EntityType> entityClass;
 
     // -----------------------------------------------------------------------------------------------------------------
     @Inject

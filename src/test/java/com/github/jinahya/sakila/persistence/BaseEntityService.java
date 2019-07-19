@@ -34,9 +34,12 @@ import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
+import static com.github.jinahya.sakila.persistence.BaseEntity.find;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
@@ -143,15 +146,31 @@ abstract class BaseEntityService<EntityType extends BaseEntity> extends EntitySe
                 return Optional.empty();
             }
         }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-        final Root<EntityType> root = criteriaQuery.from(entityClass);
-        //criteriaQuery.where(criteriaBuilder.equal(root.get(BaseEntity_.id), id));
-        criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute()), id));
-        final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            final Root<EntityType> root = criteriaQuery.from(entityClass);
+            //criteriaQuery.where(criteriaBuilder.equal(root.get(BaseEntity_.id), id));
+            criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute()), id));
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+            try {
+                final EntityType entity = typedQuery.getSingleResult();
+                return Optional.of(entity);
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
         try {
-            final EntityType entity = typedQuery.getSingleResult();
-            return Optional.of(entity);
+            final EntityType found = find(
+                    entityManager(),
+                    entityClass,
+                    (b, r) -> {
+                        //return Collections.singletonList(b.equal(r.get(BaseEntity_.id), id));
+                        return Collections.singletonList(b.equal(r.get(idAttribute()), id));
+                    },
+                    UnaryOperator.identity()
+            );
+            return Optional.of(found);
         } catch (final NoResultException nre) {
             return Optional.empty();
         }
