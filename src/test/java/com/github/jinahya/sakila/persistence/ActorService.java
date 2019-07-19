@@ -82,7 +82,7 @@ class ActorService extends BaseEntityService<Actor> {
                     }
                 }
                 if (lastName != null) {
-                    queryBuilder.append(" lastName = :lastName");
+                    queryBuilder.append(" a.lastName = :lastName");
                 }
             }
             queryBuilder.append(" ORDER BY a.id ASC");
@@ -107,7 +107,7 @@ class ActorService extends BaseEntityService<Actor> {
                     }
                 }
                 if (lastName != null) {
-                    queryBuilder.append(" lastName = :lastName");
+                    queryBuilder.append(" a.lastName = :lastName");
                 }
             }
             queryBuilder.append(" ORDER BY a.id ASC");

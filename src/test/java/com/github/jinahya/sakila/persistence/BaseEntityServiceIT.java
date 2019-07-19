@@ -106,7 +106,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link BaseEntityService#listSortedById(boolean, Integer, Integer)}.
+     * Tests {@link BaseEntityService#listSortedByIdIn(boolean, Integer, Integer)}.
      */
     @RepeatedTest(16)
     void testListSortedById(final TestReporter reporter) {
@@ -116,7 +116,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
         reporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
         reporter.publishEntry("firstResult", Objects.toString(firstResult));
         reporter.publishEntry("maxResults", Objects.toString(maxResults));
-        final List<U> list = serviceInstance().listSortedById(ascendingOrder, firstResult, maxResults);
+        final List<U> list = serviceInstance().listSortedByIdIn(ascendingOrder, firstResult, maxResults);
         assertThat(list).isSortedAccordingTo(comparingId(ascendingOrder));
         ofNullable(maxResults).ifPresent(v -> assertThat(list).hasSizeLessThanOrEqualTo(v));
     }
