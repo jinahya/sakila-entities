@@ -108,6 +108,8 @@ class FilmActorService extends EntityService<FilmActor> {
             final Query query = entityManager().createQuery(
                     "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear DESC");
             query.setParameter("actor", actor);
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
             @SuppressWarnings({"unchecked"})
             final List<Film> films = query.getResultList();
             return films;
@@ -117,6 +119,8 @@ class FilmActorService extends EntityService<FilmActor> {
                     "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear DESC",
                     Film.class);
             typedQuery.setParameter("actor", actor);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
         }
         if (current().nextBoolean()) {
@@ -128,6 +132,8 @@ class FilmActorService extends EntityService<FilmActor> {
             criteriaQuery.orderBy(criteriaBuilder.desc(
                     from.get(FilmActor.ATTRIBUTE_NAME_FILM).get(Film.ATTRIBUTE_NAME_RELEASE_YEAR)));
             final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
         }
         final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
@@ -147,6 +153,8 @@ class FilmActorService extends EntityService<FilmActor> {
         final Path<Integer> releaseYearPath = from.get(filmAttribute).get(releaseYearAttribute);
         criteriaQuery.orderBy(criteriaBuilder.desc(releaseYearPath));
         final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();
     }
 
