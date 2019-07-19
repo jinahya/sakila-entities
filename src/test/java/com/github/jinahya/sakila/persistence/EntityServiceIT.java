@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import org.jboss.weld.junit5.WeldJunit5Extension;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -47,10 +46,11 @@ import static java.lang.StrictMath.toIntExact;
 import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({WeldJunit5Extension.class})
-abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, EntityType> {
+abstract class EntityServiceIT<T extends EntityService<U>, U> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -200,7 +200,7 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
      * @see #serviceClass
      * @see #entityClass
      */
-    EntityServiceIT(final Class<ServiceType> serviceClass, final Class<EntityType> entityClass) {
+    EntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
         super();
         this.serviceClass = requireNonNull(serviceClass, "serviceClass is null");
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
@@ -211,13 +211,12 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
     /**
      * Tests {@link EntityService#count()} method.
      */
-    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
-    @Disabled
     @Test
     void testCount() {
         final long expected = entityCount(entityClass);
         final long actual = serviceInstance().count();
         assertEquals(expected, actual);
+        assertThat(actual).isNotNegative();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -227,7 +226,7 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
      *
      * @return an instance of {@link #serviceClass}.
      */
-    final @NotNull ServiceType serviceInstance() {
+    final @NotNull T serviceInstance() {
         return serviceInstance.select(serviceClass).get();
     }
 
@@ -252,7 +251,7 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
      *
      * @return a random entity from the database.
      */
-    final @NotNull EntityType randomEntity() {
+    final @NotNull U randomEntity() {
         return randomEntity(entityManager(), entityClass);
     }
 
@@ -270,12 +269,12 @@ abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, En
     /**
      * The service class to test.
      */
-    final Class<ServiceType> serviceClass;
+    final Class<T> serviceClass;
 
     /**
      * The entity class of {@link #serviceClass}.
      */
-    final Class<EntityType> entityClass;
+    final Class<U> entityClass;
 
     // -----------------------------------------------------------------------------------------------------------------
     @Inject

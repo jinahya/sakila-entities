@@ -24,6 +24,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
@@ -35,6 +40,7 @@ import java.util.function.Supplier;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * An abstract class for entity service classes.
@@ -96,8 +102,21 @@ abstract class EntityService<T> {
      * @return the total number of entities.
      */
     public long count() {
-        // TODO: 2019-07-19 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery("SELECT COUNT(e) FROM " + entityName() + " AS e");
+            return (long) query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Long> typedQuery = entityManager().createQuery(
+                    "SELECT COUNT(e) FROM " + entityName() + " AS e", Long.class);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<T> from = criteriaQuery.from(entityClass);
+        criteriaQuery.select(criteriaBuilder.count(from));
+        final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
