@@ -27,11 +27,13 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.BaseEntity.comparingId;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -101,6 +103,21 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
      */
     BaseEntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
         super(serviceClass, entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Rests {@link BaseEntityService#findById(int)}.
+     */
+    @RepeatedTest(16)
+    void testFindById() {
+        final U randomEntity = randomEntity();
+        final Optional<U> found = serviceInstance().findById(randomEntity.getId());
+        assertThat(found)
+                .isPresent()
+                .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(randomEntity))
+        ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

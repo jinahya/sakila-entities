@@ -20,7 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-class ActorAssert extends FullNamedAssert<ActorAssert, Actor> {
+class ActorAssert extends BaseEntityAssert<ActorAssert, Actor> implements FullNamedAssert<ActorAssert, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
     ActorAssert(final Actor actual) {
