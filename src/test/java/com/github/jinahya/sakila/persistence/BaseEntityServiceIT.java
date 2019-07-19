@@ -112,8 +112,6 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     /**
      * Asserts {@link BaseEntityService#findById(int)} method returns an empty optional for unknown id.
      */
-    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
-    @Disabled
     @Test
     void assertFindByIdReturnsEmptyForUnknownId() {
         final Optional<U> found = serviceInstance().findById(Integer.MIN_VALUE);
@@ -127,11 +125,11 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     @Disabled
     @RepeatedTest(16)
     void testFindById() {
-        final U randomEntity = randomEntity();
-        final Optional<U> found = serviceInstance().findById(randomEntity.getId());
+        final U entity = randomEntity();
+        final Optional<U> found = serviceInstance().findById(entity.getId());
         assertThat(found)
                 .isPresent()
-                .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(randomEntity))
+                .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(entity))
         ;
     }
 
