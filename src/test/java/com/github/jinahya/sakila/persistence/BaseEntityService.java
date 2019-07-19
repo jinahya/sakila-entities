@@ -23,6 +23,7 @@ package com.github.jinahya.sakila.persistence;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -106,8 +107,54 @@ abstract class BaseEntityService<EntityType extends BaseEntity> extends EntitySe
      * @return the entity identified by specified value; empty if not found.
      */
     public Optional<EntityType> findById(final int id) {
-        // TODO: 2019-07-19 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery("SELECT e FROM " + entityName() + " AS e WHERE e.id = :id");
+            query.setParameter("id", id);
+            try {
+                @SuppressWarnings({"unchecked"})
+                final EntityType entity = (EntityType) query.getSingleResult();
+                return Optional.of(entity);
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(
+                    "SELECT e FROM " + entityName() + " AS e WHERE e.id = :id",
+                    entityClass);
+            typedQuery.setParameter("id", id);
+            try {
+                final EntityType entity = typedQuery.getSingleResult();
+                return Optional.of(entity);
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            final Root<EntityType> root = criteriaQuery.from(entityClass);
+            criteriaQuery.where(criteriaBuilder.equal(root.get(BaseEntity.ATTRIBUTE_NAME_ID), id));
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+            try {
+                final EntityType entity = typedQuery.getSingleResult();
+                return Optional.of(entity);
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<EntityType> root = criteriaQuery.from(entityClass);
+        //criteriaQuery.where(criteriaBuilder.equal(root.get(BaseEntity_.id), id));
+        criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute()), id));
+        final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+        try {
+            final EntityType entity = typedQuery.getSingleResult();
+            return Optional.of(entity);
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------

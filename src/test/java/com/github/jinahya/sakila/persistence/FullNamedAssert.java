@@ -24,8 +24,6 @@ import org.assertj.core.api.AbstractAssert;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,22 +66,18 @@ interface FullNamedAssert<T extends AbstractAssert<T, U> & FullNamedAssert<T, U>
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    @SuppressWarnings({"unchecked"})
     default U actual() {
         final Class<?> clazz = getClass();
         if (!AbstractAssert.class.isAssignableFrom(clazz)) {
             throw new RuntimeException("class(" + clazz + ") is not assignable to " + AbstractAssert.class);
         }
         try {
-            final Field field = clazz.getDeclaredField("actual");
+            final Field field = AbstractAssert.class.getDeclaredField("actual");
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            final Object actual = field.get(this);
-            final Type actualType
-                    = ((ParameterizedType) field.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            @SuppressWarnings({"unchecked"})
-            final Class<U> actualClass = (Class<U>) actualType;
-            return actualClass.cast(actual);
+            return (U) field.get(this);
         } catch (final ReflectiveOperationException roe) {
             throw new RuntimeException(roe);
         }
