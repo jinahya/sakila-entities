@@ -184,7 +184,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> provideArgumentsForTestListSortedByIdInAscendingOrder() {
+    private static Stream<Arguments> argumentsForTestListSortedByIdInAscendingOrder() {
         return IntStream.range(1, current().nextInt(8, 17))
                 .mapToObj(i -> randomActor())
                 .map(v -> arguments(v.getFirstName(), v.getLastName()));
@@ -253,7 +253,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      */
     // TODO: 2019-07-18 enable, assert fails, implement, and assert passes.
     @Disabled
-    @MethodSource({"provideArgumentsForTestListSortedByIdInAscendingOrder"})
+    @MethodSource({"argumentsForTestListSortedByIdInAscendingOrder"})
     @ParameterizedTest
     void testListSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
