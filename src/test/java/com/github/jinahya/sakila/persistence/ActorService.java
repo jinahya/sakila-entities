@@ -23,15 +23,15 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -72,85 +72,107 @@ class ActorService extends BaseEntityService<Actor> {
                                                       @Nullable final Integer firstResult,
                                                       @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
-            final StringBuilder queryBuider = new StringBuilder("SELECT a FROM Actor AS a");
+            final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM Actor AS a");
             if (firstName != null || lastName != null) {
-                queryBuider.append(" WHERE");
+                queryBuilder.append(" WHERE");
                 if (firstName != null) {
-                    queryBuider.append(" a.firstName = :firstName");
+                    queryBuilder.append(" a.firstName = :firstName");
                     if (lastName != null) {
-                        queryBuider.append(" AND");
+                        queryBuilder.append(" AND");
                     }
                 }
                 if (lastName != null) {
-                    queryBuider.append(" lastName = :lastName");
+                    queryBuilder.append(" lastName = :lastName");
                 }
             }
-            queryBuider.append(" ORDER BY a.id ASC");
-            final String queryString = queryBuider.toString();
+            queryBuilder.append(" ORDER BY a.id ASC");
+            final String queryString = queryBuilder.toString();
             final Query query = entityManager().createQuery(queryString);
             ofNullable(firstName).ifPresent(v -> query.setParameter("firstName", v));
             ofNullable(lastName).ifPresent(v -> query.setParameter("lastName", v));
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
             @SuppressWarnings({"unchecked"})
             final List<Actor> list = query.getResultList();
             return list;
         }
         if (current().nextBoolean()) {
-            final String queryString
-                    = "SELECT a FROM Actor AS a WHERE a.firstName = :firstName AND a.lastName = :lastName";
-            final TypedQuery<Actor> typedQuery = entityManager().createQuery(queryString, Actor.class);
-            typedQuery.setParameter("firstName", firstName);
-            typedQuery.setParameter("lastName", lastName);
-            try {
-                final Actor actor = typedQuery.getSingleResult(); // NoResultException, NonUniqueResultException
-                return Optional.of(actor);
-            } catch (final NoResultException nre) {
-                return Optional.empty();
+            final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM Actor AS a");
+            if (firstName != null || lastName != null) {
+                queryBuilder.append(" WHERE");
+                if (firstName != null) {
+                    queryBuilder.append(" a.firstName = :firstName");
+                    if (lastName != null) {
+                        queryBuilder.append(" AND");
+                    }
+                }
+                if (lastName != null) {
+                    queryBuilder.append(" lastName = :lastName");
+                }
             }
+            queryBuilder.append(" ORDER BY a.id ASC");
+            final String queryString = queryBuilder.toString();
+            final TypedQuery<Actor> typedQuery = entityManager().createQuery(queryString, Actor.class);
+            ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
+            ofNullable(lastName).ifPresent(v -> typedQuery.setParameter("lastName", v));
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
         }
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
             final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
             final Root<Actor> from = criteriaQuery.from(Actor.class);
             criteriaQuery.select(from);
-            criteriaQuery.where(
-                    criteriaBuilder.and(
-                            criteriaBuilder.equal(from.get(Actor.ATTRIBUTE_NAME_FIRST_NAME), firstName),
-                            criteriaBuilder.equal(from.get(Actor.ATTRIBUTE_NAME_LAST_NAME), lastName)
-                    )
-            );
-            final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
-            try {
-                final Actor actor = typedQuery.getSingleResult(); // NoResultException, NonUniqueResultException
-                return Optional.of(actor);
-            } catch (final NoResultException nre) {
-                return Optional.empty();
+            if (firstName != null || lastName != null) {
+                final List<Predicate> predicates = new ArrayList<>();
+                if (firstName != null) {
+                    predicates.add(criteriaBuilder.equal(from.get(Actor.ATTRIBUTE_NAME_FIRST_NAME), firstName));
+                }
+                if (lastName != null) {
+                    predicates.add(criteriaBuilder.equal(from.get(Actor.ATTRIBUTE_NAME_LAST_NAME), lastName));
+                }
+                if (predicates.size() == 2) {
+                    predicates.add(criteriaBuilder.and(predicates.remove(0), predicates.remove(0)));
+                }
+                assert !predicates.isEmpty();
+                criteriaQuery.where(predicates.toArray(new Predicate[0]));
             }
+            final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
+            ofNullable(lastName).ifPresent(v -> typedQuery.setParameter("lastName", v));
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
         }
         final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
         final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
         final Root<Actor> from = criteriaQuery.from(Actor.class);
         criteriaQuery.select(from);
-//        criteriaQuery.where(
-//                criteriaBuilder.and(
-//                        criteriaBuilder.equal(from.get(Actor_.firstName), firstName),
-//                        criteriaBuilder.equal(from.get(Actor_.lastName), lastName)
-//                )
-//        );
-        criteriaQuery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-                                from.get(singularAttribute(Actor.ATTRIBUTE_NAME_FIRST_NAME, String.class)), firstName),
-                        criteriaBuilder.equal(
-                                from.get(singularAttribute(Actor.ATTRIBUTE_NAME_LAST_NAME, String.class)), lastName)
-                )
-        );
-        final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
-        try {
-            final Actor actor = typedQuery.getSingleResult(); // NoResultException, NonUniqueResultException
-            return Optional.of(actor);
-        } catch (final NoResultException nre) {
-            return Optional.empty();
+        if (firstName != null || lastName != null) {
+            final List<Predicate> predicates = new ArrayList<>();
+            if (firstName != null) {
+                //predicates.add(criteriaBuilder.equal(from.get(Actor_.firstName), firstName));
+                predicates.add(criteriaBuilder.equal(
+                        from.get(singularAttribute(FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class)), firstName));
+            }
+            if (lastName != null) {
+                //predicates.add(criteriaBuilder.equal(from.get(Actor_.lastName), lastName));
+                predicates.add(criteriaBuilder.equal(from.get(
+                        singularAttribute(FullNamed.ATTRIBUTE_NAME_LAST_NAME, String.class)), lastName));
+            }
+            if (predicates.size() == 2) {
+                predicates.add(criteriaBuilder.and(predicates.remove(0), predicates.remove(0)));
+            }
+            assert !predicates.isEmpty();
+            criteriaQuery.where(predicates.toArray(new Predicate[0]));
         }
+        final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstName).ifPresent(v -> typedQuery.setParameter("firstName", v));
+        ofNullable(lastName).ifPresent(v -> typedQuery.setParameter("lastName", v));
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 
     /**
