@@ -189,7 +189,49 @@ abstract class BaseEntityService<EntityType extends BaseEntity> extends EntitySe
     public List<EntityType> listSortedByIdIn(final boolean ascendingOrder,
                                              @PositiveOrZero @Nullable final Integer firstResult,
                                              @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-19 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT e"
+                    + " FROM " + entityName() + " AS e"
+                    + " ORDER BY e." + BaseEntity.ATTRIBUTE_NAME_ID + " " + (ascendingOrder ? "ASC" : "DESC"));
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<EntityType> resultList = (List<EntityType>) query.getResultList();
+            return resultList;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(
+                    "SELECT e"
+                    + " FROM " + entityName() + " AS e"
+                    + " ORDER BY e." + BaseEntity.ATTRIBUTE_NAME_ID + " " + (ascendingOrder ? "ASC" : "DESC"),
+                    entityClass);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+            final Root<EntityType> from = criteriaQuery.from(entityClass);
+            criteriaQuery.select(from);
+            final Path<Integer> id = from.get(BaseEntity.ATTRIBUTE_NAME_ID); // attribute name
+            criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(id) : criteriaBuilder.desc(id));
+            final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<EntityType> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<EntityType> from = criteriaQuery.from(entityClass);
+        criteriaQuery.select(from);
+        //final Path<Integer> id = from.get(BaseEntity_.id); // metamodel attribute // doesn't work with EclipseLink
+        final Path<Integer> id = from.get(idAttribute());
+        criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(id) : criteriaBuilder.desc(id));
+        final TypedQuery<EntityType> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 }
