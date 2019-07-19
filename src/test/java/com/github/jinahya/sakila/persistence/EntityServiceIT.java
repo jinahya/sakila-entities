@@ -50,7 +50,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({WeldJunit5Extension.class})
-abstract class EntityServiceIT<T extends EntityService<U>, U> {
+abstract class EntityServiceIT<ServiceType extends EntityService<EntityType>, EntityType> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -67,11 +67,11 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     static <R> R applyResourceStream(@NotNull final String name,
                                      @NotNull final Function<? super InputStream, ? extends R> function)
             throws IOException {
-        try (InputStream stream = EntityServiceIT.class.getResourceAsStream(name)) {
+        try (InputStream stream = EntityServiceIT.class.getResourceAsStream(requireNonNull(name, "name is null"))) {
             if (stream == null) {
                 throw new RuntimeException("no resource for " + name);
             }
-            return function.apply(stream);
+            return requireNonNull(function, "function is null").apply(stream);
         }
     }
 
@@ -109,7 +109,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * Counts the total number of entities of specified class.
      *
      * @param entityManager an entity manager.
-     * @param entityClass   the entity class to count.
+     * @param entityClass   the class whose entities are counted.
      * @return the number of all entities of specified class.
      */
     static long entityCount(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
@@ -130,6 +130,10 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
                 return count;
             });
         }
+    }
+
+    static int entityCountAsInt(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
+        return toIntExact(entityCount(entityManager, entityClass));
     }
 
     /**
@@ -156,7 +160,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Selects a random entity of specified class.
+     * Choose a random entity of specified class from the database;
      *
      * @param entityManager an entity manager.
      * @param entityClass   the entity class to select.
@@ -168,7 +172,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         criteriaQuery.select(criteriaQuery.from(entityClass));
         final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(toIntExact(current().nextLong(entityCount(entityManager, entityClass))));
+        typedQuery.setFirstResult(current().nextInt(entityCountAsInt(entityManager, entityClass)));
         typedQuery.setMaxResults(1);
         return typedQuery.getSingleResult();
     }
@@ -196,7 +200,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @see #serviceClass
      * @see #entityClass
      */
-    EntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
+    EntityServiceIT(final Class<ServiceType> serviceClass, final Class<EntityType> entityClass) {
         super();
         this.serviceClass = requireNonNull(serviceClass, "serviceClass is null");
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
@@ -223,7 +227,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      *
      * @return an instance of {@link #serviceClass}.
      */
-    final @NotNull T serviceInstance() {
+    final @NotNull ServiceType serviceInstance() {
         return serviceInstance.select(serviceClass).get();
     }
 
@@ -248,7 +252,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      *
      * @return a random entity from the database.
      */
-    final @NotNull U randomEntity() {
+    final @NotNull EntityType randomEntity() {
         return randomEntity(entityManager(), entityClass);
     }
 
@@ -266,12 +270,12 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     /**
      * The service class to test.
      */
-    final Class<T> serviceClass;
+    final Class<ServiceType> serviceClass;
 
     /**
      * The entity class of {@link #serviceClass}.
      */
-    final Class<U> entityClass;
+    final Class<EntityType> entityClass;
 
     // -----------------------------------------------------------------------------------------------------------------
     @Inject

@@ -44,10 +44,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * An abstract class for testing subclasses of {@link BaseEntityService}.
  *
- * @param <T> service type parameter
- * @param <U> entity type parameter
+ * @param <ServiceType> service type parameter
+ * @param <EntityType> entity type parameter
  */
-abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends BaseEntity> extends EntityServiceIT<T, U> {
+abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityType>, EntityType extends BaseEntity>
+        extends EntityServiceIT<ServiceType, EntityType> {
 
     // -----------------------------------------------------------------------------------------------------------------
     // https://www.baeldung.com/java-streams-distinct-by
@@ -101,7 +102,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
      * @param serviceClass the service class to test.
      * @param entityClass  the entity class of the {@code serviceClass}.
      */
-    BaseEntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
+    BaseEntityServiceIT(final Class<ServiceType> serviceClass, final Class<EntityType> entityClass) {
         super(serviceClass, entityClass);
     }
 
@@ -112,8 +113,8 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
      */
     @RepeatedTest(16)
     void testFindById() {
-        final U randomEntity = randomEntity();
-        final Optional<U> found = serviceInstance().findById(randomEntity.getId());
+        final EntityType randomEntity = randomEntity();
+        final Optional<EntityType> found = serviceInstance().findById(randomEntity.getId());
         assertThat(found)
                 .isPresent()
                 .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(randomEntity))
@@ -133,7 +134,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
         reporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
         reporter.publishEntry("firstResult", Objects.toString(firstResult));
         reporter.publishEntry("maxResults", Objects.toString(maxResults));
-        final List<U> list = serviceInstance().listSortedByIdIn(ascendingOrder, firstResult, maxResults);
+        final List<EntityType> list = serviceInstance().listSortedByIdIn(ascendingOrder, firstResult, maxResults);
         assertThat(list).isSortedAccordingTo(comparingId(ascendingOrder));
         ofNullable(maxResults).ifPresent(v -> assertThat(list).hasSizeLessThanOrEqualTo(v));
     }
