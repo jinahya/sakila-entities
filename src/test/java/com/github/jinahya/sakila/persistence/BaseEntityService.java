@@ -34,6 +34,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -71,13 +72,42 @@ abstract class BaseEntityService<EntityType extends BaseEntity> extends EntitySe
                 .managedType(entityClass);
     }
 
+    /**
+     * Returns the singular attribute of specified name and type.
+     *
+     * @param name            the attribute name.
+     * @param type            the attribute type.
+     * @param <AttributeType> attribute type parameter
+     * @return the singular attribute of specified name and type.
+     * @see #managedType()
+     * @see ManagedType#getSingularAttribute(String, Class)
+     */
     final <AttributeType> SingularAttribute<? super EntityType, AttributeType> singularAttribute(
             final String name, final Class<AttributeType> type) {
         return managedType().getSingularAttribute(name, type);
     }
 
+    /**
+     * Returns the singular attribute for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
+     *
+     * @return the singular attribute for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
+     * @see #singularAttribute(String, Class)
+     */
     final SingularAttribute<? super EntityType, Integer> idAttribute() {
         return singularAttribute(BaseEntity.ATTRIBUTE_NAME_ID, Integer.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns the entity whose {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute equals to specified value.
+     *
+     * @param id the value for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
+     * @return the entity identified by specified value; empty if not found.
+     */
+    public Optional<EntityType> findById(final int id) {
+        // TODO: 2019-07-19 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     // -----------------------------------------------------------------------------------------------------------------

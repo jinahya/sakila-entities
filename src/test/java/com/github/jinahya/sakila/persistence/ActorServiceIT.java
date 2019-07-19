@@ -281,7 +281,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
-                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertThat(actor).lastNamedAs(v)))
+                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertThat(actor).hasLastName(v)))
                 .size()
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
@@ -305,7 +305,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingLastName(ascendingOrder))
-                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertThat(actor).firstNamedAs(v)))
+                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertThat(actor).hasFirstName(v)))
                 .size()
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;

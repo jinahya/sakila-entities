@@ -20,10 +20,23 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-class Assertions {
+final class Assertions {
 
     // -----------------------------------------------------------------------------------------------------------------
-    static FullNamedAssert assertThat(final Actor actual) {
+    private static class BaseEntityAssert_ extends BaseEntityAssert<BaseEntityAssert_, BaseEntity> {
+
+        BaseEntityAssert_(final BaseEntity actual) {
+            super(actual);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static BaseEntityAssert<? extends BaseEntityAssert, BaseEntity> assertThat(final BaseEntity actual) {
+        return new BaseEntityAssert_(actual);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static ActorAssert assertThat(final Actor actual) {
         return new ActorAssert(actual);
     }
 

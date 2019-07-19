@@ -21,6 +21,7 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.Objects;
 

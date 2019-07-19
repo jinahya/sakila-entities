@@ -21,6 +21,7 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import org.jboss.weld.junit5.WeldJunit5Extension;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -31,6 +32,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -100,7 +103,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     /**
      * A map of entity classes and their entity counts.
      */
-    private static final Map<Class<?>, Long> COUNTS = synchronizedMap(new WeakHashMap<>());
+    private static final Map<Class<?>, Long> ENTITY_COUNTS = synchronizedMap(new WeakHashMap<>());
 
     /**
      * Counts the total number of entities of specified class.
@@ -109,14 +112,15 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @param entityClass   the entity class to count.
      * @return the number of all entities of specified class.
      */
-    static long entityCount(final EntityManager entityManager, final Class<?> entityClass) {
-        synchronized (COUNTS) {
-            return COUNTS.computeIfAbsent(entityClass, k -> {
-                if (false) {
-                    return entityManager
-                            .createQuery("SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " AS e", Long.class)
-                            .getSingleResult();
-                }
+    static long entityCount(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
+        if (entityManager == null) {
+            throw new NullPointerException("entityManager is null");
+        }
+        if (entityClass == null) {
+            throw new NullPointerException("entityClass is null");
+        }
+        synchronized (ENTITY_COUNTS) {
+            return ENTITY_COUNTS.computeIfAbsent(entityClass, k -> {
                 final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
                 final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
                 criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(entityClass)));
@@ -201,12 +205,14 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link EntityService#size()} method.
+     * Tests {@link EntityService#count()} method.
      */
+    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
+    @Disabled
     @Test
-    void testSize() {
+    void testCount() {
         final long expected = entityCount(entityClass);
-        final long actual = serviceInstance().size();
+        final long actual = serviceInstance().count();
         assertEquals(expected, actual);
     }
 
@@ -217,7 +223,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      *
      * @return an instance of {@link #serviceClass}.
      */
-    final T serviceInstance() {
+    final @NotNull T serviceInstance() {
         return serviceInstance.select(serviceClass).get();
     }
 
@@ -228,7 +234,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      *
      * @return an entity manager.
      */
-    final EntityManager entityManager() {
+    final @NotNull EntityManager entityManager() {
         if (entityManagerProxy == null) {
             entityManagerProxy = uncloseable(entityManager);
         }
@@ -236,11 +242,22 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    final int firstResult() {
+
+    /**
+     * Finds a random entity from the database.
+     *
+     * @return a random entity from the database.
+     */
+    final @NotNull U randomEntity() {
+        return randomEntity(entityManager(), entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    final @PositiveOrZero int firstResult() {
         return firstResult(entityClass);
     }
 
-    final int maxResults() {
+    final @Positive int maxResults() {
         return maxResults(entityClass);
     }
 
