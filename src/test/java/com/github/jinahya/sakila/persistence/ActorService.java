@@ -344,7 +344,7 @@ class ActorService extends BaseEntityService<Actor> {
             if (ascendingOrder) {
                 criteriaQuery.orderBy(criteriaBuilder.asc(lastName));
             } else {
-                criteriaBuilder.desc(lastName);
+                criteriaQuery.orderBy(criteriaBuilder.desc(lastName));
             }
             final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);

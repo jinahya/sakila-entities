@@ -46,11 +46,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * An abstract class for testing subclasses of {@link BaseEntityService}.
  *
- * @param <ServiceType> service type parameter
- * @param <EntityType>  entity type parameter
+ * @param <T> service type parameter
+ * @param <U> entity type parameter
  */
-abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityType>, EntityType extends BaseEntity>
-        extends EntityServiceIT<ServiceType, EntityType> {
+abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends BaseEntity> extends EntityServiceIT<T, U> {
 
     // -----------------------------------------------------------------------------------------------------------------
     // https://www.baeldung.com/java-streams-distinct-by
@@ -104,7 +103,7 @@ abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityT
      * @param serviceClass the service class to test.
      * @param entityClass  the entity class of the {@code serviceClass}.
      */
-    BaseEntityServiceIT(final Class<ServiceType> serviceClass, final Class<EntityType> entityClass) {
+    BaseEntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
         super(serviceClass, entityClass);
     }
 
@@ -117,7 +116,7 @@ abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityT
     @Disabled
     @Test
     void assertFindByIdReturnsEmptyForUnknownId() {
-        final Optional<EntityType> found = serviceInstance().findById(Integer.MIN_VALUE);
+        final Optional<U> found = serviceInstance().findById(Integer.MIN_VALUE);
         assertThat(found).isEmpty();
     }
 
@@ -128,8 +127,8 @@ abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityT
     @Disabled
     @RepeatedTest(16)
     void testFindById() {
-        final EntityType randomEntity = randomEntity();
-        final Optional<EntityType> found = serviceInstance().findById(randomEntity.getId());
+        final U randomEntity = randomEntity();
+        final Optional<U> found = serviceInstance().findById(randomEntity.getId());
         assertThat(found)
                 .isPresent()
                 .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(randomEntity))
@@ -153,7 +152,7 @@ abstract class BaseEntityServiceIT<ServiceType extends BaseEntityService<EntityT
         testReporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
         testReporter.publishEntry("firstResult", Objects.toString(firstResult));
         testReporter.publishEntry("maxResults", Objects.toString(maxResults));
-        final List<EntityType> list = serviceInstance().listSortedByIdIn(ascendingOrder, firstResult, maxResults);
+        final List<U> list = serviceInstance().listSortedByIdIn(ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingId(ascendingOrder))
                 .size().satisfies(s -> ofNullable(maxResults).ifPresent(m -> assertThat(s).isLessThanOrEqualTo(m)))
