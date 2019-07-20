@@ -30,13 +30,14 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.NavigableMap;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
+import static com.github.jinahya.sakila.persistence.Country.comparaingCountry;
 import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
@@ -95,6 +96,36 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         }
     }
 
+    /**
+     * An unmodifiable navigable map of country id and city count.
+     */
+    static final NavigableMap<Integer, Integer> COUNTRY_ID_CITY_COUNT;
+
+    static {
+        try {
+            COUNTRY_ID_CITY_COUNT = unmodifiableNavigableMap(applyResourceScanner(
+                    "country_map_country_id_city_count.txt",
+                    s -> {
+                        final NavigableMap<Integer, Integer> map = new TreeMap<>();
+                        while (s.hasNext()) {
+                            final Integer countryId = s.nextInt();
+                            final Integer cityCount = s.nextInt();
+                            final Integer previous = map.put(countryId, cityCount);
+                            assert previous == null : "duplicate country id: " + countryId;
+                        }
+                        return map;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+
+    static Integer cityCount(final int countryId) {
+        return COUNTRY_ID_CITY_COUNT.get(countryId);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -146,13 +177,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Provides arguments for {@link #testFindByCountry(String)} method.
-     *
-     * @return a stream of arguments.
-     */
-    private static Stream<Arguments> argumentsForTestFindByCountry() {
+    private static Stream<Arguments> argumentsForTestListByCountry() {
         return IntStream.range(0, 17).mapToObj(i -> randomCountry()).map(Country::getCountry).map(Arguments::of);
     }
 
@@ -176,21 +201,16 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Tests {@link CountryService#findByCountry(String)} method.
-     *
-     * @param country a value for {@code country} parameter.
-     */
     // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
     @Disabled
-    @MethodSource({"argumentsForTestFindByCountry"})
+    @MethodSource({"argumentsForTestListByCountry"})
     @ParameterizedTest
-    void testFindByCountry(@NotNull final String country) {
-        final Optional<Country> found = serviceInstance().findByCountry(country);
-        assertThat(found)
-                .isPresent()
-                .hasValueSatisfying(v -> assertThat(v.getCountry()).isEqualTo(country));
+    void testListByCountry(@NotNull final String country) {
+        final List<Country> list = serviceInstance().listByCountry(country);
+        assertThat(list)
+                .isNotEmpty()
+                .allSatisfy(c -> assertThat(c).hasCountry(country))
+        ;
     }
 
     /**
@@ -208,8 +228,9 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         final List<Country> list = serviceInstance().listSortedByCountry(ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isNotNull()
-                .isSortedAccordingTo(Country.comparaingCountry(ascendingOrder))
-                .size().satisfies(s -> ofNullable(maxResults).ifPresent(x -> assertThat(s).isLessThanOrEqualTo(x)));
+                .isSortedAccordingTo(comparaingCountry(ascendingOrder))
+                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
+        ;
     }
 }
 

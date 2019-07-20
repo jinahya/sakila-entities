@@ -1,0 +1,500 @@
+1	Kabul
+2	Batna
+2	Bchar
+2	Skikda
+3	Tafuna
+4	Benguela
+4	Namibe
+5	South Hill
+6	Almirante Brown
+6	Avellaneda
+6	Baha Blanca
+6	Crdoba
+6	Escobar
+6	Ezeiza
+6	La Plata
+6	Merlo
+6	Quilmes
+6	San Miguel de Tucumn
+6	Santa F
+6	Tandil
+6	Vicente Lpez
+7	Yerevan
+8	Woodridge
+9	Graz
+9	Linz
+9	Salzburg
+10	Baku
+10	Sumqayit
+11	al-Manama
+12	Dhaka
+12	Jamalpur
+12	Tangail
+13	Mogiljov
+13	Molodetno
+14	El Alto
+14	Sucre
+15	Alvorada
+15	Angra dos Reis
+15	Anpolis
+15	Aparecida de Goinia
+15	Araatuba
+15	Bag
+15	Belm
+15	Blumenau
+15	Boa Vista
+15	Braslia
+15	Goinia
+15	Guaruj
+15	guas Lindas de Gois
+15	Ibirit
+15	Juazeiro do Norte
+15	Juiz de Fora
+15	Luzinia
+15	Maring
+15	Po
+15	Poos de Caldas
+15	Rio Claro
+15	Santa Brbara dOeste
+15	Santo Andr
+15	So Bernardo do Campo
+15	So Leopoldo
+15	Sorocaba
+15	Vila Velha
+15	Vitria de Santo Anto
+16	Bandar Seri Begawan
+17	Ruse
+17	Stara Zagora
+18	Battambang
+18	Phnom Penh
+19	Bamenda
+19	Yaound
+20	Gatineau
+20	Halifax
+20	Lethbridge
+20	London
+20	Oshawa
+20	Richmond Hill
+20	Vancouver
+21	NDjamna
+22	Antofagasta
+22	Coquimbo
+22	Rancagua
+23	Baicheng
+23	Baiyin
+23	Binzhou
+23	Changzhou
+23	Datong
+23	Daxian
+23	Dongying
+23	Emeishan
+23	Enshi
+23	Ezhou
+23	Fuyu
+23	Fuzhou
+23	Haining
+23	Hami
+23	Hohhot
+23	Huaian
+23	Jinchang
+23	Jining
+23	Jinzhou
+23	Junan
+23	Korla
+23	Laiwu
+23	Laohekou
+23	Lengshuijiang
+23	Leshan
+23	Liaocheng
+23	Meixian
+23	Nanyang
+23	Pingxiang
+23	Qinhuangdao
+23	Rizhao
+23	Sanya
+23	Shanwei
+23	Shaoguan
+23	Shenzhen
+23	Suihua
+23	Tianjin
+23	Tiefa
+23	Tieli
+23	Tongliao
+23	Weifang
+23	Xiangfan
+23	Xiangtan
+23	Xintai
+23	Xinxiang
+23	Yantai
+23	Yinchuan
+23	Yingkou
+23	Yuncheng
+23	Yuzhou
+23	Zalantun
+23	Zaoyang
+23	Zhoushan
+24	Buenaventura
+24	Dos Quebradas
+24	Florencia
+24	Pereira
+24	Sincelejo
+24	Sogamoso
+25	Lubumbashi
+25	Mwene-Ditu
+26	Olomouc
+27	La Romana
+27	San Felipe de Puerto Plata
+27	Santiago de los Caballeros
+28	Loja
+28	Portoviejo
+28	Robamba
+29	Bilbays
+29	Idfu
+29	Mit Ghamr
+29	Qalyub
+29	Sawhaj
+29	Shubra al-Khayma
+30	Tartu
+31	Addis Abeba
+32	Trshavn
+33	Oulu
+34	Brest
+34	Le Mans
+34	Toulon
+34	Toulouse
+35	Cayenne
+36	Faaa
+36	Papeete
+37	Banjul
+38	Duisburg
+38	Erlangen
+38	Halle/Saale
+38	Mannheim
+38	Saarbrcken
+38	Siegen
+38	Witten
+39	Athenai
+39	Patras
+40	Nuuk
+41	Citt del Vaticano
+42	Kowloon and New Kowloon
+43	Szkesfehrvr
+44	Adoni
+44	Ahmadnagar
+44	Allappuzha (Alleppey)
+44	Ambattur
+44	Amroha
+44	Balurghat
+44	Berhampore (Baharampur)
+44	Bhavnagar
+44	Bhilwara
+44	Bhimavaram
+44	Bhopal
+44	Bhusawal
+44	Bijapur
+44	Chandrapur
+44	Chapra
+44	Dhule (Dhulia)
+44	Etawah
+44	Firozabad
+44	Gandhinagar
+44	Gulbarga
+44	Haldia
+44	Halisahar
+44	Hoshiarpur
+44	Hubli-Dharwad
+44	Jaipur
+44	Jhansi
+44	Jodhpur
+44	Kamarhati
+44	Kanchrapara
+44	Karnal
+44	Katihar
+44	Kumbakonam
+44	Miraj
+44	Munger (Monghyr)
+44	Mysore
+44	Nagaon
+44	Palghat (Palakkad)
+44	Parbhani
+44	Pathankot
+44	Patiala
+44	Pudukkottai
+44	Pune
+44	Purnea (Purnia)
+44	Rae Bareli
+44	Rajkot
+44	Rampur
+44	Ranchi
+44	Sambhal
+44	Satna
+44	Shimoga
+44	Shivapuri
+44	Siliguri (Shiliguri)
+44	Tambaram
+44	Udaipur
+44	Uluberia
+44	Uttarpara-Kotrung
+44	Valparai
+44	Varanasi (Benares)
+44	Vijayawada
+44	Yamuna Nagar
+45	Cianjur
+45	Ciomas
+45	Ciparay
+45	Gorontalo
+45	Jakarta
+45	Lhokseumawe
+45	Madiun
+45	Pangkal Pinang
+45	Pemalang
+45	Pontianak
+45	Probolinggo
+45	Purwakarta
+45	Surakarta
+45	Tegal
+46	Arak
+46	Esfahan
+46	Kermanshah
+46	Najafabad
+46	Qomsheh
+46	Shahr-e Kord
+46	Sirjan
+46	Tabriz
+47	Mosul
+48	Ashdod
+48	Ashqelon
+48	Bat Yam
+48	Tel Aviv-Jaffa
+49	Alessandria
+49	Bergamo
+49	Brescia
+49	Brindisi
+49	Livorno
+49	Syrakusa
+49	Udine
+50	Akishima
+50	Fukuyama
+50	Higashiosaka
+50	Hino
+50	Hiroshima
+50	Isesaki
+50	Iwaki
+50	Iwakuni
+50	Iwatsuki
+50	Izumisano
+50	Kakamigahara
+50	Kamakura
+50	Kanazawa
+50	Koriyama
+50	Kurashiki
+50	Kuwana
+50	Matsue
+50	Miyakonojo
+50	Nagareyama
+50	Okayama
+50	Okinawa
+50	Omiya
+50	Onomichi
+50	Otsu
+50	Sagamihara
+50	Sasebo
+50	Shimonoseki
+50	Tama
+50	Tsuyama
+50	Ueda
+50	Urawa
+51	Pavlodar
+51	Zhezqazghan
+52	Kisumu
+52	Nyeri
+53	Jalib al-Shuyukh
+54	Daugavpils
+54	Liepaja
+55	Vaduz
+56	Vilnius
+57	Mahajanga
+58	Lilongwe
+59	Ipoh
+59	Kuching
+59	Sungai Petani
+60	Acua
+60	Allende
+60	Atlixco
+60	Carmen
+60	Celaya
+60	Coacalco de Berriozbal
+60	Coatzacoalcos
+60	Cuauhtmoc
+60	Cuautla
+60	Cuernavaca
+60	El Fuerte
+60	Guadalajara
+60	Hidalgo
+60	Huejutla de Reyes
+60	Huixquilucan
+60	Jos Azueta
+60	Jurez
+60	La Paz
+60	Matamoros
+60	Mexicali
+60	Monclova
+60	Nezahualcyotl
+60	Pachuca de Soto
+60	Salamanca
+60	San Felipe del Progreso
+60	San Juan Bautista Tuxtepec
+60	Torren
+60	Uruapan
+60	Valle de Santiago
+60	Zapopan
+61	Chisinau
+62	Beni-Mellal
+62	Nador
+62	Sal
+63	Beira
+63	Naala-Porto
+63	Tete
+64	Monywa
+64	Myingyan
+65	Yangor
+66	Birgunj
+67	Amersfoort
+67	Apeldoorn
+67	Ede
+67	Emmen
+67	s-Hertogenbosch
+68	Hamilton
+69	Benin City
+69	Deba Habe
+69	Effon-Alaiye
+69	Ife
+69	Ikerre
+69	Ilorin
+69	Kaduna
+69	Ogbomosho
+69	Ondo
+69	Owo
+69	Oyo
+69	Sokoto
+69	Zaria
+70	Pyongyang
+71	Masqat
+71	Salala
+72	Dadu
+72	Mandi Bahauddin
+72	Mardan
+72	Okara
+72	Shikarpur
+73	Asuncin
+73	Ciudad del Este
+73	San Lorenzo
+74	Callao
+74	Hunuco
+74	Lima
+74	Sullana
+75	Baybay
+75	Bayugan
+75	Bislig
+75	Cabuyao
+75	Cavite
+75	Davao
+75	Gingoog
+75	Hagonoy
+75	Iligan
+75	Imus
+75	Lapu-Lapu
+75	Mandaluyong
+75	Ozamis
+75	Santa Rosa
+75	Taguig
+75	Talavera
+75	Tanauan
+75	Tanza
+75	Tarlac
+75	Tuguegarao
+76	Bydgoszcz
+76	Czestochowa
+76	Jastrzebie-Zdrj
+76	Kalisz
+76	Lublin
+76	Plock
+76	Tychy
+76	Wroclaw
+77	Arecibo
+77	Ponce
+78	Botosani
+78	Bucuresti
+79	Saint-Denis
+80	Atinsk
+80	Balaiha
+80	Dzerzinsk
+80	Elista
+80	Ivanovo
+80	Jaroslavl
+80	Jelets
+80	Kaliningrad
+80	Kamyin
+80	Kirovo-Tepetsk
+80	Kolpino
+80	Korolev
+80	Kurgan
+80	Kursk
+80	Lipetsk
+80	Ljubertsy
+80	Maikop
+80	Moscow
+80	Nabereznyje Telny
+80	Niznekamsk
+80	Novoterkassk
+80	Pjatigorsk
+80	Serpuhov
+80	Smolensk
+80	Syktyvkar
+80	Teboksary
+80	Usolje-Sibirskoje
+80	Zeleznogorsk
+81	Kingstown
+82	Abha
+82	al-Hawiya
+82	al-Qatif
+82	Jedda
+82	Tabuk
+83	Ziguinchor
+84	Bratislava
+85	Boksburg
+85	Botshabelo
+85	Chatsworth
+85	Johannesburg
+85	Kimberley
+85	Klerksdorp
+85	Newcastle
+85	Paarl
+85	Rustenburg
+85	Soshanguve
+85	Springs
+86	Cheju
+86	Kimchon
+86	Naju
+86	Tonghae
+86	Uijongbu
+87	A Corua (La Corua)
+87	Donostia-San Sebastin
+87	Gijn
+87	Ourense (Orense)
+87	Santiago de Compostela
+88	Jaffna
+89	al-Qadarif
+89	Omdurman
+90	Malm
+91	Basel
+91	Bern
+91	Lausanne
+92	Changhwa
+92	Chiayi
+92	Chungho
+92	Fengshan
+92	Hsichuh
+92	Lungtan
+92	Nantou
+92	Tanshui
