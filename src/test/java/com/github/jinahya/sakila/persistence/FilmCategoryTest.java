@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class FilmCategoryTest extends EntityTest<FilmCategory> {
 
     // -----------------------------------------------------------------------------------------------------------------
