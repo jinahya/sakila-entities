@@ -132,10 +132,10 @@ class CountryService extends BaseEntityService<Country> {
                                                  @Positive @Nullable final Integer maxResults) {
         if (true) {
             final Query query = entityManager().createQuery(
-                    "SELECT country, COUNT(city) AS count"
+                    "SELECT country, COUNT(city) AS city_count"
                     + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
-                    + " GROUP BY city"
-                    + " ORDER BY count " + (ascendingOrder ? "ASC" : "DESC"));
+                    + " GROUP BY country"
+                    + " ORDER BY city_count DESC, country.country ASC");
         }
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
