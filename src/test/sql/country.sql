@@ -15,3 +15,8 @@ FROM country;
 SELECT country
 FROM country
 ORDER BY country ASC;
+
+SELECT country_id, country
+FROM country
+ORDER BY country_id ASC
+;

@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
 
 import javax.persistence.EntityManager;
+import javax.validation.constraints.NotNull;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,15 +35,18 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.BaseEntity.comparingId;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.LongStream.rangeClosed;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 /**
  * An abstract class for testing subclasses of {@link BaseEntityService}.
@@ -93,6 +98,22 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     static <T extends BaseEntity> List<T> randomEntities(final EntityManager entityManager,
                                                          final Class<? extends T> entityClass) {
         return randomEntities(entityManager, entityClass, s -> s.collect(toList()));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T extends BaseEntity> T unknwonReference(@NotNull final Class<? extends T> entityClass) {
+        try {
+            final Constructor<? extends T> constructor
+                    = requireNonNull(entityClass, "entityClass is null").getDeclaredConstructor();
+            if (!constructor.isAccessible()) {
+                constructor.setAccessible(true);
+            }
+            final T instance = constructor.newInstance();
+            instance.setId(Integer.MIN_VALUE);
+            return instance;
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
