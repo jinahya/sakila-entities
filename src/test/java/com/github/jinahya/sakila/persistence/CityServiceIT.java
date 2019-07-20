@@ -8,17 +8,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableNavigableMap;
+import static com.github.jinahya.sakila.persistence.City.COMPARING_CITY;
 import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,64 +31,12 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The total number of cities in database.
-     */
-    static final int CITY_COUNT_AS_INT = entityCountAsInt(City.class);
-
-    /**
-     * Returns a random city found in database;
-     *
-     * @return a random city found in database;
-     */
-    static City randomCity() {
-        return randomEntity(City.class);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * An unmodifiable navigable map of country ids and a unmodifiable list of cities.
-     */
-    private static final NavigableMap<Integer, List<String>> COUNTRY_ID_CITIES;
-
-    static {
-        try {
-            COUNTRY_ID_CITIES = unmodifiableNavigableMap(applyResourceScanner(
-                    "city_country_id_city.txt",
-                    s -> {
-                        final NavigableMap<Integer, List<String>> map = new TreeMap<>();
-                        while (s.hasNext()) {
-                            final Integer countryId = s.nextInt();
-                            final String city = s.nextLine();
-                            map.compute(countryId, (k, v) -> {
-                                if (v == null) {
-                                    v = new ArrayList<>();
-                                }
-                                v.add(city);
-                                return v;
-                            });
-                        }
-                        for (Integer key : map.keySet().toArray(new Integer[0])) {
-                            map.put(key, unmodifiableList(map.get(key)));
-                        }
-                        return map;
-                    })
-            );
-        } catch (final IOException ioe) {
-            ioe.printStackTrace();
-            throw new InstantiationError(ioe.getMessage());
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
      * Returns a stream of arguments of random cities.
      *
      * @return a stream of arguments of random cities.
      */
     static Stream<Arguments> sourceRandomCities() {
-        return IntStream.range(1, 17).mapToObj(i -> randomCity()).map(Arguments::of);
+        return IntStream.range(1, 17).mapToObj(i -> randomEntity(City.class)).map(Arguments::of);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -114,56 +57,24 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     // ----------------------------------------------------------------------------------------------------------- count
 
     /**
-     * Asserts {@link CityService#count(Country)} method returns {@code 0} for an unknown country.
-     *
-     * @param unknown an unknown country
-     */
-    @MethodSource({"com.github.jinahya.sakila.persistence.CountryServiceIT#sourceUnknownCountries"})
-    @ParameterizedTest
-    void assertCountReturnsZeroForUnknownCountry(@NotNull final Country unknown) {
-        final long count = serviceInstance().count(unknown);
-        assertThat(count)
-                .isZero();
-    }
-
-    /**
-     * Tests {@link CityService#count(Country)} method.
+     * Tests {@link CityService#countByCountry(Country)} method.
      *
      * @param country a value for {@code country} parameter to test with.
      */
     @MethodSource({"com.github.jinahya.sakila.persistence.CountryServiceIT#sourceRandomCountries"})
     @ParameterizedTest
-    void testCount(@NotNull final Country country) {
-        assertNotNull(country);
-        assertTrue(COUNTRY_ID_CITIES.containsKey(country.getId()), "check " + country.getId());
-        final long expected = COUNTRY_ID_CITIES.get(country.getId()).size();
-        final long actual = serviceInstance().count(country);
+    void testCountByCountry(@NotNull final Country country) {
+        final long expected = CountryServiceIT.COUNTRY_ID_CITY_COUNT.get(country.getId());
+        final long actual = serviceInstance().countByCountry(country);
         assertThat(actual)
                 .isNotNegative()
                 .isEqualTo(expected);
     }
 
-    // ------------------------------------------------------------------------------------------------------------ list
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts {@link CityService#list(Country, Integer, Integer)} method returns an empty list for an unknown country.
-     *
-     * @param unknown an unknown country
-     */
-    // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
-    @Disabled
-    @MethodSource({"com.github.jinahya.sakila.persistence.CountryServiceIT#sourceUnknownCountries"})
-    @ParameterizedTest
-    void assertListReturnsEmptyForUnknownCountry(@NotNull final Country unknown) {
-        final List<City> list = serviceInstance().list(unknown, null, null);
-        assertThat(list)
-                .isNotNull()
-                .hasSize(0)
-        ;
-    }
-
-    /**
-     * Tests {@link CityService#list(Country, Integer, Integer)} method.
+     * Tests {@link CityService#listByCountry(Country, Integer, Integer)} method.
      *
      * @param country     a country to test with.
      * @param firstResult a value for {@code firstResult} parameter.
@@ -173,12 +84,13 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     @Disabled
     @MethodSource({"sourceForTestList"})
     @ParameterizedTest
-    void testList(@NotNull final Country country, @Nullable final Integer firstResult,
-                  @Nullable final Integer maxResult) {
-        final List<City> list = serviceInstance().list(country, firstResult, maxResult);
+    void testListByCountry(@NotNull final Country country, @Nullable final Integer firstResult,
+                           @Nullable final Integer maxResult) {
+        final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
         assertThat(list)
                 .isNotNull()
                 .allSatisfy(city -> assertThat(city).residesIn(country))
+                .isSortedAccordingTo(COMPARING_CITY)
                 .hasSizeLessThanOrEqualTo(ofNullable(maxResult).orElse(Integer.MAX_VALUE))
         ;
     }

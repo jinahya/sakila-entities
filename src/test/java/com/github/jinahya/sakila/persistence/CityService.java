@@ -35,14 +35,20 @@ class CityService extends BaseEntityService<City> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    public @PositiveOrZero long countByCity(@NotNull final String city) {
+        // TODO: 2019-07-20 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Counts cities whose {@link City#ATTRIBUTE_NAME_COUNTRY country} attribute equals to specified city.
+     * Counts cities resides in specified country.
      *
      * @param country the value of {@link City#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return the number of cities in specified country.
      */
-    public @PositiveOrZero long count(@NotNull final Country country) {
+    public @PositiveOrZero long countByCountry(@NotNull final Country country) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT COUNT(c) FROM City AS c WHERE c.country = :country");
@@ -78,8 +84,8 @@ class CityService extends BaseEntityService<City> {
     }
 
     /**
-     * Lists cities whose {@link City#ATTRIBUTE_NAME_CITY city} attribute equals to specified country sorted by {@link
-     * City#ATTRIBUTE_NAME_CITY city} attribute in ascending order.
+     * Lists cities resides in specified country sorted by {@link City#ATTRIBUTE_NAME_CITY city} attribute in ascending
+     * order.
      *
      * @param country     the value of {@link City#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @param firstResult position of the first result, numbered from 0; {@code null} for an unspecified result.
@@ -87,8 +93,9 @@ class CityService extends BaseEntityService<City> {
      * @return a list of cities.
      */
     @NotNull
-    public List<@NotNull City> list(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
-                                    @Positive @Nullable final Integer maxResults) {
+    public List<@NotNull City> listByCountry(
+            @NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
+            @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
