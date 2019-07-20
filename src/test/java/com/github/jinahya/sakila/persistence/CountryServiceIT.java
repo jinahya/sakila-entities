@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.NavigableMap;
+import java.util.NavigableSet;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -39,6 +40,7 @@ import java.util.stream.Stream;
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.Country.comparaingCountry;
 import static java.util.Collections.unmodifiableNavigableMap;
+import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -71,6 +73,32 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * An unmodifiable sorted set of {@link Country#ATTRIBUTE_NAME_COUNTRY} attributes.
+     */
+    static final NavigableSet<Integer> COUNTRY_IDS;
+
+    static {
+        try {
+            COUNTRY_IDS = unmodifiableNavigableSet(applyResourceScanner(
+                    "country_set_id.txt",
+                    s -> {
+                        final NavigableSet<Integer> set = new TreeSet<>();
+                        while (s.hasNext()) {
+                            final int countryId = s.nextInt();
+                            final boolean added = set.add(countryId);
+                            assert added : "duplicate country id: " + countryId;
+                        }
+                        return set;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     /**
      * An unmodifiable sorted set of {@link Country#ATTRIBUTE_NAME_COUNTRY} attributes.
      */
@@ -160,7 +188,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    static Country unknown() {
+    static Country unknownCountry() {
         final Country unknown = new Country();
         do {
             unknown.setId(current().nextInt());
@@ -169,7 +197,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     static Stream<Arguments> sourceUnknownCountries() {
-        return IntStream.range(0, 17).mapToObj(i -> unknown()).map(Arguments::of);
+        return IntStream.range(0, 17).mapToObj(i -> unknownCountry()).map(Arguments::of);
     }
 
     static Stream<Arguments> sourceRandomCountries() {

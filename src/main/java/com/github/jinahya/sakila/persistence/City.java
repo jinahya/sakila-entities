@@ -31,9 +31,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static java.util.Comparator.comparing;
 
 /**
  * An entity class for binding {@value #TABLE_NAME} table.
@@ -116,6 +118,13 @@ public class City extends BaseEntity {
     // TODO: 2019-07-10  remove!!!
     @Deprecated // forRemoval = true
     public static final int SIZE_MAX_ADDRESSES = Integer.MAX_VALUE; // TODO: 2019-07-17 what???
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator<City> COMPARING_CITY = comparing(City::getCity);
+
+    public static Comparator<City> comparingCity(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_CITY : COMPARING_CITY.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
