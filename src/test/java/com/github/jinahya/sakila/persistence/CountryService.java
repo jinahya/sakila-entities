@@ -117,8 +117,8 @@ class CountryService extends BaseEntityService<Country> {
     }
 
     /**
-     * Lists countries sorted by the number of cities reside in in either ascending or desdending indicated by specified
-     * flag.
+     * Lists countries sorted by the number of cities reside in them in either ascending or descending indicated by
+     * specified flag.
      *
      * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
      *                       descending order.
@@ -129,6 +129,13 @@ class CountryService extends BaseEntityService<Country> {
     public List<Country> listSortedByCityCountIn(final boolean ascendingOrder,
                                                  @PositiveOrZero @Nullable final Integer firstResult,
                                                  @Positive @Nullable final Integer maxResults) {
+        if (true) {
+            final Query query = entityManager().createQuery(
+                    "SELECT country, COUNT(city) AS count"
+                    + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
+                    + " GROUP BY city"
+                    + " ORDER BY count " + (ascendingOrder ? "ASC" : "DESC"));
+        }
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
