@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public final class BeanValidationTests {
+final class BeanValidationTests {
 
     // -----------------------------------------------------------------------------------------------------------------
 

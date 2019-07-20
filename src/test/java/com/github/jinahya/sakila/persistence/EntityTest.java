@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-public abstract class EntityTest<T> {
+abstract class EntityTest<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
     static <T> T setField(final Class<? extends T> clazz, final T object, final String name, final Object value) {
