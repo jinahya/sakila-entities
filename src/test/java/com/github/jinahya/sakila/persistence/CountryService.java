@@ -31,7 +31,6 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -57,54 +56,6 @@ class CountryService extends BaseEntityService<Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in either ascending order or
-     * descending order indicated by specified flag.
-     *
-     * @param country the value of {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
-     * @return a list of countries
-     */
-    public List<Country> listByCountry(@NotNull final String country) {
-        if (current().nextBoolean()) {
-            final Query query = entityManager()
-                    .createQuery("SELECT c FROM Country AS c WHERE c.country = :country ORDER BY c.id ASC")
-                    .setParameter("country", country);
-            @SuppressWarnings({"unchecked"})
-            final List<Country> list = query.getResultList();
-            return list;
-        }
-        if (current().nextBoolean()) {
-            final TypedQuery<Country> typedQuery = entityManager()
-                    .createQuery("SELECT c FROM Country AS c WHERE c.country = :country ORDER BY c.id ASC",
-                                 Country.class)
-                    .setParameter("country", country);
-            return typedQuery.getResultList();
-        }
-        if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
-            final Root<Country> from = criteriaQuery.from(Country.class);
-            criteriaQuery.select(from);
-            criteriaQuery.where(criteriaBuilder.equal(from.get(Country.ATTRIBUTE_NAME_COUNTRY), country));
-            criteriaQuery.orderBy(criteriaBuilder.asc(from.get(BaseEntity.ATTRIBUTE_NAME_ID)));
-            final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
-            return typedQuery.getResultList();
-        }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
-        final Root<Country> from = criteriaQuery.from(Country.class);
-        criteriaQuery.select(from);
-        //final SingularAttribute<Country, String> countryAttribute = Country_.country;
-        final SingularAttribute<? super Country, String> countryAttribute
-                = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(countryAttribute), country));
-        //final SingularAttribute<BaseEntity, Integer> idAttribute = Country_.id;
-        final SingularAttribute<? super Country, Integer> idAttribute = idAttribute();
-        criteriaQuery.orderBy(criteriaBuilder.asc(from.get(idAttribute)));
-        final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
-        return typedQuery.getResultList();
-    }
 
     /**
      * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in either ascending or
