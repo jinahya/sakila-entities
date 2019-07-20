@@ -64,8 +64,8 @@ class CountryService extends BaseEntityService<Country> {
     }
 
     /**
-     * Lists countries sorted by the number of cities reside in in either ascending or desdending indicated by specified
-     * flag.
+     * Lists countries sorted by the number of cities reside in them in either ascending or descending indicated by
+     * specified flag.
      *
      * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
      *                       descending order.

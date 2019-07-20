@@ -21,11 +21,14 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.util.List;
 import java.util.NavigableMap;
@@ -110,12 +113,18 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Provides arguments for {@link #testListSortedByCountryIn(boolean, Integer, Integer)} method.
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> sourceForTestListSortedByCountry() {
+    private static Stream<Arguments> sourceForTestListSortedByCountryIn() {
+        return IntStream.range(0, 17).mapToObj(i -> arguments(
+                current().nextBoolean(), firstResult(Country.class), maxResults(Country.class)));
+    }
+
+    private static Stream<Arguments> sourceForTestListSortedByCityCountIn() {
         return IntStream.range(0, 17).mapToObj(i -> arguments(
                 current().nextBoolean(), firstResult(Country.class), maxResults(Country.class)));
     }
@@ -140,10 +149,32 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      */
     // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
     @Disabled
-    @MethodSource({"sourceForTestListSortedByCountry"})
+    @MethodSource({"sourceForTestListSortedByCountryIn"})
     @ParameterizedTest
-    void testListSortedByCountryIn(final boolean ascendingOrder, final Integer firstResult, final Integer maxResults) {
+    void testListSortedByCountryIn(final boolean ascendingOrder, @PositiveOrZero @Nullable final Integer firstResult,
+                                   @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().listSortedByCountryIn(ascendingOrder, firstResult, maxResults);
+        assertThat(list)
+                .isNotNull()
+                .isSortedAccordingTo(comparaingCountry(ascendingOrder))
+                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
+        ;
+    }
+
+    /**
+     * Tests {@link CountryService#listSortedByCityCountIn(boolean, Integer, Integer)} method.
+     *
+     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
+     * @param firstResult    a value for {@code firstResult} parameter.
+     * @param maxResults     a value for {@code maxResults} parameter.
+     */
+    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
+    @Disabled
+    @MethodSource({"sourceForTestListSortedByCityCountIn"})
+    @ParameterizedTest
+    void testListSortedByCityCountIn(final boolean ascendingOrder, @PositiveOrZero @Nullable final Integer firstResult,
+                                     @Positive @Nullable final Integer maxResults) {
+        final List<Country> list = serviceInstance().listSortedByCityCountIn(ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(comparaingCountry(ascendingOrder))
