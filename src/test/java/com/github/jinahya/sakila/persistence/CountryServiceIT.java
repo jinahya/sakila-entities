@@ -174,12 +174,6 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     @ParameterizedTest
     void testListSortedByCityCountIn(final boolean ascendingOrder, @PositiveOrZero @Nullable final Integer firstResult,
                                      @Positive @Nullable final Integer maxResults) {
-        final List<Country> list = serviceInstance().listSortedByCityCountIn(ascendingOrder, firstResult, maxResults);
-        assertThat(list)
-                .isNotNull()
-                .isSortedAccordingTo(comparaingCountry(ascendingOrder))
-                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
-        ;
     }
 }
 
