@@ -60,7 +60,8 @@ class CountryService extends BaseEntityService<Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Lists countries whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value.
+     * Returns a list of countries whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified
+     * value sorted by {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute in ascending order.
      *
      * @param country the value of {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return a list of countries
