@@ -23,9 +23,10 @@ SELECT country
 FROM country
 ORDER BY country ASC;
 
+-- ------------------------------------------------------------------------------------------------- country_id, country
 SELECT country_id, country
 FROM country
-ORDER BY country_id ASC
+ORDER BY country_id ASC, country ASC
 ;
 
 SELECT l.country_id, COUNT(r.city_id) AS city_count

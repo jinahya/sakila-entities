@@ -35,12 +35,6 @@ class CityService extends BaseEntityService<City> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    public @PositiveOrZero long countByCity(@NotNull final String city) {
-        // TODO: 2019-07-20 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Counts cities resides in specified country.
