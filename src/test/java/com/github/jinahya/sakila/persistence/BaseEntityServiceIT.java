@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
@@ -46,7 +45,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.LongStream.rangeClosed;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 /**
  * An abstract class for testing subclasses of {@link BaseEntityService}.

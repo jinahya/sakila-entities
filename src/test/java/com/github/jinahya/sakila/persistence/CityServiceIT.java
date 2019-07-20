@@ -21,6 +21,8 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
@@ -132,6 +134,8 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     @MethodSource({"com.github.jinahya.sakila.persistence.CountryServiceIT#sourceRandomCountries"})
     @ParameterizedTest
     void testCount(@NotNull final Country country) {
+        assertNotNull(country);
+        assertTrue(COUNTRY_ID_CITIES.containsKey(country.getId()), "check " + country.getId());
         final long expected = COUNTRY_ID_CITIES.get(country.getId()).size();
         final long actual = serviceInstance().count(country);
         assertThat(actual)
