@@ -210,6 +210,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         assertThat(list)
                 .isNotEmpty()
                 .allSatisfy(c -> assertThat(c).hasCountry(country))
+                .isSortedAccordingTo(BaseEntity.COMPARING_ID)
         ;
     }
 
