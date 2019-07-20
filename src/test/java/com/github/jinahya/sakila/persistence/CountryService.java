@@ -21,6 +21,7 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -32,8 +33,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -58,14 +60,12 @@ class CountryService extends BaseEntityService<Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Finds a country whose {@link Country#ATTRIBUTE_NAME_COUNTRY} attribute matches to specified value. Note that this
-     * method may throw a {@link javax.persistence.NonUniqueResultException} because the {@link
-     * Country#COLUMN_NAME_COUNTRY} column is not unique.
+     * Lists countries whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value.
      *
-     * @param country the value of {@link Country#ATTRIBUTE_NAME_COUNTRY} attribute to match.
-     * @return an optional found entity; empty if not found.
+     * @param country the value of {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
+     * @return a list of countries
      */
-    public Optional<Country> findByCountry(@NotNull final String country) {
+    public List<Country> listByCountry(@NotNull final String country) {
         if (current().nextBoolean()) {
             final Query query = entityManager()
                     .createQuery("SELECT c FROM Country AS c WHERE c.country = :country")
@@ -118,8 +118,8 @@ class CountryService extends BaseEntityService<Country> {
     }
 
     /**
-     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY} attribute in either ascending or descending
-     * indicated by specified flag.
+     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in either ascending or
+     * descending indicated by specified flag.
      *
      * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
      *                       descending order.
@@ -127,8 +127,9 @@ class CountryService extends BaseEntityService<Country> {
      * @param maxResults     the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCountry(final boolean ascendingOrder, final Integer firstResult,
-                                             final Integer maxResults) {
+    public List<Country> listSortedByCountry(final boolean ascendingOrder,
+                                             @PositiveOrZero @Nullable final Integer firstResult,
+                                             @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT c FROM Country AS c ORDER BY c.country " + (ascendingOrder ? "ASC" : "DESC"));
@@ -173,5 +174,22 @@ class CountryService extends BaseEntityService<Country> {
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();
+    }
+
+    /**
+     * Lists countries sorted by the number of cities reside in in either ascending or desdending indicated by specified
+     * flag.
+     *
+     * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
+     *                       descending order.
+     * @param firstResult    the position of the first result to retrieve.
+     * @param maxResults     the maximum number of results to retrieve.
+     * @return a list of countries.
+     */
+    public List<Country> listSortedByCityCount(final boolean ascendingOrder,
+                                               @PositiveOrZero @Nullable final Integer firstResult,
+                                               @Positive @Nullable final Integer maxResults) {
+        // TODO: 2019-07-20 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
     }
 }

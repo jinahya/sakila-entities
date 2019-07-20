@@ -46,6 +46,11 @@ final class Assertions {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    static CountryAssert assertThat(final Country actual) {
+        return new CountryAssert(actual);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     private Assertions() {
         super();
     }
