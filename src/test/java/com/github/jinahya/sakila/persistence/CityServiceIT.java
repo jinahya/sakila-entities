@@ -1,5 +1,6 @@
 package com.github.jinahya.sakila.persistence;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +17,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
-import static java.util.Collections.max;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Optional.ofNullable;
@@ -28,6 +28,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
 
     // -----------------------------------------------------------------------------------------------------------------

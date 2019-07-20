@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,7 +28,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.Optional;
@@ -37,7 +37,6 @@ import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
@@ -50,6 +49,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -96,6 +96,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * An unmodifiable navigable map of country id and country.
      */
@@ -145,6 +146,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Provides arguments for {@link #testFindByCountry(String)} method.
      *

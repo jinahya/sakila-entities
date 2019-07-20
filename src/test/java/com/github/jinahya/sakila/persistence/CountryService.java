@@ -20,6 +20,8 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,7 @@ import java.util.Optional;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class CountryService extends BaseEntityService<Country> {
 
     // -----------------------------------------------------------------------------------------------------------------
