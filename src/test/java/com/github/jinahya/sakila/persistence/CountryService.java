@@ -33,10 +33,13 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.lang.reflect.Array;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A service for {@link Country}.
@@ -121,8 +124,8 @@ class CountryService extends BaseEntityService<Country> {
      * number of cities should be sorted in their {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending
      * order.
      *
-     * @param firstResult    the position of the first result to retrieve.
-     * @param maxResults     the maximum number of results to retrieve.
+     * @param firstResult the position of the first result to retrieve.
+     * @param maxResults  the maximum number of results to retrieve.
      * @return a list of countries.
      */
     public List<Country> listSortedByCityCountIn(@PositiveOrZero @Nullable final Integer firstResult,
@@ -133,6 +136,13 @@ class CountryService extends BaseEntityService<Country> {
                     + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
                     + " GROUP BY country"
                     + " ORDER BY city_count DESC, country.country ASC");
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<Country> countries = ((Stream<Object[]>) query.getResultStream())
+                    .map(v -> (Country) Array.get(v, 0))
+                    .collect(toList());
+            return countries;
         }
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
