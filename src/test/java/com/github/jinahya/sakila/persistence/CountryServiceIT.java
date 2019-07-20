@@ -27,13 +27,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -91,7 +96,55 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    /**
+     * An unmodifiable navigable map of country id and country.
+     */
+    private static final NavigableMap<Integer, String> COUNTRY_ID_COUNTRY;
 
+    static {
+        try {
+            COUNTRY_ID_COUNTRY = unmodifiableNavigableMap(applyResourceScanner(
+                    "country_country_id_country.txt",
+                    s -> {
+                        final NavigableMap<Integer, String> map = new TreeMap<>();
+                        while (s.hasNext()) {
+                            final Integer countryId = s.nextInt();
+                            final String country = s.nextLine();
+                            final String previous = map.put(countryId, country);
+                            assert previous == null : "duplicate country id: " + countryId;
+                        }
+                        return map;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+
+    static String country(final int countryId) {
+        return COUNTRY_ID_COUNTRY.get(countryId);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    static Country unknown() {
+        final Country unknown = new Country();
+        do {
+            unknown.setId(current().nextInt());
+        } while (COUNTRY_ID_COUNTRY.containsKey(unknown.getId()));
+        return unknown;
+    }
+
+    static Stream<Arguments> sourceUnknownCountries() {
+        return IntStream.range(0, 17).mapToObj(i -> unknown()).map(Arguments::of);
+    }
+
+    static Stream<Arguments> sourceRandomCountries() {
+        return IntStream.range(0, 17).mapToObj(i -> randomCountry()).map(Arguments::of);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     /**
      * Provides arguments for {@link #testFindByCountry(String)} method.
      *
