@@ -68,14 +68,11 @@ class CountryService extends BaseEntityService<Country> {
      * number of cities should be sorted in their {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending
      * order.
      *
-     * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
-     *                       descending order.
      * @param firstResult    the position of the first result to retrieve.
      * @param maxResults     the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCityCountIn(final boolean ascendingOrder,
-                                                 @PositiveOrZero @Nullable final Integer firstResult,
+    public List<Country> listSortedByCityCountIn(@PositiveOrZero @Nullable final Integer firstResult,
                                                  @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
