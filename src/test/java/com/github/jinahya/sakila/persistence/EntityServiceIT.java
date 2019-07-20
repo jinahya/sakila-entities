@@ -47,7 +47,6 @@ import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({WeldJunit5Extension.class})
 abstract class EntityServiceIT<T extends EntityService<U>, U> {
@@ -215,8 +214,9 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     void testCount() {
         final long expected = entityCount(entityClass);
         final long actual = serviceInstance().count();
-        assertEquals(expected, actual);
-        assertThat(actual).isNotNegative();
+        assertThat(actual)
+                .isNotNegative()
+                .isEqualTo(expected);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
