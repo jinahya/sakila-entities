@@ -38,7 +38,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    private static Stream<Arguments> sourceForTestList() {
+    private static Stream<Arguments> sourceForListByCountry() {
         return CountryServiceIT.sourceRandomCountries()
                 .map(a -> arguments(a.get()[0], firstResult(City.class), maxResults(City.class)));
     }
@@ -82,7 +82,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
      */
     // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
     @Disabled
-    @MethodSource({"sourceForTestList"})
+    @MethodSource({"sourceForListByCountry"})
     @ParameterizedTest
     void testListByCountry(@NotNull final Country country, @Nullable final Integer firstResult,
                            @Nullable final Integer maxResult) {

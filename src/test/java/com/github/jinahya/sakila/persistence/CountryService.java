@@ -23,7 +23,6 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -48,30 +47,18 @@ class CountryService extends BaseEntityService<Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Returns a list of countries whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified
-     * value sorted by {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute in ascending order.
+     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in either ascending order or
+     * descending order indicated by specified flag.
      *
-     * @param country the value of {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
-     * @return a list of countries
-     */
-    public List<Country> listByCountry(@NotNull final String country) {
-        // TODO: 2019-07-20 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
-     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in either ascending or
-     * descending indicated by specified flag.
-     *
-     * @param ascendingOrder the flag for ordering direction; {@code true} for ascending order; {@code false} for
+     * @param ascendingOrder the flag for sorting direction; {@code true} for ascending order; {@code false} for
      *                       descending order.
      * @param firstResult    the position of the first result to retrieve.
      * @param maxResults     the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCountry(final boolean ascendingOrder,
-                                             @PositiveOrZero @Nullable final Integer firstResult,
-                                             @Positive @Nullable final Integer maxResults) {
+    public List<Country> listSortedByCountryIn(final boolean ascendingOrder,
+                                               @PositiveOrZero @Nullable final Integer firstResult,
+                                               @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -86,9 +73,9 @@ class CountryService extends BaseEntityService<Country> {
      * @param maxResults     the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCityCount(final boolean ascendingOrder,
-                                               @PositiveOrZero @Nullable final Integer firstResult,
-                                               @Positive @Nullable final Integer maxResults) {
+    public List<Country> listSortedByCityCountIn(final boolean ascendingOrder,
+                                                 @PositiveOrZero @Nullable final Integer firstResult,
+                                                 @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
