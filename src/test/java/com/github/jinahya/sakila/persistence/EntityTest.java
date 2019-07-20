@@ -22,11 +22,14 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import static java.util.Objects.requireNonNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * An abstract class for testing an entity class.
@@ -73,6 +76,19 @@ public abstract class EntityTest<T> {
     public EntityTest(final Class<T> entityClass) {
         super();
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Test
+    void log() {
+        final Class<?> clazz = getClass();
+        final String message = "Annotate @Slf4j on " + clazz;
+        try {
+            final Field log = clazz.getDeclaredField("log");
+            assertEquals(Logger.class, log.getType(), message);
+        } catch (final NoSuchFieldException nsfe) {
+            fail(message);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
