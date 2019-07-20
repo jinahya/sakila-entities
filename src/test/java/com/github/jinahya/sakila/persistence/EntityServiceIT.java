@@ -24,6 +24,7 @@ import org.jboss.weld.junit5.WeldJunit5Extension;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.WeakHashMap;
@@ -48,6 +50,8 @@ import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith({WeldJunit5Extension.class})
 abstract class EntityServiceIT<T extends EntityService<U>, U> {
@@ -204,6 +208,31 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         super();
         this.serviceClass = requireNonNull(serviceClass, "serviceClass is null");
         this.entityClass = requireNonNull(entityClass, "entityClass is null");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Test
+    void log() {
+        {
+            final Class<?> clazz = getClass();
+            final String message = "Annotate @Slf4j on " + clazz;
+            try {
+                final Field log = clazz.getDeclaredField("log");
+                assertEquals(Logger.class, log.getType(), message);
+            } catch (final NoSuchFieldException nsfe) {
+                fail(message);
+            }
+        }
+        {
+            final Class<?> clazz = serviceClass;
+            final String message = "Annotate @Slf4j on " + clazz;
+            try {
+                final Field log = clazz.getDeclaredField("log");
+                assertEquals(Logger.class, log.getType(), message);
+            } catch (final NoSuchFieldException nsfe) {
+                fail(message);
+            }
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 package com.github.jinahya.sakila.persistence;
 
+import lombok.extern.slf4j.Slf4j;
+
 /*-
  * #%L
  * sakila-entities
@@ -19,7 +21,7 @@ package com.github.jinahya.sakila.persistence;
  * limitations under the License.
  * #L%
  */
-
+@Slf4j
 class LanguageTest extends BaseEntityTest<Language> {
 
     // -----------------------------------------------------------------------------------------------------------------
