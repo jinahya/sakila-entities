@@ -32,10 +32,21 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * An entity class for binding {@link #TABLE_NAME} table.
+ * <blockquote>
+ * The {@code film_category} table is used to support a many-to-many relationship between films and categories. For each
+ * category applied to a film, there will be one row in the {@code film_category} table listing the category and film.
+ * <p>
+ * The {@code film_category} table refers to the {@link Film film} and {@link Category category} tables using foreign
+ * keys.
+ * </blockquote>
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-film_category.html>The film_category Table
+ * (Sakila Sample Database)</a>
  */
 @IdClass(FilmCategoryId.class)
 @Entity
@@ -50,30 +61,36 @@ public class FilmCategory {
     public static final String TABLE_NAME = "film_category";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_FILM} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the film.
+     * </blockquote>
+     * {@code SMALLINT(5) PK NN UN}
+     */
     public static final String COLUMN_NAME_FILM_ID = "film_id";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_FILM_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_FILM = "film";
-
-    // -----------------------------------------------------------------------------------------------------------------
-    public static final String COLUMN_NAME_CATEGORY_ID = "category_id";
-
-    public static final String ATTRIBUTE_NAME_CATEGORY = "category";
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a new instance with specified film and category.
-     *
-     * @param film     a value for {@value #ATTRIBUTE_NAME_FILM} attribute.
-     * @param category a value for {@value #ATTRIBUTE_NAME_CATEGORY} attribute.
-     * @return a new instance.
+     * The database column name for {@value #ATTRIBUTE_NAME_CATEGORY} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key identifying the category.
+     * </blockquote>
+     * {@code TINYINT(3) PK NN UN}
      */
-    public static FilmCategory of(final Film film, final Category category) {
-        final FilmCategory instance = new FilmCategory();
-        instance.setFilm(film);
-        instance.setCategory(category);
-        return instance;
-    }
+    public static final String COLUMN_NAME_CATEGORY_ID = "category_id";
+
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_CATEGORY_ID} column. The value is {@value}.
+     */
+    public static final String ATTRIBUTE_NAME_CATEGORY = "category";
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -118,10 +135,21 @@ public class FilmCategory {
     }
 
     // -------------------------------------------------------------------------------------------------------- category
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_CATEGORY category} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_CATEGORY category} attribute.
+     */
     public Category getCategory() {
         return category;
     }
 
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_CATEGORY category} attribute with specified value.
+     *
+     * @param category new value for {@link #ATTRIBUTE_NAME_CATEGORY category} attribute.
+     */
     public void setCategory(final Category category) {
         this.category = category;
     }
@@ -134,12 +162,11 @@ public class FilmCategory {
      * @return the current value of {@link BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
      */
     public Date getLastUpdate() {
-        if (lastUpdate == null) {
-            return null;
-        }
-        return new Date(lastUpdate.getTime());
+        return ofNullable(lastUpdate).map(v -> new Date(v.getTime())).orElse(null);
     }
 
+    @Deprecated
+        // forTestingPurposeOnly = true
     void setLastUpdate(final Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }

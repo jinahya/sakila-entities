@@ -474,7 +474,11 @@ public class Film extends BaseEntity {
         }
 
         // -------------------------------------------------------------------------------------------------------------
-        private final String databaseColumn;
+
+        /**
+         * The database column value of this constant.
+         */
+        final String databaseColumn;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

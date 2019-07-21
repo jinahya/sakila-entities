@@ -163,7 +163,7 @@ class FilmActorService extends EntityService<FilmActor> {
     /**
      * Count all actors played in specified film.
      *
-     * @param film the film to match.
+     * @param film the film whose actors are counted.
      * @return the number of actors mapped to specified film.
      */
     public @PositiveOrZero long countActors(@NotNull final Film film) {
@@ -177,7 +177,7 @@ class FilmActorService extends EntityService<FilmActor> {
      * Lists actors played in specified film ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} in ascending
      * order.
      *
-     * @param film        the film to match.
+     * @param film        the film whose actors are listed.
      * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}.
      * @param maxResults  a value for {@link TypedQuery#setMaxResults(int)}.
      * @return a list of mapped actors of specified film.
