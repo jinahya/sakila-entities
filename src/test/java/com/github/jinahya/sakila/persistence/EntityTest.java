@@ -81,7 +81,7 @@ abstract class EntityTest<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts this class is annotated with {@code @Slf4j}.
+     * Asserts this test class is annotated with {@code @Slf4j}.
      */
     @Test
     void assertAnnotatedWithSlf4j() {

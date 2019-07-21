@@ -211,29 +211,32 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Assert both {@code getClass()} and {@link #serviceClass} are annotated with {@code @Slf4j}.
+     * Assert {@link #serviceClass} is annotated with {@code @Slf4j}.
+     */
+    @Test
+    void assertServiceClassAnnotatedWithSlf4j() {
+        final Class<?> clazz = serviceClass;
+        final String message = "Annotate @Slf4j on " + clazz;
+        try {
+            final Field log = clazz.getDeclaredField("log");
+            assertEquals(Logger.class, log.getType(), message);
+        } catch (final NoSuchFieldException nsfe) {
+            fail(message);
+        }
+    }
+
+    /**
+     * Asserts this IT class is annotated with {@code @Slf4j}.
      */
     @Test
     void assertAnnotatedWithSlf4j() {
-        {
-            final Class<?> clazz = getClass();
-            final String message = "Annotate @Slf4j on " + clazz;
-            try {
-                final Field log = clazz.getDeclaredField("log");
-                assertEquals(Logger.class, log.getType(), message);
-            } catch (final NoSuchFieldException nsfe) {
-                fail(message);
-            }
-        }
-        {
-            final Class<?> clazz = serviceClass;
-            final String message = "Annotate @Slf4j on " + clazz;
-            try {
-                final Field log = clazz.getDeclaredField("log");
-                assertEquals(Logger.class, log.getType(), message);
-            } catch (final NoSuchFieldException nsfe) {
-                fail(message);
-            }
+        final Class<?> clazz = getClass();
+        final String message = "Annotate @Slf4j on " + clazz;
+        try {
+            final Field log = clazz.getDeclaredField("log");
+            assertEquals(Logger.class, log.getType(), message);
+        } catch (final NoSuchFieldException nsfe) {
+            fail(message);
         }
     }
 
