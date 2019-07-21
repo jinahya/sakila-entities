@@ -20,11 +20,14 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * A service class for {@link Film}.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class FilmService extends BaseEntityService<Film> {
 
     // -----------------------------------------------------------------------------------------------------------------

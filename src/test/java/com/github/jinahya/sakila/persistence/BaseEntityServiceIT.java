@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @param <T> service type parameter
  * @param <U> entity type parameter
  */
+@Slf4j
 abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends BaseEntity> extends EntityServiceIT<T, U> {
 
     // -----------------------------------------------------------------------------------------------------------------

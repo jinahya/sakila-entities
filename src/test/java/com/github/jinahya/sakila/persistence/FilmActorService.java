@@ -20,6 +20,8 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -31,6 +33,7 @@ import java.util.List;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class FilmActorService extends EntityService<FilmActor> {
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.List;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class ActorService extends BaseEntityService<Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.metamodel.ManagedType;
@@ -35,6 +36,7 @@ import java.util.Optional;
  * @param <T> entity type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
