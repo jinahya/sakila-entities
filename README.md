@@ -2,6 +2,13 @@
 Defines entities for [Sakila Sample Database](https://dev.mysql.com/doc/sakila/en/).
 
 
+## sakila-db
+### additional rows inserted for testing
+#### country
+|country_id|country |
+|----------|--------|
+|`65535`   |`Asgard`|
+```
 ## Running sakila-db with Docker
 We need a running database for testing our entities.
 
