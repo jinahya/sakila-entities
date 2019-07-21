@@ -31,6 +31,8 @@
                 value="jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}"/>
       <property name="javax.persistence.jdbc.user" value="${mysql.user}"/>
       <property name="javax.persistence.jdbc.password" value="${mysql.password}"/>
+      <property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
     </properties>
   </persistence-unit>
 </persistence>

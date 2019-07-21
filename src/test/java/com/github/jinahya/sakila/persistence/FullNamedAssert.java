@@ -30,13 +30,21 @@ import java.lang.reflect.Type;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * An class for asserting {@link FullNamed}.
+ * An interface for asserting {@link FullNamed}.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 interface FullNamedAssert<T extends AbstractAssert<T, U> & FullNamedAssert<T, U>, U extends FullNamed> {
 
     // ------------------------------------------------------------------------------------------------------- firstName
+
+    /**
+     * Asserts the {@code actual}'s {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute equals to specified
+     * value.
+     *
+     * @param expectedFirstName the value for {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute to match.
+     * @return this assert.
+     */
     @SuppressWarnings({"unchecked"})
     default T hasFirstName(@NotNull final String expectedFirstName) {
         assertThat(actual())
@@ -45,6 +53,14 @@ interface FullNamedAssert<T extends AbstractAssert<T, U> & FullNamedAssert<T, U>
         return (T) this;
     }
 
+    /**
+     * Asserts the {@code actual} has the same {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} with specified
+     * entity.
+     *
+     * @param whoseFirstNameExpected the entity whose {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} is used to
+     *                               match.
+     * @return this assert.
+     */
     default T hasSameFirstNameAs(@NotNull final FullNamed whoseFirstNameExpected) {
         return hasFirstName(whoseFirstNameExpected.getFirstName());
     }
@@ -68,22 +84,18 @@ interface FullNamedAssert<T extends AbstractAssert<T, U> & FullNamedAssert<T, U>
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    @SuppressWarnings({"unchecked"})
     default U actual() {
         final Class<?> clazz = getClass();
         if (!AbstractAssert.class.isAssignableFrom(clazz)) {
             throw new RuntimeException("class(" + clazz + ") is not assignable to " + AbstractAssert.class);
         }
         try {
-            final Field field = clazz.getDeclaredField("actual");
+            final Field field = AbstractAssert.class.getDeclaredField("actual");
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            final Object actual = field.get(this);
-            final Type actualType
-                    = ((ParameterizedType) field.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            @SuppressWarnings({"unchecked"})
-            final Class<U> actualClass = (Class<U>) actualType;
-            return actualClass.cast(actual);
+            return (U) field.get(this);
         } catch (final ReflectiveOperationException roe) {
             throw new RuntimeException(roe);
         }

@@ -157,7 +157,7 @@ public class Country extends BaseEntity {
     // ---------------------------------------------------------------------------------------------------------- cities
     // TODO: 2019-07-12 remove!!!
     @Deprecated // forRemoval = true
-    public Set<City> getCities() {
+    public Set<@NotNull City> getCities() {
         if (cities == null) {
             cities = new HashSet<>();
         }
@@ -185,6 +185,7 @@ public class Country extends BaseEntity {
     // TODO: 2019-07-12 remove!!!
     @Deprecated // forRemoval = true
     @Size(min = SIZE_MIN_CITIES, max = SIZE_MAX_CITIES)
+    @NotNull
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = City.ATTRIBUTE_NAME_COUNTRY, orphanRemoval = false,
                targetEntity = City.class)
     @NamedAttribute(ATTRIBUTE_NAME_CITIES)
