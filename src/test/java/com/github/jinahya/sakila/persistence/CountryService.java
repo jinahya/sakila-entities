@@ -27,6 +27,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
@@ -128,14 +130,13 @@ class CountryService extends BaseEntityService<Country> {
      * @param maxResults  the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCityCountIn(@PositiveOrZero @Nullable final Integer firstResult,
-                                                 @Positive @Nullable final Integer maxResults) {
-        if (true) {
+    public List<Country> listSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
+                                               @Positive @Nullable final Integer maxResults) {
+        if (true || current().nextBoolean()) {
             final Query query = entityManager().createQuery(
-                    "SELECT country, COUNT(city) AS city_count"
-                    + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
-                    + " GROUP BY country"
-                    + " ORDER BY city_count DESC, country.country ASC");
+                    "SELECT country"
+                    + " FROM Country AS country"
+                    + " ORDER BY COUNT(country.cities) DESC, country.country ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
             @SuppressWarnings({"unchecked"})
@@ -144,7 +145,34 @@ class CountryService extends BaseEntityService<Country> {
                     .collect(toList());
             return countries;
         }
-        // TODO: 2019-07-20 implement!!!
+        if (true || current().nextBoolean()) {
+            final TypedQuery<Object[]> typedQuery = entityManager().createQuery(
+                    "SELECT country, COUNT(city)"
+                    + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
+                    + " GROUP BY country"
+                    + " ORDER BY COUNT(city) DESC, country.country ASC",
+                    Object[].class);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultStream().map(v -> (Country) Array.get(v, 0)).collect(toList());
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+            final Root<Country> country = criteriaQuery.from(Country.class);
+            final Join<Country, City> cities = country.join(Country.ATTRIBUTE_NAME_CITIES, JoinType.LEFT);
+
+
+            final TypedQuery<Object[]> typedQuery = entityManager().createQuery(
+                    "SELECT country, COUNT(city)"
+                    + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
+                    + " GROUP BY country"
+                    + " ORDER BY COUNT(city) DESC, country.country ASC",
+                    Object[].class);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultStream().map(v -> (Country) Array.get(v, 0)).collect(toList());
+        }
         throw new UnsupportedOperationException("not implemented yet");
     }
 }

@@ -125,7 +125,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
                 current().nextBoolean(), firstResult(Country.class), maxResults(Country.class)));
     }
 
-    private static Stream<Arguments> sourceForTestListSortedByCityCountIn() {
+    private static Stream<Arguments> sourceForTestListSortedByCityCount() {
         return IntStream.range(0, 17).mapToObj(i -> arguments(firstResult(Country.class), maxResults(Country.class)));
     }
 
@@ -160,17 +160,17 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     /**
-     * Tests {@link CountryService#listSortedByCityCountIn(Integer, Integer)} method.
+     * Tests {@link CountryService#listSortedByCityCount(Integer, Integer)} method.
      *
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
     // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
     @Disabled
-    @MethodSource({"sourceForTestListSortedByCityCountIn"})
+    @MethodSource({"sourceForTestListSortedByCityCount"})
     @ParameterizedTest
-    void testListSortedByCityCountIn(@PositiveOrZero @Nullable final Integer firstResult,
-                                     @Positive @Nullable final Integer maxResults) {
+    void testListSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
+                                   @Positive @Nullable final Integer maxResults) {
     }
 }
 
