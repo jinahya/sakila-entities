@@ -20,17 +20,20 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.Optional;
 
 /**
- * A service for {@link Category}.
+ * A service for {@link Category} entity.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class CategoryService extends BaseEntityService<Category> {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -45,28 +48,26 @@ class CategoryService extends BaseEntityService<Category> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Finds the category whose {@link Category#ATTRIBUTE_NAME_NAME} attribute matches to specified value.
+     * Lists categories whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value sorted by
+     * {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute in ascending order.
      *
-     * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME} attribute to match.
-     * @return an optional of found entity.
+     * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME name} attribute to match.
+     * @return a list of categories.
      */
-    public Optional<Category> findByName(@NotNull final String name) {
+    public List<Category> listByName(@NotNull final String name) {
         // TODO: 2019-07-16 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Returns a list of categories sorted by {@link Category#ATTRIBUTE_NAME_NAME} attribute in the order indicated by
-     * specified flag.
+     * Returns a list of categories sorted by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending order.
      *
-     * @param ascendingOrder the flag for ordering; {@code true} for ascending order; {@code false} for descending
-     *                       order.
-     * @param firstResult    the position of the first result to retrieve.
-     * @param maxResults     the maximum number of results to retrieve.
-     * @return a stream of, optionally paged, categorys.
+     * @param firstResult the position of the first result to retrieve.
+     * @param maxResults  the maximum number of results to retrieve.
+     * @return a stream of, optionally paged, category.
      */
-    public List<Category> listSortedByName(final boolean ascendingOrder, @PositiveOrZero final Integer firstResult,
-                                           @Positive final Integer maxResults) {
+    public List<Category> listSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
+                                           @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-16 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }

@@ -20,35 +20,52 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import java.io.IOException;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static java.util.Collections.unmodifiableSortedMap;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static java.util.Collections.unmodifiableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * A class for testing {@link FilmCategoryService}.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCategory> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable sorted map of category id and film count.
+     * An unmodifiable map of category ids and film count.
      */
-    static final SortedMap<Integer, Integer> CATEGORY_ID_FILM_COUNT;
+    private static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
 
     static {
         try {
-            CATEGORY_ID_FILM_COUNT = unmodifiableSortedMap(applyResourceScanner(
-                    "film_category_category_id_film_count.txt",
+            CATEGORY_ID_FILM_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_category_map_category_id_film_count.txt",
                     s -> {
-                        final SortedMap<Integer, Integer> map = new TreeMap<>();
+                        final Map<Integer, Integer> map = new HashMap<>();
                         while (s.hasNext()) {
                             final Integer categoryId = s.nextInt();
-                            final Integer previous = map.put(categoryId, s.nextInt());
+                            final int filmCount = s.nextInt();
+                            final Integer previous = map.put(categoryId, filmCount);
                             assert previous == null : "duplicate film id: " + categoryId;
                         }
                         return map;
@@ -62,19 +79,20 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable sorted map of film id and category count.
+     * An unmodifiable map of film ids and category count.
      */
-    static final SortedMap<Integer, Integer> FILM_ID_CATEGORY_COUNT;
+    private static final Map<Integer, Integer> FILM_ID_CATEGORY_COUNT;
 
     static {
         try {
-            FILM_ID_CATEGORY_COUNT = unmodifiableSortedMap(applyResourceScanner(
-                    "film_category_film_id_category_count.txt",
+            FILM_ID_CATEGORY_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_category_map_film_id_category_count.txt",
                     s -> {
-                        final SortedMap<Integer, Integer> map = new TreeMap<>();
+                        final Map<Integer, Integer> map = new HashMap<>();
                         while (s.hasNext()) {
-                            final Integer filmId = s.nextInt();
-                            final Integer previous = map.put(filmId, s.nextInt());
+                            final int filmId = s.nextInt();
+                            final int categoryCount = s.nextInt();
+                            final Integer previous = map.put(filmId, categoryCount);
                             assert previous == null : "duplicate film id: " + filmId;
                         }
                         return map;
@@ -88,6 +106,27 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Provides arguments for {@link #testCountCategories(Film)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestCountCategories() {
+        return IntStream.range(0, 8).mapToObj(i -> randomEntity(Film.class)).map(Arguments::of);
+    }
+
+    /**
+     * Provides arguments for {@link #testListCategories(Film, Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestListCategories() {
+        return IntStream.range(0, 8).mapToObj(
+                i -> arguments(randomEntity(Film.class), 0, entityCountAsInt(Category.class)));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * Creates a new instance.
      */
     FilmCategoryServiceIT() {
@@ -95,4 +134,39 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmCategoryService#countCategories(Film)}.
+     *
+     * @param film a value for {@code film} parameter.
+     */
+    // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @MethodSource({"argumentsForTestCountCategories"})
+    @ParameterizedTest
+    void testCountCategories(@NotNull final Film film) {
+        final long expected = FilmServiceIT.FILM_ID_CATEGORY_COUNT.get(film.getId());
+        final long actual = serviceInstance().countCategories(film);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmCategoryService#listCategories(Film, Integer, Integer)} method with specified arguments.
+     *
+     * @param film        the film whose categories are listed as sorted by {@link Category#ATTRIBUTE_NAME_NAME name}
+     *                    attribute in ascending order.
+     * @param firstResult a value for {@code firstResult} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
+     */
+    @MethodSource({"argumentsForTestListCategories"})
+    @ParameterizedTest
+    void testListCategories(@NotNull final Film film, @PositiveOrZero @Nullable final Integer firstResult,
+                            @Positive @Nullable final Integer maxResults) {
+        final List<Category> list = serviceInstance().listCategories(film, firstResult, maxResults);
+        assertThat(list)
+                .isSortedAccordingTo(Category.COMPARING_NAME)
+        ;
+    }
 }

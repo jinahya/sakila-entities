@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-public abstract class EntityTest<T> {
+abstract class EntityTest<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
     static <T> T setField(final Class<? extends T> clazz, final T object, final String name, final Object value) {
@@ -79,8 +79,12 @@ public abstract class EntityTest<T> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Asserts this test class is annotated with {@code @Slf4j}.
+     */
     @Test
-    void log() {
+    void assertAnnotatedWithSlf4j() {
         final Class<?> clazz = getClass();
         final String message = "Annotate @Slf4j on " + clazz;
         try {

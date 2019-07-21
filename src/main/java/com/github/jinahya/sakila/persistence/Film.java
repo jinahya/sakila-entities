@@ -302,7 +302,7 @@ public class Film extends BaseEntity {
     public static final String RATING_NC_17 = "NC-17";
 
     /**
-     * Constants for {@link #ATTRIBUTE_NAME_RATING} attribute.
+     * Constants for {@link #ATTRIBUTE_NAME_RATING rating} attribute.
      *
      * @see <a href="https://en.wikipedia.org/wiki/Motion_Picture_Association_of_America_film_rating_system#MPAA_film_ratings">MPAA
      * film ratings (Wikipedia)</a>
@@ -426,7 +426,7 @@ public class Film extends BaseEntity {
     public static final String SPECIAL_FEATURE_BEHIND_THE_SCENES = "Behind the Scenes";
 
     /**
-     * Constants for {@link #ATTRIBUTE_NAME_SPECIAL_FEATURES} attribute.
+     * Constants for {@link #ATTRIBUTE_NAME_SPECIAL_FEATURES specialFeatures} attribute.
      */
     public enum SpecialFeature implements CustomValuedEnum<SpecialFeature, String> {
 
@@ -474,7 +474,11 @@ public class Film extends BaseEntity {
         }
 
         // -------------------------------------------------------------------------------------------------------------
-        private final String databaseColumn;
+
+        /**
+         * The database column value of this constant.
+         */
+        final String databaseColumn;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -483,6 +487,7 @@ public class Film extends BaseEntity {
      * A converter class for converting between a set of {@link SpecialFeature}s and comma separated columns.
      */
     @Converter
+    @Deprecated // forRemoval = true
     public static class SpecialFeaturesAttributeConverter
             extends CustomValuedEnumSetJoinedStringAttributeConverter<SpecialFeature> {
 
@@ -498,12 +503,12 @@ public class Film extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 7/13/2019 remove!!!
-    @Deprecated // forRemoval
+    @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_CATEGORIES = "categories";
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 7/13/2019 remove!!!
-    @Deprecated // forRemoval
+    @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_ACTORS = "actors";
 
     // -----------------------------------------------------------------------------------------------------------------

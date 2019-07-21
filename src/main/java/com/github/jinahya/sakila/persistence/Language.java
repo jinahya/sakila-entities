@@ -151,7 +151,7 @@ public class Language extends BaseEntity {
      * Returns a comparator for comparing with {@link #ATTRIBUTE_NAME_NAME} attribute in either natural or reverse
      * direction.
      *
-     * @param natural a flag for comparation direction; {@code true} for natural direction, {@code false} for reverse
+     * @param natural a flag for comparison direction; {@code true} for natural direction, {@code false} for reverse
      *                direction.
      * @return a comparator.
      */

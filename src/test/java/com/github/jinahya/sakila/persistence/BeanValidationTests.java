@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-public final class BeanValidationTests {
+final class BeanValidationTests {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ public final class BeanValidationTests {
      * Validates specified object.
      *
      * @param object the object to be validated.
-     * @param <T>    object type paraamter
+     * @param <T>    object type parameter
      * @return a set of constraint violations; empty if valid.
      */
     static <T> Set<ConstraintViolation<T>> validate(final T object) {

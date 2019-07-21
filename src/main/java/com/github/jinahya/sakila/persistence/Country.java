@@ -107,7 +107,7 @@ public class Country extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
     public static final Comparator<Country> COMPARING_COUNTRY = comparing(Country::getCountry);
 
-    public static Comparator<Country> comparaingCountry(final boolean natural) {
+    public static Comparator<Country> comparingCountry(final boolean natural) {
         return natural ? COMPARING_COUNTRY : COMPARING_COUNTRY.reversed();
     }
 
@@ -157,7 +157,7 @@ public class Country extends BaseEntity {
     // ---------------------------------------------------------------------------------------------------------- cities
     // TODO: 2019-07-12 remove!!!
     @Deprecated // forRemoval = true
-    public Set<City> getCities() {
+    public Set<@NotNull City> getCities() {
         if (cities == null) {
             cities = new HashSet<>();
         }
@@ -185,6 +185,7 @@ public class Country extends BaseEntity {
     // TODO: 2019-07-12 remove!!!
     @Deprecated // forRemoval = true
     @Size(min = SIZE_MIN_CITIES, max = SIZE_MAX_CITIES)
+    @NotNull
     @OneToMany(cascade = {}, fetch = FetchType.LAZY, mappedBy = City.ATTRIBUTE_NAME_COUNTRY, orphanRemoval = false,
                targetEntity = City.class)
     @NamedAttribute(ATTRIBUTE_NAME_CITIES)

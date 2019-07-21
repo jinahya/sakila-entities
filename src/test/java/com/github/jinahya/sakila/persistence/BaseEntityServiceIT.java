@@ -99,7 +99,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends BaseEntity> T unknwonReference(@NotNull final Class<? extends T> entityClass) {
+    static <T extends BaseEntity> T unknownReference(@NotNull final Class<? extends T> entityClass) {
         try {
             final Constructor<? extends T> constructor
                     = requireNonNull(entityClass, "entityClass is null").getDeclaredConstructor();
@@ -146,11 +146,11 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     @Disabled
     @RepeatedTest(16)
     void testFindById() {
-        final U randomEntity = randomEntity();
-        final Optional<U> found = serviceInstance().findById(randomEntity.getId());
+        final U entity = randomEntity(entityClass);
+        final Optional<U> found = serviceInstance().findById(entity.getId());
         assertThat(found)
                 .isPresent()
-                .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(randomEntity))
+                .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(entity))
         ;
     }
 
@@ -166,8 +166,8 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     @RepeatedTest(16)
     void testListSortedById(final TestReporter testReporter) {
         final boolean ascendingOrder = current().nextBoolean();
-        final Integer firstResult = current().nextBoolean() ? null : firstResult();
-        final Integer maxResults = current().nextBoolean() ? null : maxResults();
+        final Integer firstResult = current().nextBoolean() ? null : firstResult(entityClass);
+        final Integer maxResults = current().nextBoolean() ? null : maxResults(entityClass);
         testReporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
         testReporter.publishEntry("firstResult", Objects.toString(firstResult));
         testReporter.publishEntry("maxResults", Objects.toString(maxResults));
