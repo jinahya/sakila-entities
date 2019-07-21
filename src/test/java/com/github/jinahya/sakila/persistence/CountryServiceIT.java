@@ -22,8 +22,6 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,34 +53,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  */
 @Slf4j
 class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * An unmodifiable navigable map of country id and city count.
-     */
-    static final NavigableMap<Integer, String> COUNTRY_ID_COUNTRY;
-
-    static {
-        try {
-            COUNTRY_ID_COUNTRY = unmodifiableNavigableMap(applyResourceScanner(
-                    "country_map_country_id_country.txt",
-                    s -> {
-                        final NavigableMap<Integer, String> map = new TreeMap<>();
-                        while (s.hasNext()) {
-                            final Integer countryId = s.nextInt();
-                            final String country = s.nextLine();
-                            final String previous = map.put(countryId, country);
-                            assert previous == null : "duplicate country id: " + countryId;
-                        }
-                        return map;
-                    })
-            );
-        } catch (final IOException ioe) {
-            ioe.printStackTrace();
-            throw new InstantiationError(ioe.getMessage());
-        }
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -187,16 +157,9 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     void testListSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
                                    @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().listSortedByCityCount(firstResult, maxResults);
-        list.forEach(v -> log.debug("country: {}", v));
         assertThat(list).isSortedAccordingTo(COMPARING_CITY_COUNT.reversed());
         list.stream().collect(Collectors.groupingBy(CountryServiceIT::cityCount)).values()
                 .forEach(v -> assertThat(v).isSortedAccordingTo(Country.COMPARING_COUNTRY));
-    }
-
-    @Test
-    void testListSortedByCityCountForAsgard() {
-        final List<Country> list = serviceInstance().listSortedByCityCount(entityCountAsInt(Country.class) - 1, 1);
-        list.forEach(v -> log.debug("country: {}", v));
     }
 }
 
