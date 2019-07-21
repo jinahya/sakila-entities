@@ -144,7 +144,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     @Disabled
     @RepeatedTest(16)
     void testFindById() {
-        final U entity = randomEntity();
+        final U entity = randomEntity(entityClass);
         final Optional<U> found = serviceInstance().findById(entity.getId());
         assertThat(found)
                 .isPresent()
