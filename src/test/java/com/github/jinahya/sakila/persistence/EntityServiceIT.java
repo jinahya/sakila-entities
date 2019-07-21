@@ -210,8 +210,12 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Assert both {@code getClass()} and {@link #serviceClass} are annotated with {@code @Slf4j}.
+     */
     @Test
-    void log() {
+    void assertAnnotatedWithSlf4j() {
         {
             final Class<?> clazz = getClass();
             final String message = "Annotate @Slf4j on " + clazz;
