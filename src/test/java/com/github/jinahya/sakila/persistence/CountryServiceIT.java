@@ -83,8 +83,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         }
     }
 
-    static int cityCount(final Integer countryId) {
-        return ofNullable(COUNTRY_ID_CITY_COUNT.get(requireNonNull(countryId, "countryId is null")))
+    static int cityCount(final int countryId) {
+        return ofNullable(COUNTRY_ID_CITY_COUNT.get(countryId))
                 .orElseThrow(() -> new IllegalArgumentException("unknown country id: " + countryId));
     }
 
