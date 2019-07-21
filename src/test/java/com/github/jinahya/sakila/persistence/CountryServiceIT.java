@@ -22,6 +22,8 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -172,6 +174,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         ;
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Tests {@link CountryService#listSortedByCityCount(Integer, Integer)} method.
      *
@@ -187,6 +191,12 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         assertThat(list).isSortedAccordingTo(COMPARING_CITY_COUNT.reversed());
         list.stream().collect(Collectors.groupingBy(CountryServiceIT::cityCount)).values()
                 .forEach(v -> assertThat(v).isSortedAccordingTo(Country.COMPARING_COUNTRY));
+    }
+
+    @Test
+    void testListSortedByCityCountForAsgard() {
+        final List<Country> list = serviceInstance().listSortedByCityCount(entityCountAsInt(Country.class) - 1, 1);
+        list.forEach(v -> log.debug("country: {}", v));
     }
 }
 

@@ -27,7 +27,7 @@ buildNumber.properties
 *.bak
 
 
-Dockerfile
+#Dockerfile
 .sakila-db.mysql.sh
 sakila-db.address.sh
 sakila-db.build.sh
