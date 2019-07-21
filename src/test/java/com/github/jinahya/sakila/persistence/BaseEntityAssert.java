@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * An assert for  {@link BaseEntity}.
  *
  * @param <T> assert type parameter
- * @param <U> full named type paramter
+ * @param <U> full named type parameter
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 class BaseEntityAssert<T extends BaseEntityAssert<T, U>, U extends BaseEntity> extends AbstractAssert<T, U> {

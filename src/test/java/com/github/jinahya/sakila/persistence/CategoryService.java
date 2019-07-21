@@ -110,7 +110,7 @@ class CategoryService extends BaseEntityService<Category> {
      *
      * @param firstResult the position of the first result to retrieve.
      * @param maxResults  the maximum number of results to retrieve.
-     * @return a stream of, optionally paged, categorys.
+     * @return a stream of, optionally paged, category.
      */
     public List<Category> listSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
                                            @Positive @Nullable final Integer maxResults) {

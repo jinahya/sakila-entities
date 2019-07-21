@@ -107,7 +107,7 @@ public class Country extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
     public static final Comparator<Country> COMPARING_COUNTRY = comparing(Country::getCountry);
 
-    public static Comparator<Country> comparaingCountry(final boolean natural) {
+    public static Comparator<Country> comparingCountry(final boolean natural) {
         return natural ? COMPARING_COUNTRY : COMPARING_COUNTRY.reversed();
     }
 

@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.Country.comparaingCountry;
+import static com.github.jinahya.sakila.persistence.Country.comparingCountry;
 import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;
@@ -139,7 +139,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         final List<Country> list = serviceInstance().listSortedByCountryIn(ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isNotNull()
-                .isSortedAccordingTo(comparaingCountry(ascendingOrder))
+                .isSortedAccordingTo(comparingCountry(ascendingOrder))
                 .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
         ;
     }
