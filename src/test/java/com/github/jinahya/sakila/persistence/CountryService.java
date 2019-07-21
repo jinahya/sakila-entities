@@ -135,10 +135,14 @@ class CountryService extends BaseEntityService<Country> {
         if (true || current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT country"
-                    + " FROM Country AS country"
-                    + " ORDER BY COUNT(country.cities) DESC, country.country ASC");
+                    + " FROM Country AS country LEFT JOIN country.cities AS city ON country = city.country"
+                    + " GROUP BY country"
+                    + " ORDER BY COUNT(city) DESC, country.country ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
+            if (true) {
+                return (List<Country>) query.getResultList();
+            }
             @SuppressWarnings({"unchecked"})
             final List<Country> countries = ((Stream<Object[]>) query.getResultStream())
                     .map(v -> (Country) Array.get(v, 0))

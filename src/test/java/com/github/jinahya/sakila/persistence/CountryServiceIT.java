@@ -30,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -165,14 +166,21 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
-    @Disabled
     @MethodSource({"sourceForTestListSortedByCityCount"})
     @ParameterizedTest
     void testListSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
                                    @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().listSortedByCityCount(firstResult, maxResults);
-        list.forEach(v -> log.debug("country: {}", v));
+        list.forEach(v -> log.debug("country: {}, {}", COUNTRY_ID_CITY_COUNT.get(v.getId()), v));
+        if (!list.isEmpty()) {
+            final Iterator<Country> i = list.iterator();
+            int previous = COUNTRY_ID_CITY_COUNT.get(i.next().getId());
+            while (i.hasNext()) {
+                final int current = COUNTRY_ID_CITY_COUNT.get(i.next().getId());
+                assertThat(current).isLessThanOrEqualTo(previous);
+                previous = current;
+            }
+        }
     }
 }
 
