@@ -37,6 +37,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
@@ -116,8 +117,50 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     public @NotNull List<@NotNull Category> listCategories(@NotNull final Film film,
                                                            @PositiveOrZero @Nullable final Integer firstResult,
                                                            @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-21 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT fc.category FROM FilmCategory AS fc WHERE fc.film = :film");
+            query.setParameter("film", film);
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<Category> list = query.getResultList();
+            return list;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Category> typedQuery = entityManager().createQuery(
+                    "SELECT fc.category FROM FilmCategory AS fc WHERE fc.film = :film", Category.class);
+            typedQuery.setParameter("film", film);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+            final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+            criteriaQuery.select(from.get(FilmCategory.ATTRIBUTE_NAME_CATEGORY));
+            criteriaQuery.where(criteriaBuilder.equal(from.get(FilmCategory.ATTRIBUTE_NAME_FILM), film));
+            final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+        final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+        //final SingularAttribute<FilmCategory, Category> categoryAttribute = FilmCategory_.category;
+        final SingularAttribute<? super FilmCategory, Category> categoryAttribute
+                = singularAttribute(FilmCategory.class, FilmCategory.ATTRIBUTE_NAME_CATEGORY, Category.class);
+        criteriaQuery.select(from.get(categoryAttribute));
+        //final SingularAttribute<FilmCategory, Film> filmAttribute = FilmCategory_.film;
+        final SingularAttribute<? super FilmCategory, Film> filmAttribute
+                = singularAttribute(FilmCategory.class, FilmCategory.ATTRIBUTE_NAME_FILM, Film.class);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(filmAttribute), film));
+        final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
