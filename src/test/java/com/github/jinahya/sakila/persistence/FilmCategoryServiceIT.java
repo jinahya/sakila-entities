@@ -21,10 +21,10 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import java.io.IOException;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
-import static java.util.Collections.unmodifiableSortedMap;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * A class for testing {@link FilmCategoryService}.
@@ -36,19 +36,20 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable sorted map of category id and film count.
+     * An unmodifiable map of category ids and film count.
      */
-    static final SortedMap<Integer, Integer> CATEGORY_ID_FILM_COUNT;
+    private static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
 
     static {
         try {
-            CATEGORY_ID_FILM_COUNT = unmodifiableSortedMap(applyResourceScanner(
-                    "film_category_category_id_film_count.txt",
+            CATEGORY_ID_FILM_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_category_map_category_id_film_count.txt",
                     s -> {
-                        final SortedMap<Integer, Integer> map = new TreeMap<>();
+                        final Map<Integer, Integer> map = new HashMap<>();
                         while (s.hasNext()) {
                             final Integer categoryId = s.nextInt();
-                            final Integer previous = map.put(categoryId, s.nextInt());
+                            final int filmCount = s.nextInt();
+                            final Integer previous = map.put(categoryId, filmCount);
                             assert previous == null : "duplicate film id: " + categoryId;
                         }
                         return map;
@@ -62,19 +63,20 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable sorted map of film id and category count.
+     * An unmodifiable map of film ids and category count.
      */
-    static final SortedMap<Integer, Integer> FILM_ID_CATEGORY_COUNT;
+    private static final Map<Integer, Integer> FILM_ID_CATEGORY_COUNT;
 
     static {
         try {
-            FILM_ID_CATEGORY_COUNT = unmodifiableSortedMap(applyResourceScanner(
-                    "film_category_film_id_category_count.txt",
+            FILM_ID_CATEGORY_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_category_map_film_id_category_count.txt",
                     s -> {
-                        final SortedMap<Integer, Integer> map = new TreeMap<>();
+                        final Map<Integer, Integer> map = new HashMap<>();
                         while (s.hasNext()) {
-                            final Integer filmId = s.nextInt();
-                            final Integer previous = map.put(filmId, s.nextInt());
+                            final int filmId = s.nextInt();
+                            final int categoryCount = s.nextInt();
+                            final Integer previous = map.put(filmId, categoryCount);
                             assert previous == null : "duplicate film id: " + filmId;
                         }
                         return map;

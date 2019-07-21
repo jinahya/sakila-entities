@@ -99,7 +99,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends BaseEntity> T unknwonReference(@NotNull final Class<? extends T> entityClass) {
+    static <T extends BaseEntity> T unknownReference(@NotNull final Class<? extends T> entityClass) {
         try {
             final Constructor<? extends T> constructor
                     = requireNonNull(entityClass, "entityClass is null").getDeclaredConstructor();
