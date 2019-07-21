@@ -102,7 +102,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     }
 
     /**
-     * Lists categories of specified film ordered in {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending
+     * Lists categories of specified film ordered by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending
      * order.
      *
      * @param film the film whose categories are listed.
@@ -127,7 +127,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     }
 
     /**
-     * Lists all films categorized as specified category ordered in {@link Film#ATTRIBUTE_NAME_TITLE title} attribute in
+     * Lists all films categorized as specified category ordered by {@link Film#ATTRIBUTE_NAME_TITLE title} attribute in
      * ascending order.
      *
      * @param category the category as which films are categorized.
