@@ -33,8 +33,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -50,6 +48,7 @@ import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -280,24 +279,14 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         return entityManagerProxy;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
     /**
-     * Finds a random entity from the database.
-     *
-     * @return a random entity from the database.
+     * Asserts {@link #entityManager()} method returns a non-null instance and {@link EntityManager#close() close()}
+     * method of the object throws an {@link UnsupportedOperationException}.
      */
-    final @NotNull U randomEntity() {
-        return randomEntity(entityManager(), entityClass);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    final @PositiveOrZero int firstResult() {
-        return firstResult(entityClass);
-    }
-
-    final @Positive int maxResults() {
-        return maxResults(entityClass);
+    @Test
+    void assertEntityManagerNotNullNorCloseable() {
+        assertThat(entityManager()).isNotNull();
+        assertThatThrownBy(() -> entityManager().close()).isInstanceOf(UnsupportedOperationException.class);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

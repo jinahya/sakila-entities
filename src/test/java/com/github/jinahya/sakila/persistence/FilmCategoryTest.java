@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -48,7 +47,8 @@ class FilmCategoryTest extends EntityTest<FilmCategory> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@code lastUpdate} attribute.
+     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@code lastUpdate}
+     * attribute.
      */
     @Test
     void assertGetLastUpdateReturnsCopy() {

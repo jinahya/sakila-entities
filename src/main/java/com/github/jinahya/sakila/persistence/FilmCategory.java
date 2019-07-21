@@ -165,7 +165,8 @@ public class FilmCategory {
         return ofNullable(lastUpdate).map(v -> new Date(v.getTime())).orElse(null);
     }
 
-    @Deprecated // forTestingPurposeOnly = true
+    @Deprecated
+        // forTestingPurposeOnly = true
     void setLastUpdate(final Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }

@@ -24,8 +24,6 @@ import org.assertj.core.api.AbstractAssert;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
