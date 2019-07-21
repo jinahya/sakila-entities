@@ -30,14 +30,19 @@ import org.junit.jupiter.params.provider.MethodSource;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Country.comparaingCountry;
 import static java.util.Collections.unmodifiableNavigableMap;
+import static java.util.Comparator.comparingInt;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,6 +112,17 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         }
     }
 
+    static int cityCount(final Integer countryId) {
+        return ofNullable(COUNTRY_ID_CITY_COUNT.get(requireNonNull(countryId, "countryId is null")))
+                .orElseThrow(() -> new IllegalArgumentException("unknown country id: " + countryId));
+    }
+
+    static int cityCount(final Country country) {
+        return cityCount(requireNonNull(country, "country is null").getId());
+    }
+
+    static final Comparator<Country> COMPARING_CITY_COUNT = comparingInt(CountryServiceIT::cityCount);
+
     // -----------------------------------------------------------------------------------------------------------------
     static Stream<Arguments> sourceRandomCountries() {
         return IntStream.range(0, 17).mapToObj(i -> randomEntity(Country.class)).map(Arguments::of);
@@ -174,6 +190,9 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
                                    @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().listSortedByCityCount(firstResult, maxResults);
         list.forEach(v -> log.debug("country: {}", v));
+        assertThat(list).isSortedAccordingTo(COMPARING_CITY_COUNT.reversed());
+        list.stream().collect(Collectors.groupingBy(CountryServiceIT::cityCount)).values().forEach(v ->
+                assertThat(v).isSortedAccordingTo(Country.COMPARING_COUNTRY));
     }
 }
 
