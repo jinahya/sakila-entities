@@ -79,8 +79,12 @@ abstract class EntityTest<T> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Asserts this class is annotated with {@code @Slf4j}.
+     */
     @Test
-    void log() {
+    void assertAnnotatedWithSlf4j() {
         final Class<?> clazz = getClass();
         final String message = "Annotate @Slf4j on " + clazz;
         try {
