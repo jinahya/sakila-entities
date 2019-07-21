@@ -36,4 +36,6 @@ GROUP BY l.country_id
 ORDER BY city_count DESC
 ;
 
-select * from country where country = 'Asgard';
+select *
+from country
+where country = 'Asgard';

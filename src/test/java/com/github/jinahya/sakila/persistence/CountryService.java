@@ -37,7 +37,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.lang.reflect.Array;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -160,7 +159,6 @@ class CountryService extends BaseEntityService<Country> {
             final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
             final Root<Country> country = criteriaQuery.from(Country.class);
             final Join<Country, City> cities = country.join(Country.ATTRIBUTE_NAME_CITIES, JoinType.LEFT);
-
 
             final TypedQuery<Object[]> typedQuery = entityManager().createQuery(
                     "SELECT country, COUNT(city)"

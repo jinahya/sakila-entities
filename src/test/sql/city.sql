@@ -9,8 +9,8 @@ GROUP BY city
 ORDER BY count DESC;
 
 SELECT country_id, city
-FROM city
-<<<<<<< HEAD
+FROM city <<<<<<
+   < HEAD
 ORDER BY country_id ASC, city ASC
 ;
 
@@ -21,9 +21,7 @@ LIMIT 10000
 ;
 
 SELECT country_id
-FROM country
-
-=======
+FROM country =======
 ORDER BY country_id ASC, city ASC;
 
 SELECT COUNT(1) AS count, city

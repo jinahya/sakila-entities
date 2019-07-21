@@ -20,7 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import org.junit.jupiter.api.Disabled;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCategory> {
 
     // -----------------------------------------------------------------------------------------------------------------
