@@ -7,5 +7,4 @@ ENV MYSQL_ROOT_PASSWORD root
 
 COPY ./.db/sakila-schema.sql /docker-entrypoint-initdb.d/0.sakila-schema.sql
 COPY ./.db/sakila-data.sql /docker-entrypoint-initdb.d/1.sakila-data.sql
-COPY ./.db/sakila-data-customized.sql /docker-entrypoint-initdb.d/2.sakila-data-customized.sql
-COPY ./.db/sakila-user.sql /docker-entrypoint-initdb.d/3.sakila-user.sql
+COPY ./.db/sakila-user.sql /docker-entrypoint-initdb.d/2.sakila-user.sql
