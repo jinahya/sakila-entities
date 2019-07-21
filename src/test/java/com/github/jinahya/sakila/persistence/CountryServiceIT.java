@@ -162,8 +162,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     /**
      * Tests {@link CountryService#listSortedByCityCount(Integer, Integer)} method.
      *
-     * @param firstResult    a value for {@code firstResult} parameter.
-     * @param maxResults     a value for {@code maxResults} parameter.
+     * @param firstResult a value for {@code firstResult} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
      */
     // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
     @Disabled
@@ -171,6 +171,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     @ParameterizedTest
     void testListSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
                                    @Positive @Nullable final Integer maxResults) {
+        final List<Country> list = serviceInstance().listSortedByCityCount(firstResult, maxResults);
+        list.forEach(v -> log.debug("country: {}", v));
     }
 }
 
