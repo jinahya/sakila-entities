@@ -1,1 +1,2 @@
-INSERT INTO country VALUES (-2147483648, 'Asgard', '2019-07-21 12:46:00');
+use sakila;
+INSERT INTO country VALUES (65535, 'Asgard', '2019-07-21 12:46:00');
