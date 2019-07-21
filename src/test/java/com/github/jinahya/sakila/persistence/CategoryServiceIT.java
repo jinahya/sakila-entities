@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;q
  */
+@Slf4j
 class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -83,7 +85,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
      * @return a stream of arguments.
      */
     private static Stream<Arguments> argumentsForTestListByName() {
-        return range(0, 8).mapToObj(i -> randomEntity(Category.class)).map(Arguments::of);
+        return range(0, 8).mapToObj(i -> randomEntity(Category.class)).map(Category::getName).map(Arguments::of);
     }
 
     /**
