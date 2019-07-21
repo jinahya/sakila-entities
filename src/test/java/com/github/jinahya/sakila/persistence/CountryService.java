@@ -132,33 +132,28 @@ class CountryService extends BaseEntityService<Country> {
      */
     public List<Country> listSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
                                                @Positive @Nullable final Integer maxResults) {
-        if (true || current().nextBoolean()) {
+        if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT country"
-                    + " FROM Country AS country LEFT JOIN country.cities AS city ON country = city.country"
+                    + " FROM Country AS country LEFT OUTER JOIN country.cities AS city ON country = city.country"
                     + " GROUP BY country"
                     + " ORDER BY COUNT(city) DESC, country.country ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            if (true) {
-                return (List<Country>) query.getResultList();
-            }
             @SuppressWarnings({"unchecked"})
-            final List<Country> countries = ((Stream<Object[]>) query.getResultStream())
-                    .map(v -> (Country) Array.get(v, 0))
-                    .collect(toList());
+            final List<Country> countries = query.getResultList();
             return countries;
         }
         if (true || current().nextBoolean()) {
-            final TypedQuery<Object[]> typedQuery = entityManager().createQuery(
-                    "SELECT country, COUNT(city)"
-                    + " FROM Country AS country LEFT OUTER JOIN City AS city ON country = city.country"
+            final TypedQuery<Country> typedQuery = entityManager().createQuery(
+                    "SELECT country"
+                    + " FROM Country AS country LEFT OUTER JOIN country.cities AS city ON country = city.country"
                     + " GROUP BY country"
                     + " ORDER BY COUNT(city) DESC, country.country ASC",
-                    Object[].class);
+                    Country.class);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultStream().map(v -> (Country) Array.get(v, 0)).collect(toList());
+            return typedQuery.getResultList();
         }
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
