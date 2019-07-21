@@ -23,6 +23,7 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,7 +33,6 @@ import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -176,6 +176,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         ;
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Tests {@link CountryService#listSortedByCityCount(Integer, Integer)} method.
      *
@@ -191,8 +193,15 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         final List<Country> list = serviceInstance().listSortedByCityCount(firstResult, maxResults);
         list.forEach(v -> log.debug("country: {}", v));
         assertThat(list).isSortedAccordingTo(COMPARING_CITY_COUNT.reversed());
-        list.stream().collect(Collectors.groupingBy(CountryServiceIT::cityCount)).values().forEach(v ->
-                assertThat(v).isSortedAccordingTo(Country.COMPARING_COUNTRY));
+        list.stream().collect(Collectors.groupingBy(CountryServiceIT::cityCount)).values()
+                .forEach(v -> assertThat(v).isSortedAccordingTo(Country.COMPARING_COUNTRY));
+    }
+
+    @Disabled
+    @Test
+    void testListSortedByCityCountForAsgard() {
+        final List<Country> list = serviceInstance().listSortedByCityCount(entityCountAsInt(Country.class) - 1, 1);
+        list.forEach(v -> log.debug("country: {}", v));
     }
 }
 
