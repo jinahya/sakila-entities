@@ -120,7 +120,8 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      * @return a stream of arguments.
      */
     private static Stream<Arguments> argumentsForTestListCategories() {
-        return IntStream.range(0, 8).mapToObj(i -> arguments(randomEntity(Film.class), 0, entityCount(Category.class)));
+        return IntStream.range(0, 8).mapToObj(
+                i -> arguments(randomEntity(Film.class), 0, entityCountAsInt(Category.class)));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
