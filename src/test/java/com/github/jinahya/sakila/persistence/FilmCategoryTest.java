@@ -48,11 +48,8 @@ class FilmCategoryTest extends EntityTest<FilmCategory> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@link
-     * BaseEntity#ATTRIBUTE_NAME_LAST_UPDATE} attribute.
+     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@code lastUpdate} attribute.
      */
-    // TODO: 2019-07-12 enable, assert fails, fix it, and assert passes.
-    @Disabled
     @Test
     void assertGetLastUpdateReturnsCopy() {
         final FilmCategory entityInstance = entityInstance();
