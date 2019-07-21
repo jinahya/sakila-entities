@@ -60,34 +60,6 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     /**
      * An unmodifiable navigable map of country id and city count.
      */
-    static final NavigableMap<Integer, String> COUNTRY_ID_COUNTRY;
-
-    static {
-        try {
-            COUNTRY_ID_COUNTRY = unmodifiableNavigableMap(applyResourceScanner(
-                    "country_map_country_id_country.txt",
-                    s -> {
-                        final NavigableMap<Integer, String> map = new TreeMap<>();
-                        while (s.hasNext()) {
-                            final Integer countryId = s.nextInt();
-                            final String country = s.nextLine();
-                            final String previous = map.put(countryId, country);
-                            assert previous == null : "duplicate country id: " + countryId;
-                        }
-                        return map;
-                    })
-            );
-        } catch (final IOException ioe) {
-            ioe.printStackTrace();
-            throw new InstantiationError(ioe.getMessage());
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * An unmodifiable navigable map of country id and city count.
-     */
     static final NavigableMap<Integer, Integer> COUNTRY_ID_CITY_COUNT;
 
     static {
