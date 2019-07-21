@@ -47,7 +47,8 @@ class FilmCategoryTest extends EntityTest<FilmCategory> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@code lastUpdate} attribute.
+     * Asserts {@link FilmCategory#getLastUpdate()} returns a copy of the current value of {@code lastUpdate}
+     * attribute.
      */
     @Test
     void assertGetLastUpdateReturnsCopy() {
