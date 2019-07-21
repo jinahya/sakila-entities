@@ -12,7 +12,7 @@ ORDER BY name ASC;
 
 SELECT c.category_id, COUNT(fc.film_id) AS film_count
 FROM category AS c
-         LEFT JOIN film_category AS fc on c.category_id = fc.category_id
+         LEFT OUTER JOIN film_category AS fc on c.category_id = fc.category_id
 GROUP BY c.category_id
 ORDER BY film_count DESC, c.category_id ASC
 ;

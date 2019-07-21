@@ -21,19 +21,24 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * A class for testing {@link FilmCategoryService}.
@@ -108,6 +113,15 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
         return IntStream.range(0, 8).mapToObj(i -> randomEntity(Film.class)).map(Arguments::of);
     }
 
+    /**
+     * Provides arguments for {@link #testListCategories(Film, Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestListCategories() {
+        return IntStream.range(0, 8).mapToObj(i -> arguments(randomEntity(Film.class), 0, entityCount(Category.class)));
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -127,8 +141,28 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     @MethodSource({"argumentsForTestCountCategories"})
     @ParameterizedTest
     void testCountCategories(@NotNull final Film film) {
-        final long expected = FILM_ID_CATEGORY_COUNT.get(film.getId());
+        final long expected = FilmServiceIT.FILM_ID_CATEGORY_COUNT.get(film.getId());
         final long actual = serviceInstance().countCategories(film);
         assertThat(actual).isEqualTo(expected);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmCategoryService#listCategories(Film, Integer, Integer)} method with specified arguments.
+     *
+     * @param film        the film whose categories are listed as sorted by {@link Category#ATTRIBUTE_NAME_NAME name}
+     *                    attribute in ascending order.
+     * @param firstResult a value for {@code firstResult} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
+     */
+    @MethodSource({"argumentsForTestListCategories"})
+    @ParameterizedTest
+    void testListCategories(@NotNull final Film film, @PositiveOrZero @Nullable final Integer firstResult,
+                            @Positive @Nullable final Integer maxResults) {
+        final List<Category> list = serviceInstance().listCategories(film, firstResult, maxResults);
+        assertThat(list)
+                .isSortedAccordingTo(Category.COMPARING_NAME)
+        ;
     }
 }

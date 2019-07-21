@@ -55,7 +55,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     /**
      * An unmodifiable synchronized map of category ids and film counts.
      */
-    private static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
+    static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
 
     static {
         try {

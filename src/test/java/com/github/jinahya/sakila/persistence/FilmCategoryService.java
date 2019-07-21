@@ -21,6 +21,7 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -32,6 +33,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -105,10 +107,15 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * Lists categories of specified film ordered by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending
      * order.
      *
-     * @param film the film whose categories are listed.
+     * @param film        the film whose categories are listed.
+     * @param firstResult position of the first result, numbered from {@code 0}; {@code null} for an unspecified
+     *                    result.
+     * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of categories of specified film.
      */
-    public @NotNull List<@NotNull Category> listCategories(@NotNull final Film film) {
+    public @NotNull List<@NotNull Category> listCategories(@NotNull final Film film,
+                                                           @PositiveOrZero @Nullable final Integer firstResult,
+                                                           @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -130,10 +137,15 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * Lists all films categorized as specified category ordered by {@link Film#ATTRIBUTE_NAME_TITLE title} attribute in
      * ascending order.
      *
-     * @param category the category as which films are categorized.
+     * @param category    the category as which films are categorized.
+     * @param firstResult position of the first result, numbered from {@code 0}; {@code null} for an unspecified
+     *                    result.
+     * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of films categorized as specified category.
      */
-    public @NotNull List<@NotNull Category> listFilms(@NotNull final Category category) {
+    public @NotNull List<@NotNull Category> listFilms(@NotNull final Category category,
+                                                      @PositiveOrZero @Nullable final Integer firstResult,
+                                                      @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
