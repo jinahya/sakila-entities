@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;q
  */
+@Slf4j
 class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
 
     // -----------------------------------------------------------------------------------------------------------------

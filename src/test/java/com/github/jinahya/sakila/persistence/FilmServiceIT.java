@@ -20,6 +20,8 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,7 @@ import static java.util.Collections.unmodifiableMap;
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
+@Slf4j
 class FilmServiceIT extends BaseEntityServiceIT<FilmService, Film> {
 
     // -----------------------------------------------------------------------------------------------------------------

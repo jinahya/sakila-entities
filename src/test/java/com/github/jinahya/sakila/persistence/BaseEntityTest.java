@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -32,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  *
  * @param <T> entity type parameter
  */
+@Slf4j
 abstract class BaseEntityTest<T extends BaseEntity> extends EntityTest<T> {
 
     // -----------------------------------------------------------------------------------------------------------------

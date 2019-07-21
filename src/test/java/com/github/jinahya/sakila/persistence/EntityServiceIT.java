@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.weld.junit5.WeldJunit5Extension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith({WeldJunit5Extension.class})
+@Slf4j
 abstract class EntityServiceIT<T extends EntityService<U>, U> {
 
     // -----------------------------------------------------------------------------------------------------------------
