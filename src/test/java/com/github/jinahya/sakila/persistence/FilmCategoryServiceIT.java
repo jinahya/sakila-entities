@@ -20,11 +20,19 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A class for testing {@link FilmCategoryService}.
@@ -90,6 +98,17 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Provides arguments for {@link #testCountCategories(Film)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestCountCategories() {
+        return IntStream.range(0, 8).mapToObj(i -> randomEntity(Film.class)).map(Arguments::of);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * Creates a new instance.
      */
     FilmCategoryServiceIT() {
@@ -97,4 +116,17 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmCategoryService#countCategories(Film)}.
+     *
+     * @param film a value for {@code film} parameter.
+     */
+    @MethodSource({"argumentsForTestCountCategories"})
+    @ParameterizedTest
+    void testCountCategories(@NotNull final Film film) {
+        final long expected = FILM_ID_CATEGORY_COUNT.get(film.getId());
+        final long actual = serviceInstance().countCategories(film);
+        assertThat(actual).isEqualTo(expected);
+    }
 }
