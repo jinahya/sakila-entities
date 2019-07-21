@@ -6,7 +6,7 @@ Defines entities for [Sakila Sample Database](https://dev.mysql.com/doc/sakila/e
 
 ### additional rows inserted for testing
 
-|table    |country_id|country |
+|table    |country_id|values  |
 |---------|----------|--------|
 |`country`|`65535`   |`Asgard`|
 
