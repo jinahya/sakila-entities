@@ -15,6 +15,8 @@ ORDER BY fc.film_id ASC, c.category_id ASC
 SELECT category_id, COUNT(film_id) AS film_count
 FROM film_category
 GROUP BY category_id
-ORDER BY film_count DESC
+ORDER BY film_count DESC, category_id ASC
 ;
+
+
 

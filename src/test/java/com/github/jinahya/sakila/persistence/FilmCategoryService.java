@@ -49,6 +49,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @return the number of categories of specified film.
      */
     public @PositiveOrZero long countCategories(@NotNull final Film film) {
+        // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -60,6 +61,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @return a list of categories of specified film.
      */
     public @NotNull List<@NotNull Category> listCategories(@NotNull final Film film) {
+        // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -72,6 +74,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @return the number of films categorized as specified category.
      */
     public @PositiveOrZero long countFilms(@NotNull final Category category) {
+        // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -83,6 +86,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @return a list of films categorized as specified category.
      */
     public @NotNull List<@NotNull Category> listFilms(@NotNull final Category category) {
+        // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 }

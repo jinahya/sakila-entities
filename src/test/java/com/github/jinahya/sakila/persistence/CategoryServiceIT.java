@@ -20,7 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import org.assertj.core.api.Condition;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,15 +30,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.Category.comparingName;
-import static java.util.Collections.unmodifiableSortedSet;
+import static java.util.Collections.synchronizedMap;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -53,68 +51,47 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The total number of {@link Category}.
+     * An unmodifiable synchronized map of category ids and film counts.
      */
-    static final int CATEGORY_COUNT = entityCountAsInt(Category.class);
-
-    /**
-     * Returns a random instance of {@link Category}.
-     *
-     * @return a random instance of {@link Category}.
-     */
-    static Category randomCategory() {
-        return randomEntity(Category.class);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * A sorted set of values of {@link Category#ATTRIBUTE_NAME_NAME} attribute.
-     */
-    static final SortedSet<String> NAMES;
+    private static final Map<Integer, Integer> CATEGORY_ID_FILM_COUNT;
 
     static {
         try {
-            NAMES = unmodifiableSortedSet(applyResourceScanner("category_set_name.txt", s -> {
-                final SortedSet<String> set = new TreeSet<>();
-                while (s.hasNext()) {
-                    set.add(s.next());
-                }
-                return set;
-            }));
+            CATEGORY_ID_FILM_COUNT = synchronizedMap(applyResourceScanner(
+                    "category_map_category_id_film_count.txt", s -> {
+                        final Map<Integer, Integer> map = new HashMap<>();
+                        while (s.hasNext()) {
+                            final int categoryId = s.nextInt();
+                            final int filmCount = s.nextInt();
+                            final Integer previous = map.put(categoryId, filmCount);
+                            assert previous != null : "duplicate category id: " + categoryId;
+                        }
+                        return map;
+                    }
+            ));
         } catch (final IOException ioe) {
             throw new InstantiationError(ioe.getMessage());
         }
     }
 
-    static final Condition<String> A_NAME_IN_DATABASE = new Condition<>(NAMES::contains, "a name is in database");
-
-    static final Condition<Category> A_CATEGORY_WHOSE_NAME_IS_IN_DATABASE = new Condition<>(
-            l -> A_NAME_IN_DATABASE.matches(l.getName()), "a category whose name is in database");
-
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Provides arguments for {@link #testFindByName(String)} method.
+     * Provides arguments for {@link #testListByName(String)} method.
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> arguments_testFindByName() {
-        return range(8, 17).mapToObj(i -> arguments(
-                NAMES.stream()
-                        .skip(current().nextLong(NAMES.size()))
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("fix me if you see me"))));
+    private static Stream<Arguments> argumentsForTestListByName() {
+        return range(0, 8).mapToObj(i -> randomEntity(Category.class)).map(Arguments::of);
     }
 
     /**
-     * Provides arguments for {@link #testListSortedByName(boolean, Integer, Integer)} method.
+     * Provides arguments for {@link #testListSortedByName(Integer, Integer)} method.
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> arguments_testListSortedByName() {
-        return range(8, 17).mapToObj(i -> arguments(
-                current().nextBoolean(), firstResult(Category.class), maxResults(Category.class)));
+    private static Stream<Arguments> argumentsForTestListSortedByName() {
+        return range(0, 8).mapToObj(i -> arguments(firstResult(Category.class), maxResults(Category.class)));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -129,48 +106,45 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     // ------------------------------------------------------------------------------------------------------ findByName
 
     /**
-     * Asserts {@link CategoryService#findByName(String)} returns an empty for an unknown category.
+     * Asserts {@link CategoryService#listByName(String)} method returns an empty for an unknown category.
      */
     @Test
-    void assertFindByNameReturnsEmptyForUnknown() {
+    void assertListByNameReturnsEmptyForUnknown() {
         final String name = "周星馳";
-        assertThat(NAMES).doesNotContain(name);
-        assertThat(serviceInstance().findByName(name)).isEmpty();
+        assertThat(serviceInstance().listByName(name)).isEmpty();
     }
 
     /**
-     * Tests {@link CategoryService#findByName(String)}.
+     * Tests {@link CategoryService#listByName(String)} method.
      *
      * @param name a value for {@code name} parameter.
      */
-    @MethodSource({"arguments_testFindByName"})
+    @MethodSource({"argumentsForTestListByName"})
     @ParameterizedTest
-    void testFindByName(@NotNull final String name) {
-        assertThat(serviceInstance().findByName(name))
-                .isPresent()
-                .hasValueSatisfying(c -> assertThat(c.getName()).isEqualTo(name))
+    void testListByName(@NotNull final String name) {
+        assertThat(serviceInstance().listByName(name))
+                .isNotEmpty()
+                .allSatisfy(v -> assertThat(v.getName()).isEqualTo(name))
         ;
     }
 
     // ------------------------------------------------------------------------------------------------ listSortedByName
 
     /**
-     * Tests {@link CategoryService#listSortedByName(boolean, Integer, Integer)} method.
+     * Tests {@link CategoryService#listSortedByName(Integer, Integer)} method.
      *
-     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
-     * @param firstResult    a value for {@code firstResult} parameter.
-     * @param maxResults     a value for {@code maxResults} parameter.
+     * @param firstResult a value for {@code firstResult} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
      */
-    @MethodSource({"arguments_testListSortedByName"})
+    @MethodSource({"argumentsForTestListSortedByName"})
     @ParameterizedTest
-    void testListSortedByName(final boolean ascendingOrder, @PositiveOrZero final Integer firstResult,
-                              @Positive final Integer maxResults) {
-        final List<Category> list = serviceInstance().listSortedByName(ascendingOrder, firstResult, maxResults);
+    void testListSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
+                              @Positive @Nullable final Integer maxResults) {
+        final List<Category> list = serviceInstance().listSortedByName(firstResult, maxResults);
         assertThat(list)
                 .isNotNull()
-                .isSortedAccordingTo(comparingName(ascendingOrder))
-                .size()
-                .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
+                .isSortedAccordingTo(Category.COMPARING_NAME)
+                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
         ;
     }
 }
