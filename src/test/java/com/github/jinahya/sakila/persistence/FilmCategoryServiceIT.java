@@ -123,8 +123,6 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      *
      * @param film a value for {@code film} parameter.
      */
-    // TODO: 2019-07-21 enable, assert fails, implement, and asser passes.
-    @Disabled
     @MethodSource({"argumentsForTestCountCategories"})
     @ParameterizedTest
     void testCountCategories(@NotNull final Film film) {

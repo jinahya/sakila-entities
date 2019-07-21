@@ -20,9 +20,20 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A service class for {@link FilmCategory}.
@@ -49,8 +60,42 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @return the number of categories of specified film.
      */
     public @PositiveOrZero long countCategories(@NotNull final Film film) {
-        // TODO: 2019-07-21 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        final EntityManager entityManager = entityManager();
+        if (current().nextBoolean()) {
+            final Query query = entityManager.createQuery(
+                    "SELECT COUNT(fc) FROM FilmCategory AS fc WHERE fc.film = :film");
+            query.setParameter("film", film);
+            return (long) query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Long> typedQuery = entityManager.createQuery(
+                    "SELECT COUNT(fc) FROM FilmCategory AS fc WHERE fc.film = :film", Long.class);
+            typedQuery.setParameter("film", film);
+            return typedQuery.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+            final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+            criteriaQuery.select(criteriaBuilder.count(from));
+            final Path<Film> filmPath = from.get(FilmCategory.ATTRIBUTE_NAME_FILM);
+            final Predicate predicate = criteriaBuilder.equal(filmPath, film);
+            criteriaQuery.where(predicate);
+            final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+        criteriaQuery.select(criteriaBuilder.count(from));
+        //final SingularAttribute<FilmCategory, Film> filmAttribute = FilmCategory_.film;
+        final SingularAttribute<? super FilmCategory, Film> filmAttribute
+                = singularAttribute(FilmCategory.class, FilmCategory.ATTRIBUTE_NAME_FILM, Film.class);
+        final Path<Film> filmPath = from.get(filmAttribute);
+        final Predicate predicate = criteriaBuilder.equal(filmPath, film);
+        criteriaQuery.where(predicate);
+        final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     /**
