@@ -20,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -41,6 +42,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <T> entity type parameter
  */
+@Slf4j
 abstract class EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------

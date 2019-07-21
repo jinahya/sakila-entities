@@ -20,6 +20,9 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 class StaffService extends BaseEntityService<Staff> {
 
     // -----------------------------------------------------------------------------------------------------------------
