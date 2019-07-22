@@ -32,11 +32,13 @@ import javax.validation.constraints.Size;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.BiFunction;
 
 import static com.github.jinahya.sakila.persistence.Address.COLUMN_NAME_ADDRESS_ID;
 import static com.github.jinahya.sakila.persistence.Address.TABLE_NAME;
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static java.util.Comparator.comparing;
 
 /**
  * An entity class for binding {@value #TABLE_NAME} table.
@@ -173,6 +175,13 @@ public class Address extends BaseEntity {
     public static final String ATTRIBUTE_NAME_LOCATION = "location";
 
     public static final int SIZE_LOCATION_FOR_POINT = 21; // 1 + 4 + 8 + 8
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A comparator for comparing addresses with their {@link #ATTRIBUTE_NAME_DISTRICT district} attribute.
+     */
+    public static final Comparator<Address> COMPARING_DISTRICT = comparing(Address::getDistrict);
 
     // -----------------------------------------------------------------------------------------------------------------
 
