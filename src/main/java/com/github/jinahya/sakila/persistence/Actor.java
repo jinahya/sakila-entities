@@ -79,6 +79,10 @@ public class Actor extends BaseEntity implements FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * The primary key column name of this entity class. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each actor in the table.
+     * </blockquote>
      * {@code SMALLINT(5) PK NN UN AI}
      */
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
@@ -113,22 +117,44 @@ public class Actor extends BaseEntity implements FullNamed {
     }
 
     // ------------------------------------------------------------------------------------------------------- firstName
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param firstName new value for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     */
     @Override
     public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
     // -------------------------------------------------------------------------------------------------------- lastName
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     */
     @Override
     public void setLastName(final String lastName) {
         this.lastName = lastName;
