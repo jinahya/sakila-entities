@@ -92,8 +92,7 @@ class ActorService extends BaseEntityService<Actor> {
             ofNullable(lastName).ifPresent(v -> query.setParameter("lastName", v));
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"})
-            final List<Actor> list = query.getResultList();
+            @SuppressWarnings({"unchecked"}) final List<Actor> list = query.getResultList();
             return list;
         }
         if (current().nextBoolean()) {
@@ -204,8 +203,7 @@ class ActorService extends BaseEntityService<Actor> {
             }
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"})
-            final List<Actor> resultList = query.getResultList();
+            @SuppressWarnings({"unchecked"}) final List<Actor> resultList = query.getResultList();
             return resultList;
         }
         if (current().nextBoolean()) {
@@ -303,8 +301,7 @@ class ActorService extends BaseEntityService<Actor> {
             }
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"})
-            final List<Actor> resultList = query.getResultList();
+            @SuppressWarnings({"unchecked"}) final List<Actor> resultList = query.getResultList();
             return resultList;
         }
         if (current().nextBoolean()) {

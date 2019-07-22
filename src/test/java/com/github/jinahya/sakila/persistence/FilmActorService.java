@@ -113,8 +113,7 @@ class FilmActorService extends EntityService<FilmActor> {
             query.setParameter("actor", actor);
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"})
-            final List<Film> films = query.getResultList();
+            @SuppressWarnings({"unchecked"}) final List<Film> films = query.getResultList();
             return films;
         }
         if (current().nextBoolean()) {

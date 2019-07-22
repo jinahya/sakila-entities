@@ -87,8 +87,7 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
             final Query query = entityManager().createQuery("SELECT e FROM " + entityName() + " AS e WHERE e.id = :id");
             query.setParameter("id", id);
             try {
-                @SuppressWarnings({"unchecked"})
-                final T found = (T) query.getSingleResult();
+                @SuppressWarnings({"unchecked"}) final T found = (T) query.getSingleResult();
                 return Optional.of(found);
             } catch (final NoResultException nre) {
                 return Optional.empty();
@@ -166,8 +165,7 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
                     + " ORDER BY e." + BaseEntity.ATTRIBUTE_NAME_ID + " " + (ascendingOrder ? "ASC" : "DESC"));
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"})
-            final List<T> resultList = (List<T>) query.getResultList();
+            @SuppressWarnings({"unchecked"}) final List<T> resultList = (List<T>) query.getResultList();
             return resultList;
         }
         if (current().nextBoolean()) {
