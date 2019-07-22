@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,6 +56,7 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
 import static com.github.jinahya.sakila.persistence.Film.COLUMN_NAME_FILM_ID;
 import static com.github.jinahya.sakila.persistence.Film.TABLE_NAME;
 import static java.lang.Math.toIntExact;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
@@ -103,6 +105,22 @@ public class Film extends BaseEntity {
     public static final String ATTRIBUTE_NAME_TITLE = "title";
 
     public static final int SIZE_MAX_TITLE = 255;
+
+    /**
+     * A comparator for comparing {@link #ATTRIBUTE_NAME_TITLE title} attribute.
+     */
+    public static final Comparator<Film> COMPARING_TITLE = comparing(Film::getTitle);
+
+    /**
+     * Returns a comparator for comparing {@link #ATTRIBUTE_NAME_TITLE title} attribute in either natural or reversed
+     * indicated by specified flag.
+     *
+     * @param natural the flag for ordering; {@code true} for natual ordering; {@code false} for reversed ordering.
+     * @return a comparator for comparing {@link #ATTRIBUTE_NAME_TITLE title} attribute.
+     */
+    public static Comparator<Film> comparingTitle(final boolean natural) {
+        return natural ? COMPARING_TITLE : COMPARING_TITLE.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
