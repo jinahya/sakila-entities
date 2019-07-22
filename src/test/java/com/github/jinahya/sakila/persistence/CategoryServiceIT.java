@@ -66,6 +66,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
                         while (s.hasNext()) {
                             final int categoryId = s.nextInt();
                             final int filmCount = s.nextInt();
+                            assert filmCount >= 0 : "invalid film count: " + filmCount;
                             final Integer previous = map.put(categoryId, filmCount);
                             assert previous == null : "duplicate category id: " + categoryId;
                         }

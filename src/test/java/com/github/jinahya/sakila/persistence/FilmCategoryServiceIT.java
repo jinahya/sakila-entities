@@ -166,7 +166,10 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     void testCountCategories(@NotNull final Film film) {
         final long expected = FilmServiceIT.FILM_ID_CATEGORY_COUNT.get(film.getId());
         final long actual = serviceInstance().countCategories(film);
-        assertThat(actual).isEqualTo(expected);
+        log.debug("expected: {}, actual: {}", expected, actual);
+        assertThat(actual)
+                .isNotNegative()
+                .isEqualTo(expected);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -187,7 +190,9 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
                             @Positive @Nullable final Integer maxResults) {
         final List<Category> list = serviceInstance().listCategories(film, firstResult, maxResults);
         assertThat(list)
+                .isNotNull()
                 .isSortedAccordingTo(Category.COMPARING_NAME)
+                .allSatisfy(c -> assertThat(serviceInstance().find(film, c)).isPresent())
         ;
     }
 
@@ -205,7 +210,10 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     void testCountFilms(@NotNull final Category category) {
         final long expected = CategoryServiceIT.CATEGORY_ID_FILM_COUNT.get(category.getId());
         final long actual = serviceInstance().countFilms(category);
-        assertThat(actual).isEqualTo(expected);
+        log.debug("expected: {}, actual: {}", expected, actual);
+        assertThat(actual)
+                .isNotNegative()
+                .isEqualTo(expected);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -214,13 +222,13 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      * Tests {@link FilmCategoryService#listFilms(Category, Integer, Integer)} method with specified arguments.
      *
      * @param category    a category whose films are listed as sorted by {@link Film#ATTRIBUTE_NAME_TITLE title}
-     *                    attribute} in ascending order. attribute in ascending order.
+     *                    attribute in ascending order.
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
     // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
     @Disabled
-    @MethodSource({"argumentsForTestListCategories"})
+    @MethodSource({"argumentsForTestListFilms"})
     @ParameterizedTest
     void testListFilms(@NotNull final Category category, @PositiveOrZero @Nullable final Integer firstResult,
                        @Positive @Nullable final Integer maxResults) {
@@ -228,6 +236,7 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(Film.COMPARING_TITLE)
+                .allSatisfy(f -> assertThat(serviceInstance().find(f, category)).isPresent())
         ;
     }
 }
