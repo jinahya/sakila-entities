@@ -177,8 +177,6 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
-    @Disabled
     @MethodSource({"argumentsForTestListCategories"})
     @ParameterizedTest
     void testListCategories(@NotNull final Film film, @PositiveOrZero @Nullable final Integer firstResult,
@@ -196,8 +194,6 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      *
      * @param category the category whose films are counted.
      */
-    // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
-    @Disabled
     @MethodSource({"argumentsForTestCountFilms"})
     @ParameterizedTest
     void testCountFilms(@NotNull final Category category) {

@@ -172,8 +172,42 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @return the number of films categorized as specified category.
      */
     public @PositiveOrZero long countFilms(@NotNull final Category category) {
-        // TODO: 2019-07-21 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        final EntityManager entityManager = entityManager();
+        if (current().nextBoolean()) {
+            final Query query = entityManager.createQuery(
+                    "SELECT COUNT(fc) FROM FilmCategory AS fc WHERE fc.category = :category");
+            query.setParameter("category", category);
+            return (long) query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Long> typedQuery = entityManager.createQuery(
+                    "SELECT COUNT(fc) FROM FilmCategory AS fc WHERE fc.category = :category", Long.class);
+            typedQuery.setParameter("category", category);
+            return typedQuery.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+            final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+            criteriaQuery.select(criteriaBuilder.count(from));
+            final Path<Category> categoryPath = from.get(FilmCategory.ATTRIBUTE_NAME_CATEGORY);
+            final Predicate predicate = criteriaBuilder.equal(categoryPath, category);
+            criteriaQuery.where(predicate);
+            final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+        criteriaQuery.select(criteriaBuilder.count(from));
+        //final SingularAttribute<FilmCategory, Category> categoryAttribute = FilmCategory_.category;
+        final SingularAttribute<? super FilmCategory, Category> categoryAttribute
+                = singularAttribute(FilmCategory.class, FilmCategory.ATTRIBUTE_NAME_CATEGORY, Category.class);
+        final Path<Category> categoryPath = from.get(categoryAttribute);
+        final Predicate predicate = criteriaBuilder.equal(categoryPath, category);
+        criteriaQuery.where(predicate);
+        final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     /**
