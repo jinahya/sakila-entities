@@ -146,6 +146,32 @@ abstract class EntityService<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Returns the managed type of {@link #entityClass}.
+     *
+     * @return the managed type of {@link #entityClass}.
+     */
+    final ManagedType<T> managedType() {
+        return entityManager()
+                .getEntityManagerFactory()
+                .getMetamodel()
+                .managedType(entityClass);
+    }
+
+    /**
+     * Returns the singular attribute of specified name and type.
+     *
+     * @param name the attribute name.
+     * @param type the attribute type.
+     * @param <A>  attribute type parameter
+     * @return the singular attribute of specified name and type.
+     * @see #managedType()
+     * @see ManagedType#getSingularAttribute(String, Class)
+     */
+    final <A> SingularAttribute<? super T, A> singularAttribute(final String name, final Class<A> type) {
+        return managedType().getSingularAttribute(name, type);
+    }
+
+    /**
      * Returns an entity manager for accessing persistence context.
      *
      * @return an entity manager.

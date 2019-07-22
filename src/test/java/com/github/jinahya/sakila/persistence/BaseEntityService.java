@@ -30,7 +30,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -64,32 +63,6 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns the managed type of {@link #entityClass}.
-     *
-     * @return the managed type of {@link #entityClass}.
-     */
-    final ManagedType<T> managedType() {
-        return entityManager()
-                .getEntityManagerFactory()
-                .getMetamodel()
-                .managedType(entityClass);
-    }
-
-    /**
-     * Returns the singular attribute of specified name and type.
-     *
-     * @param name the attribute name.
-     * @param type the attribute type.
-     * @param <A>  attribute type parameter
-     * @return the singular attribute of specified name and type.
-     * @see #managedType()
-     * @see ManagedType#getSingularAttribute(String, Class)
-     */
-    final <A> SingularAttribute<? super T, A> singularAttribute(final String name, final Class<A> type) {
-        return managedType().getSingularAttribute(name, type);
-    }
 
     /**
      * Returns the singular attribute for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
