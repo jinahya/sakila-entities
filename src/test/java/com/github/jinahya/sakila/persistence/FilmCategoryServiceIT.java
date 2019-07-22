@@ -123,6 +123,25 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
                 i -> arguments(randomEntity(Film.class), 0, entityCountAsInt(Category.class)));
     }
 
+    /**
+     * Provides arguments for {@link #testCountFilms(Category)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestCountFilms() {
+        return IntStream.range(0, 8).mapToObj(i -> randomEntity(Category.class)).map(Arguments::of);
+    }
+
+    /**
+     * Provides arguments for {@link #testListFilms(Category, Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestListFilms() {
+        return IntStream.range(0, 8).mapToObj(
+                i -> arguments(randomEntity(Category.class), firstResult(Film.class), maxResults(Film.class)));
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -157,6 +176,8 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
+    // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
+    @Disabled
     @MethodSource({"argumentsForTestListCategories"})
     @ParameterizedTest
     void testListCategories(@NotNull final Film film, @PositiveOrZero @Nullable final Integer firstResult,
@@ -164,6 +185,46 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
         final List<Category> list = serviceInstance().listCategories(film, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(Category.COMPARING_NAME)
+        ;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmCategoryService#countFilms(Category)} method with specified category.
+     *
+     * @param category the category whose films are counted.
+     */
+    // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @MethodSource({"argumentsForTestCountFilms"})
+    @ParameterizedTest
+    void testCountFilms(@NotNull final Category category) {
+        final long expected = CategoryServiceIT.CATEGORY_ID_FILM_COUNT.get(category.getId());
+        final long actual = serviceInstance().countFilms(category);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmCategoryService#listFilms(Category, Integer, Integer)} method with specified arguments.
+     *
+     * @param category    a category whose films are listed as sorted by {@link Film#ATTRIBUTE_NAME_TITLE title}
+     *                    attribute} in ascending order. attribute in ascending order.
+     * @param firstResult a value for {@code firstResult} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
+     */
+    // TODO: 2019-07-21 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @MethodSource({"argumentsForTestListCategories"})
+    @ParameterizedTest
+    void testListFilms(@NotNull final Category category, @PositiveOrZero @Nullable final Integer firstResult,
+                       @Positive @Nullable final Integer maxResults) {
+        final List<Film> list = serviceInstance().listFilms(category, firstResult, maxResults);
+        assertThat(list)
+                .isNotNull()
+                .isSortedAccordingTo(Film.COMPARING_TITLE)
         ;
     }
 }

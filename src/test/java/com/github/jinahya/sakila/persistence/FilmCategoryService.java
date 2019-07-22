@@ -186,9 +186,9 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of films categorized as specified category.
      */
-    public @NotNull List<@NotNull Category> listFilms(@NotNull final Category category,
-                                                      @PositiveOrZero @Nullable final Integer firstResult,
-                                                      @Positive @Nullable final Integer maxResults) {
+    public @NotNull List<@NotNull Film> listFilms(@NotNull final Category category,
+                                                  @PositiveOrZero @Nullable final Integer firstResult,
+                                                  @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
