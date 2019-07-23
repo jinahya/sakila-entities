@@ -128,17 +128,47 @@ public class Address extends BaseEntity {
     public static final int SIZE_MAX_ADDRESS2 = 50;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
+     * <blockquote>
+     * The region of an address, this may be a state, province, prefecture, etc.
+     * </blockquote>
+     * {@code VARCHAR(20) NN}
+     */
     public static final String COLUMN_NAME_DISTRICT = "district";
 
+    /**
+     * The length of {@value #COLUMN_NAME_DISTRICT} column. The value is {@value}.
+     */
+    public static final int COLUMN_LENGTH_DISTRICT = 20;
+
+    /**
+     * The entity name for {@value #COLUMN_NAME_DISTRICT} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_DISTRICT = "district";
 
     public static final int SIZE_MIN_DISTRICT = 0; // TODO: 2019-07-12 empty???
 
-    public static final int SIZE_MAX_DISTRICT = 20;
+    /**
+     * The maximum size of {@value ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
+     */
+    public static final int SIZE_MAX_DISTRICT = COLUMN_LENGTH_DISTRICT;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_CITY} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key pointing to the <code>{@link City city}</code> table.
+     * </blockquote>
+     * {@code SMALLINT(5) NN UN}
+     */
     public static final String COLUMN_NAME_CITY_ID = "city_id";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_CITY_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_CITY = "city";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -284,12 +314,25 @@ public class Address extends BaseEntity {
     }
 
     // -------------------------------------------------------------------------------------------------------- location
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_LOCATION} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_LOCATION} attribute.
+     */
+    // TODO: 2019-07-23 private!!!
     public byte[] getLocation() {
         // TODO: 2019-07-12 copy!!!
         return location;
     }
 
-    public void setLocation(final byte[] location) { // TODO: 7/16/2019 public???
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_LOCATION} attribute with specified value.
+     *
+     * @param location new value for {@link #ATTRIBUTE_NAME_LOCATION} attribute.
+     */
+    // TODO: 2019-07-23 private!!!
+    public void setLocation(final byte[] location) {
         // TODO: 2019-07-12 copy!!!
         this.location = location;
     }
