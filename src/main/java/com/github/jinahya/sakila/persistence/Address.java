@@ -50,8 +50,9 @@ import static java.util.Comparator.comparing;
  * {@link Store store} tables.
  * </blockquote>
  *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-address.html">The address Table (Sakila
- * Sample Database, MySQL Reference Manual)</a>
+ * Sample Database, Developer Zone, MySQL)</a>
  */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ADDRESS_ID, nullable = false))
 @Entity
@@ -68,7 +69,7 @@ public class Address extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The database column name for {@link #ATTRIBUTE_NAME_ID} attribute. The value is {@value}.
+     * The primary key column name of this entity. The value is {@value}.
      * <blockquote>
      * A surrogate primary key used to uniquely identify each address in the table.
      * </blockquote>
@@ -79,7 +80,7 @@ public class Address extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The database column name for {@link #ATTRIBUTE_NAME_ADDRESS}. The value is {@value}.
+     * The database column name for {@value #ATTRIBUTE_NAME_ADDRESS}. The value is {@value}.
      * <blockquote>
      * The first line of an address.
      * </blockquote>
@@ -88,19 +89,24 @@ public class Address extends BaseEntity {
     public static final String COLUMN_NAME_ADDRESS = "address";
 
     /**
-     * The entity attribute name for {@link #COLUMN_NAME_ADDRESS} column. The value is {@value}.
+     * The length of {@value #COLUMN_LENGTH_ADDRESS} column. The value is {@value}.
+     */
+    public static final int COLUMN_LENGTH_ADDRESS = 50;
+
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_ADDRESS} column. The value is {@value}.
      */
     public static final String ATTRIBUTE_NAME_ADDRESS = "address";
 
     /**
-     * The minimum size of {@link #ATTRIBUTE_NAME_ADDRESS} attribute. The value is {@value}.
+     * The minimum size of {@value #ATTRIBUTE_NAME_ADDRESS} attribute. The value is {@value}.
      */
     public static final int SIZE_MIN_ADDRESS = 0; // TODO: 2019-07-12 empty???
 
     /**
-     * The maximum size of {@link #ATTRIBUTE_NAME_ADDRESS} attribute. The value is {@value}.
+     * The maximum size of {@value #ATTRIBUTE_NAME_ADDRESS} attribute. The value is {@value}.
      */
-    public static final int SIZE_MAX_ADDRESS = 50;
+    public static final int SIZE_MAX_ADDRESS = COLUMN_LENGTH_ADDRESS;
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -112,6 +118,11 @@ public class Address extends BaseEntity {
      * {@code VARCHAR(50) NULL}
      */
     public static final String COLUMN_NAME_ADDRESS2 = "address2";
+
+    /**
+     * The length of {@value #COLUMN_NAME_ADDRESS2} column. The value is {@value}.
+     */
+    public static final int COLUMN_LENGTH_ADDRESS2 = 50;
 
     /**
      * The entity attribute name for {@link #COLUMN_NAME_ADDRESS2} column. The value is {@value}.
@@ -126,7 +137,7 @@ public class Address extends BaseEntity {
     /**
      * The maximum size of {@link #ATTRIBUTE_NAME_ADDRESS2} attribute. The value is {@value}.
      */
-    public static final int SIZE_MAX_ADDRESS2 = 50;
+    public static final int SIZE_MAX_ADDRESS2 = COLUMN_LENGTH_ADDRESS2;
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -149,10 +160,13 @@ public class Address extends BaseEntity {
      */
     public static final String ATTRIBUTE_NAME_DISTRICT = "district";
 
+    /**
+     * The minimum size of {@value #ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
+     */
     public static final int SIZE_MIN_DISTRICT = 0; // TODO: 2019-07-12 empty???
 
     /**
-     * The maximum size of {@value ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
+     * The maximum size of {@value #ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
      */
     public static final int SIZE_MAX_DISTRICT = COLUMN_LENGTH_DISTRICT;
 
@@ -173,15 +187,37 @@ public class Address extends BaseEntity {
     public static final String ATTRIBUTE_NAME_CITY = "city";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_POSTAL_CODE} attribute. The value is {@value}.
+     * <blockquote>
+     * The postal code or ZIP code of the address (where applicable).
+     * </blockquote>
+     * {@code VARCHAR(10) NULL}
+     */
     public static final String COLUMN_NAME_POSTAL_CODE = "postal_code";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_POSTAL_CODE} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_POSTAL_CODE = "postalCode";
 
     public static final int SIZE_MAX_POSTAL_CODE = 10;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_PHONE} attribute. The value is {@value}.
+     * <blockquote>
+     * The telephone number for the address.
+     * </blockquote>
+     * {@code VARCHAR(20) NN}
+     */
     public static final String COLUMN_NAME_PHONE = "phone";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_PHONE} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_PHONE = "phone";
 
     public static final int SIZE_MAX_PHONE = 10;
@@ -210,7 +246,7 @@ public class Address extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * A comparator for comparing addresses with their {@link #ATTRIBUTE_NAME_DISTRICT district} attribute.
+     * A comparator for comparing addresses with {@link #ATTRIBUTE_NAME_DISTRICT district} attributes.
      */
     public static final Comparator<Address> COMPARING_DISTRICT = comparing(Address::getDistrict);
 
@@ -244,19 +280,41 @@ public class Address extends BaseEntity {
     }
 
     // --------------------------------------------------------------------------------------------------------- address
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_ADDRESS address} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_ADDRESS address} attribute.
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_ADDRESS address} attribute with specified value.
+     *
+     * @param address new value for {@link #ATTRIBUTE_NAME_ADDRESS address} attribute.
+     */
     public void setAddress(final String address) {
         this.address = address;
     }
 
     // -------------------------------------------------------------------------------------------------------- address2
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_ADDRESS2 address2} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_ADDRESS2 address2} attribute.
+     */
     public String getAddress2() {
         return address2;
     }
 
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_ADDRESS2 address2} attribute with specified value.
+     *
+     * @param address2 new value for {@link #ATTRIBUTE_NAME_ADDRESS2 address2} attribute.
+     */
     public void setAddress2(final String address2) {
         this.address2 = address2;
     }
@@ -286,10 +344,21 @@ public class Address extends BaseEntity {
     }
 
     // ------------------------------------------------------------------------------------------------------ postalCode
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_POSTAL_CODE postalCode} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_POSTAL_CODE postalCode} attribute.
+     */
     public String getPostalCode() {
         return postalCode;
     }
 
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_POSTAL_CODE postalCode} attribute with specified value.
+     *
+     * @param postalCode new value for {@link #ATTRIBUTE_NAME_POSTAL_CODE postalCode} attribute.
+     */
     public void setPostalCode(final String postalCode) {
         this.postalCode = postalCode;
     }
