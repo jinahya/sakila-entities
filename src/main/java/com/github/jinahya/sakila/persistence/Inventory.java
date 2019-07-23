@@ -32,25 +32,72 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
 import static com.github.jinahya.sakila.persistence.Inventory.COLUMN_NAME_INVENTORY_ID;
 import static com.github.jinahya.sakila.persistence.Inventory.TABLE_NAME;
 
+/**
+ * An entity class for {@value #TABLE_NAME} table.
+ * <blockquote>
+ * The inventory table contains one row for each copy of a given film in a given store.
+ * <p>
+ * The {@code inventory} table refers to the {@link Film film} and {@link Store store} tables using foreign keys and is
+ * referred to by the {@link Rental rental} table.
+ * </blockquote>
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-inventory.html">The inventory Table (Sakila
+ * Sample Database, Developer Zone, MySQL)</a>
+ */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_INVENTORY_ID, nullable = false))
 @Entity
 @Table(name = TABLE_NAME)
 public class Inventory extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The target table name of this entity class. The value is {@value}.
+     */
     public static final String TABLE_NAME = "inventory";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The primary key column name of the table. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each item in inventory.
+     * </blockquote>
+     * {@code MEDIUMINT(8) PK NN UN AI}
+     */
     public static final String COLUMN_NAME_INVENTORY_ID = "inventory_id";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_FILM} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key pointing to the film this item represents.
+     * </blockquote>
+     * {@code SMALLINT(5) NN UN}
+     */
     public static final String COLUMN_NAME_FILM_ID = "film_id";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_FILM_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_FILM = "film";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_STORE} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key pointing to the store stocking this item.
+     * </blockquote>
+     * {@code TINYINT(3) NN UN}
+     */
     public static final String COLUMN_NAME_STORE_ID = "store_id";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_STORE_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_STORE = "store";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -63,6 +110,12 @@ public class Inventory extends BaseEntity {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
@@ -71,20 +124,44 @@ public class Inventory extends BaseEntity {
                + "}";
     }
 
+    // TODO: 2019-07-22 equals/hashCode???
+
     // ------------------------------------------------------------------------------------------------------------ film
+
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_FILM} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_FILM} attribute.
+     */
     public Film getFilm() {
         return film;
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_FILM} attribute with specified value.
+     *
+     * @param film new value for {@value #ATTRIBUTE_NAME_FILM} attribute.
+     */
     public void setFilm(final Film film) {
         this.film = film;
     }
 
     // ----------------------------------------------------------------------------------------------------------- store
+
+    /**
+     * Returns the current value of {@value #ATTRIBUTE_NAME_STORE} attribute.
+     *
+     * @return the current value of {@value #ATTRIBUTE_NAME_STORE} attribute.
+     */
     public Store getStore() {
         return store;
     }
 
+    /**
+     * Replaces the current value of {@value #ATTRIBUTE_NAME_STORE} attribute with specified value.
+     *
+     * @param store new value for {@value #ATTRIBUTE_NAME_STORE} attribute.
+     */
     public void setStore(final Store store) {
         this.store = store;
     }

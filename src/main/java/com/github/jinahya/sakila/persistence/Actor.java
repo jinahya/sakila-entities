@@ -24,6 +24,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -79,8 +80,10 @@ public class Actor extends BaseEntity implements FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The primary key column name of this entity. The value is {@value}.
-     * <p>
+     * The primary key column name of this entity class. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each actor in the table.
+     * </blockquote>
      * {@code SMALLINT(5) PK NN UN AI}
      */
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
@@ -115,22 +118,44 @@ public class Actor extends BaseEntity implements FullNamed {
     }
 
     // ------------------------------------------------------------------------------------------------------- firstName
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param firstName new value for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+     */
     @Override
     public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
     // -------------------------------------------------------------------------------------------------------- lastName
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+     */
     @Override
     public void setLastName(final String lastName) {
         this.lastName = lastName;
@@ -152,7 +177,7 @@ public class Actor extends BaseEntity implements FullNamed {
         if (film == null) {
             throw new NullPointerException("film is null");
         }
-        final boolean filmAdded = getFilms().add(film);
+        final boolean filmAdded = getFilms().add(film); // TODO: 2019-07-23 equals/hashCode???
         if (!film.getActors().contains(this)) {
             final boolean addedToFilm = film.addActor(this);
         }
@@ -177,14 +202,18 @@ public class Actor extends BaseEntity implements FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-14 remove!!!
     @Deprecated
-    @ManyToMany(cascade = {
-            //CascadeType.ALL,
-            //CascadeType.DETACH,
-            //CascadeType.MERGE,
-            //CascadeType.PERSIST,
-            //CascadeType.REFRESH,
-            //CascadeType.REMOVE
-    })
+    @ManyToMany(
+            cascade = {
+//                    CascadeType.ALL,
+//                    CascadeType.DETACH,
+//                    CascadeType.MERGE,
+//                    CascadeType.PERSIST,
+//                    CascadeType.REFRESH,
+//                    CascadeType.REMOVE
+            },
+            fetch = FetchType.LAZY, // default
+            targetEntity = Film.class
+    )
     @JoinTable(name = FilmActor.TABLE_NAME,
                joinColumns = {
                        @JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID, referencedColumnName = COLUMN_NAME_ACTOR_ID)

@@ -32,13 +32,14 @@ import javax.validation.constraints.Size;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.BiFunction;
 
 import static com.github.jinahya.sakila.persistence.Address.COLUMN_NAME_ADDRESS_ID;
 import static com.github.jinahya.sakila.persistence.Address.TABLE_NAME;
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static java.util.Arrays.copyOf;
-import static java.util.Optional.ofNullable;
+import static java.util.Comparator.comparing;
 
 /**
  * An entity class for binding {@value #TABLE_NAME} table.
@@ -128,17 +129,47 @@ public class Address extends BaseEntity {
     public static final int SIZE_MAX_ADDRESS2 = 50;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
+     * <blockquote>
+     * The region of an address, this may be a state, province, prefecture, etc.
+     * </blockquote>
+     * {@code VARCHAR(20) NN}
+     */
     public static final String COLUMN_NAME_DISTRICT = "district";
 
+    /**
+     * The length of {@value #COLUMN_NAME_DISTRICT} column. The value is {@value}.
+     */
+    public static final int COLUMN_LENGTH_DISTRICT = 20;
+
+    /**
+     * The entity name for {@value #COLUMN_NAME_DISTRICT} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_DISTRICT = "district";
 
     public static final int SIZE_MIN_DISTRICT = 0; // TODO: 2019-07-12 empty???
 
-    public static final int SIZE_MAX_DISTRICT = 20;
+    /**
+     * The maximum size of {@value ATTRIBUTE_NAME_DISTRICT} attribute. The value is {@value}.
+     */
+    public static final int SIZE_MAX_DISTRICT = COLUMN_LENGTH_DISTRICT;
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The database column name for {@value #ATTRIBUTE_NAME_CITY} attribute. The value is {@value}.
+     * <blockquote>
+     * A foreign key pointing to the <code>{@link City city}</code> table.
+     * </blockquote>
+     * {@code SMALLINT(5) NN UN}
+     */
     public static final String COLUMN_NAME_CITY_ID = "city_id";
 
+    /**
+     * The entity attribute name for {@value #COLUMN_NAME_CITY_ID} column. The value is {@value}.
+     */
     public static final String ATTRIBUTE_NAME_CITY = "city";
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -175,6 +206,13 @@ public class Address extends BaseEntity {
     public static final String ATTRIBUTE_NAME_LOCATION = "location";
 
     public static final int SIZE_LOCATION_FOR_POINT = 21; // 1 + 4 + 8 + 8
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * A comparator for comparing addresses with their {@link #ATTRIBUTE_NAME_DISTRICT district} attribute.
+     */
+    public static final Comparator<Address> COMPARING_DISTRICT = comparing(Address::getDistrict);
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -277,6 +315,13 @@ public class Address extends BaseEntity {
     }
 
     // -------------------------------------------------------------------------------------------------------- location
+
+    /**
+     * Returns the current value of {@link #ATTRIBUTE_NAME_LOCATION} attribute.
+     *
+     * @return the current value of {@link #ATTRIBUTE_NAME_LOCATION} attribute.
+     */
+    // TODO: 2019-07-23 private!!!
     public byte[] getLocation() {
         if (location == null) {
             return null;
@@ -284,8 +329,15 @@ public class Address extends BaseEntity {
         return copyOf(location, location.length);
     }
 
-    public void setLocation(final byte[] location) { // TODO: 7/16/2019 public???
-        this.location = ofNullable(location).map(v -> copyOf(v, v.length)).orElse(null);
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_LOCATION} attribute with specified value.
+     *
+     * @param location new value for {@link #ATTRIBUTE_NAME_LOCATION} attribute.
+     */
+    // TODO: 2019-07-23 private!!!
+    public void setLocation(final byte[] location) {
+        // TODO: 2019-07-12 copy!!!
+        this.location = location;
     }
 
     /**

@@ -45,8 +45,8 @@ import static java.util.Optional.ofNullable;
  * </blockquote>
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
- * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-film_category.html>The film_category Table
- * (Sakila Sample Database)</a>
+ * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-film_category.html">The
+ * <code>film_category</code> Table (Sakila Sample Database, Developer Zone, MySQL)</a>
  */
 @IdClass(FilmCategoryId.class)
 @Entity
