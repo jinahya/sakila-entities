@@ -45,8 +45,8 @@ import static java.util.Comparator.comparing;
  * <blockquote>
  * The address table contains address information for customers, staff, and stores.
  * <p>
- * The address table primary key appears as a foreign key in the {@link Customer customer}, {@link Staff staff}, and
- * {@link Store store} tables.
+ * The address table primary key appears as a foreign key in the <code>{@link Customer customer}</code>, <code>{@link
+ * Staff staff}</code>, and <code>{@link Store store}</code> tables.
  * </blockquote>
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
@@ -54,9 +54,24 @@ import static java.util.Comparator.comparing;
  * Sample Database, Developer Zone, MySQL)</a>
  */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ADDRESS_ID, nullable = false))
-@Entity
+@Entity(name = Address.ENTITY_NAME)
 @Table(name = TABLE_NAME)
 public class Address extends BaseEntity {
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The name of this entity. The value is {@value}.
+     *
+     * @deprecated not required.
+     */
+    // TODO: 2019-07-23 remove!!!
+    @Deprecated
+    public static final String ENTITY_NAME = "Address";
+
+    static {
+        assert ENTITY_NAME.equals(Address.class.getSimpleName());
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
