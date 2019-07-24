@@ -133,7 +133,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
+    // TODO: 7/17/2019 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"sourceForTestListSortedByCountryIn"})
     @ParameterizedTest
@@ -155,7 +155,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
+    // TODO: 7/17/2019 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"sourceForTestListSortedByCityCount"})
     @ParameterizedTest

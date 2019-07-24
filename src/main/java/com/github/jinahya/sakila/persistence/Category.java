@@ -55,11 +55,7 @@ public class Category extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-23 remove!!!
     @Deprecated
-    public static final String ENTITY_NAME = "Category";
-
-    static {
-        assert ENTITY_NAME.equals(Category.class.getSimpleName());
-    }
+    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 

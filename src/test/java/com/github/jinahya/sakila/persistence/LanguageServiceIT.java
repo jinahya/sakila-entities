@@ -135,7 +135,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
     /**
      * Asserts {@link LanguageService#findByName(String)} returns empty for an unknown language.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
     void assertFindByNameReturnsEmptyIfNameIsUnknown() {
@@ -149,7 +149,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      *
      * @param name a value for {@code name} parameter.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestingFindByName"})
     @ParameterizedTest
@@ -169,7 +169,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestingStreamOrderedByName"})
     @ParameterizedTest

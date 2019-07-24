@@ -64,10 +64,11 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Returns the entity whose {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute equals to specified value.
+     * Returns the entity instance whose {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute matches to specified value.
      *
-     * @param id the value for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
+     * @param id the value ofa {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute to match
      * @return the entity identified by specified value; empty if not found.
+     * @see javax.persistence.EntityManager#find(Class, Object)
      */
     public Optional<T> findById(final int id) {
         // TODO: 2019-07-19 implement!!!
@@ -75,10 +76,11 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
     }
 
     /**
-     * Returns a list of entities of {@link #entityClass} sorted by {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute in
-     * specified order.
+     * Returns a list of entity instances of {@link #entityClass} sorted by {@link BaseEntity#ATTRIBUTE_NAME_ID id}
+     * attribute in specified order.
      *
-     * @param ascendingOrder the order to sort; {@code true} for ascending order; {@code false} for descending order.
+     * @param ascendingOrder a flag for the ordering direction; {@code true} for ascending order; {@code false} for
+     *                       descending order.
      * @param firstResult    the position of the first result, numbered from {@code 0}; {@code null} for an unspecified
      *                       result.
      * @param maxResults     maximum number of results to retrieve; {@code null} for an unspecified result.

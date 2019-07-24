@@ -67,11 +67,7 @@ public class Address extends BaseEntity {
      */
     // TODO: 2019-07-23 remove!!!
     @Deprecated
-    public static final String ENTITY_NAME = "Address";
-
-    static {
-        assert ENTITY_NAME.equals(Address.class.getSimpleName());
-    }
+    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 
