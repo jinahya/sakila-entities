@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -137,12 +138,12 @@ final class FullNamedEntityServiceITs {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNamedEntityService<U>, U extends FullNamed> void testListSortedByLastNameIn(
-            final EntityManager entityManager, final T entityService, final Class<U> entityClass) {
-        final String firstName = current().nextBoolean() ? null : randomNonUniqueFirstName(entityClass);
+    static <T extends FullNamedEntityService<U>, U extends FullNamed> void testListSortedByFirstNameIn(
+            final EntityManager entityManager, final T serviceInstance, final Class<U> entityClass) {
         final boolean ascendingOrder = current().nextBoolean();
         final Integer firstResult = firstResult(entityManager, entityClass);
         final Integer maxResults = maxResults(entityManager, entityClass);
+        final List<U> list = serviceInstance.listSortedByFirstNameIn(ascendingOrder, firstResult, maxResults);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
