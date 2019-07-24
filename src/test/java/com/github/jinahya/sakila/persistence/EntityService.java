@@ -28,7 +28,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.SingularAttribute;
 
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
@@ -119,29 +118,45 @@ abstract class EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Returns the managed type of {@link #entityClass}.
-     *
-     * @return the managed type of {@link #entityClass}.
-     */
-    final @NotNull ManagedType<T> managedType() {
-        return managedType(entityManager, entityClass);
-    }
+//    /**
+//     * Returns the managed type of {@link #entityClass}.
+//     *
+//     * @return the managed type of {@link #entityClass}.
+//     */
+//    final @NotNull ManagedType<T> managedType() {
+//        return managedType(entityManager(), entityClass);
+//    }
 
-    /**
-     * Returns the singular attribute of specified name and type.
-     *
-     * @param name the attribute name.
-     * @param type the attribute type.
-     * @param <A>  attribute type parameter
-     * @return the singular attribute of specified name and type.
-     * @see #managedType()
-     * @see ManagedType#getSingularAttribute(String, Class)
-     */
-    final @NotNull <A> SingularAttribute<? super T, A> singularAttribute(@NotNull final String name,
-                                                                         @NotNull final Class<A> type) {
-        return managedType().getSingularAttribute(name, type);
-    }
+//    final @NotNull EntityType<T> entityType() {
+//        return entityType(entityManager(), entityClass);
+//    }
+
+//    /**
+//     * Returns the entity name of the {@link #entityClass}.
+//     *
+//     * @return the name of the {@code #entityClass}.
+//     * @see #entityName(Class)
+//     */
+//    final @NotNull String entityName() {
+//        return entityName(entityManager(), entityClass);
+//    }
+
+//    /**
+//     * Returns the singular attribute of specified name and type.
+//     *
+//     * @param name the attribute name.
+//     * @param type the attribute type.
+//     * @param <A>  attribute type parameter
+//     * @return the singular attribute of specified name and type.
+//     * @see #managedType()
+//     * @see ManagedType#getSingularAttribute(String, Class)
+//     */
+//    final @NotNull <A> SingularAttribute<? super T, A> singularAttribute(@NotNull final String name,
+//                                                                         @NotNull final Class<A> type) {
+//        return managedType().getSingularAttribute(name, type);
+//    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Returns an entity manager for accessing persistence context.
@@ -153,18 +168,6 @@ abstract class EntityService<T> {
             entityManagerUncloseable = uncloseable(entityManager);
         }
         return entityManagerUncloseable;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns the entity name of the {@link #entityClass}.
-     *
-     * @return the name of the {@code #entityClass}.
-     * @see #entityName(Class)
-     */
-    final @NotNull String entityName() {
-        return entityName(entityManager(), entityClass);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

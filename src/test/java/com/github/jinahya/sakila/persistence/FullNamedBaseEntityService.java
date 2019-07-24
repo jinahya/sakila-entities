@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -30,17 +31,50 @@ import java.util.List;
 /**
  * A service interface for base entities implement {@link FullNamed}.
  *
- * @param <U> entity type parameter.
+ * @param <T> entity type parameter.
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-interface FullNamedBaseEntityService<T extends BaseEntityService<U>, U extends BaseEntity & FullNamed>
-        extends FullNamedEntityService<T, U> {
+interface FullNamedBaseEntityService<T extends BaseEntity & FullNamed> extends FullNamedEntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    default List<U> listMatchedByFullNameSortedByIdIn(
-            @NotNull final String firstName, @NotNull final String lastName, final boolean ascendingOrder,
+    static <T extends FullNamed> List<T> listSortedByLastNameIn(
+            @NotNull final Class<T> entityClass, @NotNull final EntityManager entityManager,
+            @Nullable final String firstName, final boolean ascendingOrder,
             @PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-19 implement!!!
+        // TODO: 2019-07-24 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    static <T extends FullNamed> List<T> listSortedByFirstNameIn(
+            @NotNull final Class<T> entityClass, @NotNull final EntityManager entityManager,
+            @Nullable final String lastName, final boolean ascendingOrder,
+            @PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
+        // TODO: 2019-07-24 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @SuppressWarnings({"unchecked"})
+    default List<T> listSortedByLastNameIn(@Nullable final String firstName, final boolean ascendingOrder,
+                                           @PositiveOrZero @Nullable final Integer firstResult,
+                                           @Positive @Nullable final Integer maxResults) {
+        if (!(this instanceof EntityService)) {
+            throw new IllegalStateException("this instance is not an instance of " + EntityService.class);
+        }
+        final Class<T> entityClass = ((EntityService<T>) this).entityClass;
+        final EntityManager entityManager = ((EntityService<?>) this).entityManager();
+        return listSortedByLastNameIn(entityClass, entityManager, firstName, ascendingOrder, firstResult, maxResults);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    default List<T> listSortedByFirstNameIn(@Nullable final String lastName, final boolean ascendingOrder,
+                                            @PositiveOrZero @Nullable final Integer firstResult,
+                                            @Positive @Nullable final Integer maxResults) {
+        if (!(this instanceof EntityService)) {
+            throw new IllegalStateException("this instance is not an instance of " + EntityService.class);
+        }
+        final Class<T> entityClass = ((EntityService<T>) this).entityClass;
+        final EntityManager entityManager = ((EntityService<?>) this).entityManager();
+        return listSortedByFirstNameIn(entityClass, entityManager, lastName, ascendingOrder, firstResult, maxResults);
     }
 }

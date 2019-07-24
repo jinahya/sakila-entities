@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -30,31 +31,77 @@ import java.util.List;
 /**
  * A service interface for entities implement {@link FullNamed}.
  *
- * @param <U> entity type parameter.
+ * @param <T> entity type parameter.
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-interface FullNamedEntityService<T extends EntityService<U>, U extends FullNamed> {
+interface FullNamedEntityService<T extends FullNamed> {
 
     // -----------------------------------------------------------------------------------------------------------------
+    static <T extends FullNamed> List<T> listSortedByLastNameIn(
+            @NotNull final Class<T> entityClass, @NotNull final EntityManager entityManager,
+            @Nullable final String firstName, final boolean ascendingOrder,
+            @PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
+        // TODO: 2019-07-24 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    static <T extends FullNamed> List<T> listSortedByFirstNameIn(
+            @NotNull final Class<T> entityClass, @NotNull final EntityManager entityManager,
+            @Nullable final String lastName, final boolean ascendingOrder,
+            @PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
+        // TODO: 2019-07-24 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Lists entities sorted by {@link FullNamed#ATTRIBUTE_NAME_LAST_NAME lastName} attributes.
+     *
+     * @param firstName      a value for {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} attribute to match;
+     *                       {@code null} for an unspecified result.
+     * @param ascendingOrder a flag for ordering direction; {@code true} for ascending order, {@code false} for
+     *                       descending order.
+     * @param firstResult    index of the first result, numbered from {@code 0}; {@code null} for an unspecified
+     *                       result.
+     * @param maxResults     maximum number of results to retrieve; {@code null} for an unspecified result.
+     * @return a list of entities
+     * @see #listSortedByLastNameIn(Class, EntityManager, String, boolean, Integer, Integer)
+     */
     @SuppressWarnings({"unchecked"})
-    default T entityServiceType() {
-        return (T) this;
+    default List<T> listSortedByLastNameIn(@Nullable final String firstName, final boolean ascendingOrder,
+                                           @PositiveOrZero @Nullable final Integer firstResult,
+                                           @Positive @Nullable final Integer maxResults) {
+        if (!(this instanceof EntityService)) {
+            throw new IllegalStateException("this instance is not an instance of " + EntityService.class);
+        }
+        final Class<T> entityClass = ((EntityService<T>) this).entityClass;
+        final EntityManager entityManager = ((EntityService<?>) this).entityManager();
+        return listSortedByLastNameIn(entityClass, entityManager, firstName, ascendingOrder, firstResult, maxResults);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    default List<U> listMatchedByFirstNameSortedByLastNameIn(@NotNull final String firstName,
-                                                             final boolean ascendingOrder,
-                                                             @PositiveOrZero @Nullable final Integer firstResult,
-                                                             @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-19 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    default List<U> listMatchedByLastNameSortedByFirstNameIn(@NotNull final String lastName,
-                                                             final boolean ascendingOrder,
-                                                             @PositiveOrZero @Nullable final Integer firstResult,
-                                                             @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-19 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+    /**
+     * Lists entities sorted by {@link FullNamed#ATTRIBUTE_NAME_FIRST_NAME firstName} attributes.
+     *
+     * @param lastName       a value for {@link FullNamed#ATTRIBUTE_NAME_LAST_NAME lastName} attribute to match; {@code
+     *                       null} for an unspecified result.
+     * @param ascendingOrder a flag for ordering direction; {@code true} for ascending order, {@code false} for
+     *                       descending order.
+     * @param firstResult    index of the first result, numbered from {@code 0}; {@code null} for an unspecified
+     *                       result.
+     * @param maxResults     maximum number of results to retrieve; {@code null} for an unspecified result.
+     * @return a list of entities
+     * @see #listSortedByFirstNameIn(Class, EntityManager, String, boolean, Integer, Integer)
+     */
+    @SuppressWarnings({"unchecked"})
+    default List<T> listSortedByFirstNameIn(@Nullable final String lastName, final boolean ascendingOrder,
+                                            @PositiveOrZero @Nullable final Integer firstResult,
+                                            @Positive @Nullable final Integer maxResults) {
+        if (!(this instanceof EntityService)) {
+            throw new IllegalStateException("this instance is not an instance of " + EntityService.class);
+        }
+        final Class<T> entityClass = ((EntityService<T>) this).entityClass;
+        final EntityManager entityManager = ((EntityService<?>) this).entityManager();
+        return listSortedByFirstNameIn(entityClass, entityManager, lastName, ascendingOrder, firstResult, maxResults);
     }
 }
