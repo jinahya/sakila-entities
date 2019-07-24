@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -30,18 +29,14 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.ManagedType;
+import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import javax.validation.constraints.NotNull;
 
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
-import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
@@ -54,11 +49,45 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 abstract class EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
+    static Metamodel metamodel(@NotNull final EntityManager entityManager) {
+        return entityManager.getEntityManagerFactory().getMetamodel();
+    }
 
-    /**
-     * A map of entity classes and entity names.
-     */
-    private static final Map<Class<?>, String> ENTITY_NAMES = synchronizedMap(new WeakHashMap<>());
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X> ManagedType<X> managedType(@NotNull final EntityManager entityManager,
+                                          @NotNull final Class<X> entityClass) {
+        return metamodel(entityManager).managedType(entityClass);
+    }
+
+    static <X> ManagedType<X> managedType(@NotNull final Class<X> entityClass) {
+        return applyEntityManager(v -> managedType(v, entityClass));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X, A> SingularAttribute<? super X, A> singularAttribute(@NotNull final EntityManager entityManager,
+                                                                    @NotNull final Class<X> entityClass,
+                                                                    @NotNull final String attributeName,
+                                                                    @NotNull final Class<A> attributeType) {
+        return managedType(entityManager, entityClass).getSingularAttribute(attributeName, attributeType);
+    }
+
+    static <X, A> SingularAttribute<? super X, A> singularAttribute(@NotNull final Class<X> entityClass,
+                                                                    @NotNull final String attributeName,
+                                                                    @NotNull final Class<A> attributeType) {
+        return applyEntityManager(v -> singularAttribute(v, entityClass, attributeName, attributeType));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X> EntityType<X> entityType(@NotNull final EntityManager entityManager,
+                                        @NotNull final Class<X> entityClass) {
+        return metamodel(entityManager).entity(entityClass);
+    }
+
+    static <X> EntityType<X> entityType(@NotNull final Class<X> entityClass) {
+        return applyEntityManager(v -> entityType(v, entityClass));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Returns the entity name of the specified entity class.
@@ -66,13 +95,11 @@ abstract class EntityService<T> {
      * @param entityManager an entity manager.
      * @param entityClass   the entity class whose name is returned.
      * @return the entity name of {@code entityClass}.
+     * @see EntityType#getName()
      * @see #entityName(Class)
      */
     static String entityName(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
-        synchronized (ENTITY_NAMES) {
-            return ENTITY_NAMES.computeIfAbsent(entityClass, k ->
-                    entityManager.getEntityManagerFactory().getMetamodel().entity(k).getName());
-        }
+        return entityType(entityManager, entityClass).getName();
     }
 
     /**
@@ -83,27 +110,7 @@ abstract class EntityService<T> {
      * @see #entityName(EntityManager, Class)
      */
     static String entityName(@NotNull final Class<?> entityClass) {
-        return PersistenceProducer.applyEntityManager(m -> entityName(m, entityClass));
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    static <X> ManagedType<X> managedType(final EntityManager entityManager, final Class<X> entityClass) {
-        return entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
-    }
-
-    static <X> ManagedType<X> managedType(final Class<X> entityClass) {
-        return PersistenceProducer.applyEntityManager(v -> managedType(v, entityClass));
-    }
-
-    static <X, A> SingularAttribute<? super X, A> singularAttribute(final EntityManager entityManager,
-                                                                    final Class<X> entityClass, final String name,
-                                                                    final Class<A> type) {
-        return managedType(entityManager, entityClass).getSingularAttribute(name, type);
-    }
-
-    static <X, A> SingularAttribute<? super X, A> singularAttribute(final Class<X> entityClass, final String name,
-                                                                    final Class<A> type) {
-        return PersistenceProducer.applyEntityManager(v -> singularAttribute(v, entityClass, name, type));
+        return applyEntityManager(m -> entityName(m, entityClass));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -150,25 +157,23 @@ abstract class EntityService<T> {
      *
      * @return the managed type of {@link #entityClass}.
      */
-    final ManagedType<T> managedType() {
-        return entityManager()
-                .getEntityManagerFactory()
-                .getMetamodel()
-                .managedType(entityClass);
+    final @NotNull ManagedType<T> managedType() {
+        return managedType(entityManager, entityClass);
     }
 
     /**
      * Returns the singular attribute of specified name and type.
      *
-     * @param name the attribute name.
-     * @param type the attribute type.
-     * @param <A>  attribute type parameter
+     * @param attributeName the attribute name.
+     * @param attributeType the attribute type.
+     * @param <A>           attribute type parameter
      * @return the singular attribute of specified name and type.
      * @see #managedType()
      * @see ManagedType#getSingularAttribute(String, Class)
      */
-    final <A> SingularAttribute<? super T, A> singularAttribute(final String name, final Class<A> type) {
-        return managedType().getSingularAttribute(name, type);
+    final @NotNull <A> SingularAttribute<? super T, A> singularAttribute(@NotNull final String attributeName,
+                                                                         @NotNull final Class<A> attributeType) {
+        return singularAttribute(entityManager(), entityClass, attributeName, attributeType);
     }
 
     /**
@@ -183,42 +188,13 @@ abstract class EntityService<T> {
         return entityManagerUncloseable;
     }
 
-    /**
-     * Applies the (injected) entity manager to specified function and returns the result.
-     *
-     * @param function the function to be applied.
-     * @param <R>      result type parameter
-     * @return the result of the {@code function}.
-     */
-    <R> R applyEntityManager(@NotNull final Function<? super EntityManager, ? extends R> function) {
-        return requireNonNull(function, "function is null").apply(entityManager());
-    }
-
-    <U, R> R applyEntityManager(@NotNull final BiFunction<? super EntityManager, ? super U, ? extends R> function,
-                                @NotNull final Supplier<? extends U> supplier) {
-        return applyEntityManager(v -> requireNonNull(function, "function is null")
-                .apply(v, requireNonNull(supplier, "supplier is null").get()));
-    }
-
-    void acceptEntityManager(@NotNull final Consumer<? super EntityManager> consumer) {
-        applyEntityManager(v -> {
-            requireNonNull(consumer, "consumer is null").accept(v);
-            return null;
-        });
-    }
-
-    <U> void acceptEntityManager(@NotNull final BiConsumer<? super EntityManager, ? super U> consumer,
-                                 @NotNull final Supplier<? extends U> supplier) {
-        acceptEntityManager(v -> requireNonNull(consumer, "consumer is null")
-                .accept(v, requireNonNull(supplier, "supplier is null").get()));
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Returns the entity name of the {@link #entityClass}.
      *
      * @return the name of the {@code #entityClass}.
+     * @see #entityName(Class)
      */
     final @NotNull String entityName() {
         return entityName(entityManager(), entityClass);

@@ -63,11 +63,7 @@ public class Language extends BaseEntity {
      */
     // TODO: 2019-07-17 remove!!!
     @Deprecated // forRemoval = true
-    public static final String ENTITY_NAME = "Language";
-
-    static {
-        assert ENTITY_NAME.equals(Language.class.getSimpleName());
-    }
+    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 

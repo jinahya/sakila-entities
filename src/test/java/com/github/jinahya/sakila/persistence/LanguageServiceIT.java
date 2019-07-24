@@ -165,7 +165,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestingStreamOrderedByName"})
     @ParameterizedTest

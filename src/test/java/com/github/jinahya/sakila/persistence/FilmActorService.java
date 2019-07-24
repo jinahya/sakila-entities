@@ -143,11 +143,11 @@ class FilmActorService extends EntityService<FilmActor> {
         final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
 //        final SingularAttribute<FilmActor, Film> filmAttribute = FilmActor_.film;
         final SingularAttribute<? super FilmActor, Film> filmAttribute
-                = singularAttribute(FilmActor.class, FilmActor.ATTRIBUTE_NAME_FILM, Film.class);
+                = singularAttribute(FilmActor.ATTRIBUTE_NAME_FILM, Film.class);
         criteriaQuery.select(from.get(filmAttribute));
 //        final SingularAttribute<FilmActor, Actor> actorAttribute = FilmActor_.actor;
         final SingularAttribute<? super FilmActor, Actor> actorAttribute
-                = singularAttribute(FilmActor.class, FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
+                = singularAttribute(FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
         criteriaQuery.where(criteriaBuilder.equal(from.get(actorAttribute), actor));
 //        final SingularAttribute<Film, Integer> releaseYearAttribute = Film_.releaseYear;
         final SingularAttribute<? super Film, Integer> releaseYearAttribute

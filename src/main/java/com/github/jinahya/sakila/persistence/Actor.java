@@ -50,8 +50,8 @@ import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
-@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Actor.COLUMN_NAME_ACTOR_ID, nullable = false))
 @Entity(name = Actor.ENTITY_NAME)
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Actor.COLUMN_NAME_ACTOR_ID, nullable = false))
 @Table(name = TABLE_NAME)
 public class Actor extends BaseEntity implements FullNamed {
 
@@ -71,11 +71,7 @@ public class Actor extends BaseEntity implements FullNamed {
      */
     // TODO: 2019-07-14 remove!!!
     @Deprecated // for Removal = true
-    public static final String ENTITY_NAME = "Actor";
-
-    static {
-        assert ENTITY_NAME.equals(Actor.class.getSimpleName());
-    }
+    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 

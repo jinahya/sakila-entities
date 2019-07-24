@@ -22,10 +22,19 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A class for testing {@link Country}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 @Slf4j
 class CountryTest extends BaseEntityTest<Country> {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance.
+     */
     CountryTest() {
         super(Country.class);
     }

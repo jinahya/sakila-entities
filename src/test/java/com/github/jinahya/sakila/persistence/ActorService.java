@@ -186,7 +186,7 @@ class ActorService extends BaseEntityService<Actor> {
                                              @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
-                    .append(Actor.ENTITY_NAME)
+                    .append(entityName())
                     .append(" AS a");
             if (lastName != null) {
                 queryBuilder.append(" WHERE a.lastName = :lastName");
@@ -208,7 +208,7 @@ class ActorService extends BaseEntityService<Actor> {
         }
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
-                    .append(Actor.ENTITY_NAME)
+                    .append(entityName())
                     .append(" AS a");
             if (lastName != null) {
                 queryBuilder.append(" WHERE a.lastName = :lastName");
@@ -284,7 +284,7 @@ class ActorService extends BaseEntityService<Actor> {
                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
-                    .append(Actor.ENTITY_NAME)
+                    .append(entityName())
                     .append(" AS a");
             if (firstName != null) {
                 queryBuilder.append(" WHERE a.firstName = :firstName");
@@ -306,7 +306,7 @@ class ActorService extends BaseEntityService<Actor> {
         }
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
-                    .append(Actor.ENTITY_NAME)
+                    .append(entityName())
                     .append(" AS a");
             if (firstName != null) {
                 queryBuilder.append(" WHERE a.firstName = :firstName");

@@ -259,6 +259,22 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Asserts {@link EntityService#entityName()} method returns the {@link Class#getSimpleName()} of the {@link
+     * #entityClass}.
+     * <blockquote cite="xxx">
+     * <p>If the <code>name</code> element is not specified, the entity name defaults to the unqualified name of the
+     * entity class.</p>
+     * <footer>- 10.1 Entity / JSR 388 Java\u2122 Persistence 2.2 / 10.1 Entity</footer>
+     * </blockquote>
+     */
+    @Test
+    void assertEntityNameReturnsSimpleName() {
+        assertThat(serviceInstance().entityName()).isEqualTo(entityClass.getSimpleName());
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * Returns an instance of {@link #serviceClass}.
      *
      * @return an instance of {@link #serviceClass}.

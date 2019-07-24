@@ -72,7 +72,7 @@ class AddressTest extends BaseEntityTest<Address> {
     /**
      * Asserts {@link Address#getLocation()} returns a copy of the current value.
      */
-    // TODO: 2019-07-14 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-14 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
     void assertGetLocationReturnsCopy() {
@@ -85,7 +85,7 @@ class AddressTest extends BaseEntityTest<Address> {
     /**
      * Asserts {@link Address#setLocation(byte[])} replaces the current value with a copy of specified value.
      */
-    // TODO: 2019-07-14 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-14 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
     void assertSetLocationReplacesCopy() {
