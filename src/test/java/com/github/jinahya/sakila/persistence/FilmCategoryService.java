@@ -186,7 +186,8 @@ class FilmCategoryService extends EntityService<FilmCategory> {
             query.setParameter("film", film);
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"}) final List<Category> list = query.getResultList();
+            @SuppressWarnings({"unchecked"})
+            final List<Category> list = query.getResultList();
             return list;
         }
         if (current().nextBoolean()) {
@@ -291,7 +292,8 @@ class FilmCategoryService extends EntityService<FilmCategory> {
             query.setParameter("category", category);
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"}) final List<Film> list = query.getResultList();
+            @SuppressWarnings({"unchecked"})
+            final List<Film> list = query.getResultList();
             return list;
         }
         if (current().nextBoolean()) {

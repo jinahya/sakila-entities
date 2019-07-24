@@ -122,19 +122,6 @@ abstract class EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-//    /**
-//     * Returns the managed type of {@link #entityClass}.
-//     *
-//     * @return the managed type of {@link #entityClass}.
-//     */
-//    final @NotNull ManagedType<T> managedType() {
-//        return managedType(entityManager(), entityClass);
-//    }
-
-//    final @NotNull EntityType<T> entityType() {
-//        return entityType(entityManager(), entityClass);
-//    }
-
     /**
      * Returns the entity name of the {@link #entityClass}.
      *

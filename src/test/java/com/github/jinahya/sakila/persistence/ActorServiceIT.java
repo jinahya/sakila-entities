@@ -231,6 +231,13 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    @Test
+    void testListMatchedByFirstNameSortedByLastNameIn() {
+        FullNamedServiceITs.testListSortedByLastNameIn(
+                entityManager(), serviceInstance(), entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Asserts {@link ActorService#listSortedByIdInAscendingOrder(String, String, Integer, Integer)} returns an empty

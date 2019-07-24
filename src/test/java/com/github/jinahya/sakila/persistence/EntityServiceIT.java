@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.weld.junit5.WeldJunit5Extension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -35,7 +34,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.WeakHashMap;
@@ -49,8 +47,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith({WeldJunit5Extension.class})
 @Slf4j
@@ -136,29 +132,16 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         }
     }
 
+    static long entityCount(@NotNull final Class<?> entityClass) {
+        return applyEntityManager(v -> entityCount(v, entityClass));
+    }
+
     static int entityCountAsInt(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
         return toIntExact(entityCount(entityManager, entityClass));
     }
 
-    /**
-     * Returns the total number of entities of specified class.
-     *
-     * @param entityClass the entity class.
-     * @return the total number of entities of specified class.
-     */
-    static long entityCount(final Class<?> entityClass) {
-        return applyEntityManager(v -> entityCount(v, requireNonNull(entityClass, "entityClass is null")));
-    }
-
-    /**
-     * Returns the value of {@link #entityCount(Class)} as {@code int}.
-     *
-     * @param entityClass the entity class.
-     * @return the value of {@link #entityCount(Class)} as {@code int}.
-     * @see StrictMath#toIntExact(long)
-     */
-    static int entityCountAsInt(final Class<?> entityClass) {
-        return toIntExact(entityCount(requireNonNull(entityClass, "entityClass is null")));
+    static int entityCountAsInt(@NotNull final Class<?> entityClass) {
+        return applyEntityManager(v -> entityCountAsInt(v, entityClass));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -181,17 +164,26 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         return typedQuery.getSingleResult();
     }
 
-    static <T> T randomEntity(final Class<? extends T> entityClass) {
-        return applyEntityManager(v -> randomEntity(v, requireNonNull(entityClass, "entityClass is null")));
+    static <T> T randomEntity(final Class<T> entityClass) {
+        return applyEntityManager(v -> randomEntity(v, entityClass));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    static int firstResult(final EntityManager entityManager, final Class<?> entityClass) {
+        return current().nextInt(entityCountAsInt(entityManager, entityClass));
+    }
+
     static int firstResult(final Class<?> entityClass) {
-        return current().nextInt(entityCountAsInt(entityClass));
+        return applyEntityManager(v -> firstResult(v, entityClass));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static int maxResults(final EntityManager entityManager, final Class<?> entityClass) {
+        return firstResult(entityManager, entityClass) + 1;
     }
 
     static int maxResults(final Class<?> entityClass) {
-        return firstResult(entityClass) + 1;
+        return applyEntityManager(v -> maxResults(v, entityClass));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -213,43 +205,22 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Assert {@link #serviceClass} is annotated with {@code @Slf4j}.
+     * Tests miscellaneous things.
      */
     @Test
-    void assertServiceClassAnnotatedWithSlf4j() {
-        final Class<?> clazz = serviceClass;
-        final String message = "Annotate @Slf4j on " + clazz;
-        try {
-            final Field log = clazz.getDeclaredField("log");
-            assertEquals(Logger.class, log.getType(), message);
-        } catch (final NoSuchFieldException nsfe) {
-            fail(message);
-        }
+    void miscellaneous() {
+        MiscellaneousTests.assertAnnotatedWithSlf4j(serviceClass);
+        MiscellaneousTests.assertAnnotatedWithSlf4j(getClass());
     }
 
-    /**
-     * Asserts this IT class is annotated with {@code @Slf4j}.
-     */
-    @Test
-    void assertAnnotatedWithSlf4j() {
-        final Class<?> clazz = getClass();
-        final String message = "Annotate @Slf4j on " + clazz;
-        try {
-            final Field log = clazz.getDeclaredField("log");
-            assertEquals(Logger.class, log.getType(), message);
-        } catch (final NoSuchFieldException nsfe) {
-            fail(message);
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------- count()
 
     /**
      * Tests {@link EntityService#count()} method.
      */
     @Test
     void testCount() {
-        final long expected = entityCount(entityClass);
+        final long expected = entityCount(entityManager(), entityClass);
         final long actual = serviceInstance().count();
         assertThat(actual)
                 .isNotNegative()

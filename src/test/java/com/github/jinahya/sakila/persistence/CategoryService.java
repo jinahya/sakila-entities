@@ -70,7 +70,8 @@ class CategoryService extends BaseEntityService<Category> {
             final Query query = entityManager().createQuery(
                     "SELECT c FROM Category AS c WHERE c.name = :name ORDER BY c.id ASC");
             query.setParameter("name", name);
-            @SuppressWarnings({"unchecked"}) final List<Category> list = query.getResultList();
+            @SuppressWarnings({"unchecked"})
+            final List<Category> list = query.getResultList();
             return list;
         }
         if (current().nextBoolean()) {
@@ -117,7 +118,8 @@ class CategoryService extends BaseEntityService<Category> {
             final Query query = entityManager().createQuery("SELECT c FROM Category AS c ORDER BY c.name ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"}) final List<Category> resultList = query.getResultList();
+            @SuppressWarnings({"unchecked"})
+            final List<Category> resultList = query.getResultList();
             return resultList;
         }
         if (current().nextBoolean()) {

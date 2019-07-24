@@ -20,25 +20,39 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 
-import static java.lang.invoke.MethodHandles.lookup;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Constants and utilities for {@link NamedAttribute}.
+ * Constants and utilities for miscellaneous tests.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-final class NamedAttributeTests {
+@Slf4j
+final class MiscellaneousTests {
 
     // -----------------------------------------------------------------------------------------------------------------
-    private static final Logger logger = getLogger(lookup().lookupClass());
 
-    // -----------------------------------------------------------------------------------------------------------------
+    /**
+     * Asserts specified class is annotated with {@code @Slf4j}.
+     *
+     * @param clazz the class to be asserted.
+     */
+    static void assertAnnotatedWithSlf4j(@NotNull final Class<?> clazz) {
+        final String message = "Annotate " + clazz + " with " + Slf4j.class;
+        try {
+            final Field logField = clazz.getDeclaredField("log");
+            assertEquals(Logger.class, logField.getType(), message);
+        } catch (final NoSuchFieldException nsfe) {
+            fail(message);
+        }
+    }
 
     /**
      * Verifies all fields of specified class and its ancestors are properly named when they are annotated with {@link
@@ -46,7 +60,7 @@ final class NamedAttributeTests {
      *
      * @param clazz the class to be verified.
      */
-    static void verify(final Class<?> clazz) {
+    static void verifyNamedAttributes(final Class<?> clazz) {
         if (clazz == null) {
             throw new NullPointerException("clazz is null");
         }
@@ -61,16 +75,12 @@ final class NamedAttributeTests {
         }
         final Class<?> superclass = clazz.getSuperclass();
         if (superclass != null) {
-            verify(superclass);
+            verifyNamedAttributes(superclass);
         }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Creates a new instance.
-     */
-    private NamedAttributeTests() {
+    private MiscellaneousTests() {
         super();
     }
 }

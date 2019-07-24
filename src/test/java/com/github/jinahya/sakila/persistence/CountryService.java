@@ -79,7 +79,8 @@ class CountryService extends BaseEntityService<Country> {
                     "SELECT c FROM Country AS c ORDER BY c.country " + (ascendingOrder ? "ASC" : "DESC"));
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"}) final List<Country> resultList = (List<Country>) query.getResultList();
+            @SuppressWarnings({"unchecked"})
+            final List<Country> resultList = (List<Country>) query.getResultList();
             return resultList;
         }
         if (current().nextBoolean()) {
@@ -138,7 +139,8 @@ class CountryService extends BaseEntityService<Country> {
                     + " ORDER BY COUNT(city) DESC, country.country ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
-            @SuppressWarnings({"unchecked"}) final List<Country> countries = query.getResultList();
+            @SuppressWarnings({"unchecked"})
+            final List<Country> countries = query.getResultList();
             return countries;
         }
         if (true || current().nextBoolean()) {
