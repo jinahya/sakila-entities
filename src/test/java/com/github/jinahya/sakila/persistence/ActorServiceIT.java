@@ -233,7 +233,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
     // -----------------------------------------------------------------------------------------------------------------
     @Test
     void testListMatchedByFirstNameSortedByLastNameIn() {
-        FullNamedServiceITs.testListSortedByLastNameIn(
+        FullNamedEntityServiceITs.testListSortedByLastNameIn(
                 entityManager(), serviceInstance(), entityClass);
     }
 
