@@ -18,7 +18,7 @@ import static java.util.Collections.synchronizedMap;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toSet;
 
-final class FullNamedServiceITs {
+final class FullNamedEntityServiceITs {
 
     // -----------------------------------------------------------------------------------------------------------------
     static String tableName(final Class<?> entityClass) {
@@ -146,7 +146,7 @@ final class FullNamedServiceITs {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    FullNamedServiceITs() {
+    FullNamedEntityServiceITs() {
         super();
     }
 }
