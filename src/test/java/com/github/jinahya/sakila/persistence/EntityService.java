@@ -28,8 +28,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.SingularAttribute;
 
-import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Objects.requireNonNull;
 
@@ -52,21 +52,19 @@ abstract class EntityService<T> {
         return metamodel(entityManager).managedType(entityClass);
     }
 
-    static <X> ManagedType<X> managedType(@NotNull final Class<X> entityClass) {
-        return applyEntityManager(v -> managedType(v, entityClass));
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     static <X> EntityType<X> entityType(@NotNull final EntityManager entityManager,
                                         @NotNull final Class<X> entityClass) {
         return metamodel(entityManager).entity(entityClass);
     }
 
-    static <X> EntityType<X> entityType(@NotNull final Class<X> entityClass) {
-        return applyEntityManager(v -> entityType(v, entityClass));
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
+    static <X, Y> SingularAttribute<? super X, Y> singularAttribute(final EntityManager entityManager,
+                                                                    final Class<X> entityClass,
+                                                                    final String attributeName,
+                                                                    final Class<Y> attributeType) {
+        return managedType(entityManager, entityClass).getSingularAttribute(attributeName, attributeType);
+    }
 
     /**
      * Returns the entity name of the specified entity class.
@@ -75,21 +73,9 @@ abstract class EntityService<T> {
      * @param entityClass   the entity class whose name is returned.
      * @return the entity name of {@code entityClass}.
      * @see EntityType#getName()
-     * @see #entityName(Class)
      */
     static String entityName(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
         return entityType(entityManager, entityClass).getName();
-    }
-
-    /**
-     * Returns the entity name of the specified entity class.
-     *
-     * @param entityClass the entity class whose entity name is returned.
-     * @return the entity name of {@code entityClass}.
-     * @see #entityName(EntityManager, Class)
-     */
-    static String entityName(@NotNull final Class<?> entityClass) {
-        return applyEntityManager(m -> entityName(m, entityClass));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -131,30 +117,19 @@ abstract class EntityService<T> {
 //        return entityType(entityManager(), entityClass);
 //    }
 
-//    /**
-//     * Returns the entity name of the {@link #entityClass}.
-//     *
-//     * @return the name of the {@code #entityClass}.
-//     * @see #entityName(Class)
-//     */
-//    final @NotNull String entityName() {
-//        return entityName(entityManager(), entityClass);
-//    }
+    /**
+     * Returns the entity name of the {@link #entityClass}.
+     *
+     * @return the name of the {@code #entityClass}.
+     */
+    final @NotNull String entityName() {
+        return entityName(entityManager(), entityClass);
+    }
 
-//    /**
-//     * Returns the singular attribute of specified name and type.
-//     *
-//     * @param name the attribute name.
-//     * @param type the attribute type.
-//     * @param <A>  attribute type parameter
-//     * @return the singular attribute of specified name and type.
-//     * @see #managedType()
-//     * @see ManagedType#getSingularAttribute(String, Class)
-//     */
-//    final @NotNull <A> SingularAttribute<? super T, A> singularAttribute(@NotNull final String name,
-//                                                                         @NotNull final Class<A> type) {
-//        return managedType().getSingularAttribute(name, type);
-//    }
+    final @NotNull <A> SingularAttribute<? super T, A> singularAttribute(@NotNull final String attributeName,
+                                                                         @NotNull final Class<A> attributeType) {
+        return singularAttribute(entityManager(), entityClass, attributeName, attributeType);
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 

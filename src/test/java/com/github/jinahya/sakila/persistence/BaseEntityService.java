@@ -23,6 +23,7 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.EntityManager;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -39,6 +40,12 @@ import java.util.Optional;
 abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
+    static <X extends BaseEntity> SingularAttribute<? super X, Integer> idAttribute(final EntityManager entityManager,
+                                                                                    final Class<X> entityClass) {
+        return singularAttribute(entityManager, entityClass, BaseEntity.ATTRIBUTE_NAME_ID, Integer.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Creates a new instance with specified entity class.
@@ -50,15 +57,8 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns the singular attribute for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
-     *
-     * @return the singular attribute for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute.
-     * @see #singularAttribute(String, Class)
-     */
-    final SingularAttribute<? super T, Integer> idAttribute() {
-        return singularAttribute(BaseEntity.ATTRIBUTE_NAME_ID, Integer.class);
+    SingularAttribute<? super T, Integer> idAttribute() {
+        return idAttribute(entityManager(), entityClass);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
