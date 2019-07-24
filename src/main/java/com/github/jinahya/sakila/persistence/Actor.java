@@ -50,7 +50,7 @@ import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
-@Entity(name = Actor.ENTITY_NAME)
+@Entity
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Actor.COLUMN_NAME_ACTOR_ID, nullable = false))
 @Table(name = TABLE_NAME)
 public class Actor extends BaseEntity implements FullNamed {
@@ -61,17 +61,6 @@ public class Actor extends BaseEntity implements FullNamed {
      * The target table name of {@link Actor} entity. The value is {@value}.
      */
     public static final String TABLE_NAME = "actor";
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The value for {@link Entity#name()}.
-     *
-     * @deprecated Use default value.
-     */
-    // TODO: 2019-07-14 remove!!!
-    @Deprecated // for Removal = true
-    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 

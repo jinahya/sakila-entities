@@ -148,7 +148,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     @Disabled
     @RepeatedTest(16)
     void testFindById() {
-        final U entity = randomEntity(entityClass);
+        final U entity = randomEntity(entityManager(), entityClass);
         final Optional<U> found = serviceInstance().findById(entity.getId());
         assertThat(found)
                 .isPresent()
@@ -168,8 +168,8 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     @RepeatedTest(16)
     void testListSortedById(final TestReporter testReporter) {
         final boolean ascendingOrder = current().nextBoolean();
-        final Integer firstResult = current().nextBoolean() ? null : firstResult(entityClass);
-        final Integer maxResults = current().nextBoolean() ? null : maxResults(entityClass);
+        final Integer firstResult = current().nextBoolean() ? null : firstResult(entityManager(), entityClass);
+        final Integer maxResults = current().nextBoolean() ? null : maxResults(entityManager(), entityClass);
         testReporter.publishEntry("ascendingOrder", Boolean.toString(ascendingOrder));
         testReporter.publishEntry("firstResult", Objects.toString(firstResult));
         testReporter.publishEntry("maxResults", Objects.toString(maxResults));

@@ -47,15 +47,10 @@ import static java.util.Comparator.comparing;
  * film_category}</code> table.
  * </blockquote>
  */
-@Entity(name = Category.ENTITY_NAME)
+@Entity
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_CATEGORY_ID, nullable = false))
 @Table(name = TABLE_NAME)
 public class Category extends BaseEntity {
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-07-23 remove!!!
-    @Deprecated
-    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 

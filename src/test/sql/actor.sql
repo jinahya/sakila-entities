@@ -42,3 +42,19 @@ FROM actor
 GROUP BY first_name, last_name
 ORDER BY name_count DESC
 ;
+
+
+SELECT first_name, COUNT(1) AS count
+FROM actor
+GROUP BY first_name
+HAVING count > 1
+-- ORDER BY count DESC
+;
+
+SELECT first_name
+FROM actor
+GROUP BY first_name
+HAVING COUNT(first_name) > 1
+;
+
+

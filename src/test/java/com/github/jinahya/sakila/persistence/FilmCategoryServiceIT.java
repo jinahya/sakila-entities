@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -130,7 +131,8 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      * @return a stream of arguments.
      */
     private static Stream<Arguments> argumentsForTestCountFilms() {
-        return IntStream.range(0, 8).mapToObj(i -> randomEntity(Category.class)).map(Arguments::of);
+        return applyEntityManager(
+                v -> IntStream.range(0, 8).mapToObj(i -> randomEntity(v, Category.class)).map(Arguments::of));
     }
 
     /**
@@ -139,8 +141,10 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      * @return a stream of arguments.
      */
     private static Stream<Arguments> argumentsForTestListFilms() {
-        return IntStream.range(0, 8).mapToObj(
-                i -> arguments(randomEntity(Category.class), firstResult(Film.class), maxResults(Film.class)));
+        return applyEntityManager(
+                v -> IntStream.range(0, 8).mapToObj(
+                        i -> arguments(randomEntity(v, Category.class), firstResult(v, Film.class),
+                                       maxResults(v, Film.class))));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

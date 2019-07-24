@@ -54,20 +54,9 @@ import static java.util.Comparator.comparing;
  * Sample Database, Developer Zone, MySQL)</a>
  */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_ADDRESS_ID, nullable = false))
-@Entity(name = Address.ENTITY_NAME)
+@Entity
 @Table(name = TABLE_NAME)
 public class Address extends BaseEntity {
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The name of this entity. The value is {@value}.
-     *
-     * @deprecated not required.
-     */
-    // TODO: 2019-07-23 remove!!!
-    @Deprecated
-    public static final String ENTITY_NAME = "";
 
     // -----------------------------------------------------------------------------------------------------------------
 
