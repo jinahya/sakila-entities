@@ -90,7 +90,7 @@ class CityService extends BaseEntityService<City> {
         criteriaQuery.select(criteriaBuilder.count(from));
         //final SingularAttribute<City, Country> countryAttribute = City_.country;
         final SingularAttribute<? super City, Country> countryAttribute
-                = singularAttribute(City.class, City.ATTRIBUTE_NAME_COUNTRY, Country.class);
+                = singularAttribute(City.ATTRIBUTE_NAME_COUNTRY, Country.class);
         final Path<Country> countryPath = from.get(countryAttribute);
         criteriaQuery.where(criteriaBuilder.equal(countryPath, country));
         final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);

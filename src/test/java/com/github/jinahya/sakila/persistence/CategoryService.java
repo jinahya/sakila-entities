@@ -98,7 +98,7 @@ class CategoryService extends BaseEntityService<Category> {
         criteriaQuery.select(from);
         //final SingularAttribute<Category, String> nameAttribute = Category_.name;
         final SingularAttribute<? super Category, String> nameAttribute
-                = singularAttribute(Category.class, Category.ATTRIBUTE_NAME_NAME, String.class);
+                = singularAttribute(Category.ATTRIBUTE_NAME_NAME, String.class);
         criteriaQuery.where(criteriaBuilder.equal(from.get(nameAttribute), name));
         final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
         return typedQuery.getResultList();
@@ -146,7 +146,7 @@ class CategoryService extends BaseEntityService<Category> {
         criteriaQuery.select(from);
         //final SingularAttribute<Category, String> nameAttribute = Category_.name;
         final SingularAttribute<? super Category, String> nameAttribute
-                = singularAttribute(Category.class, Category.ATTRIBUTE_NAME_NAME, String.class);
+                = singularAttribute(Category.ATTRIBUTE_NAME_NAME, String.class);
         final Path<String> namePath = from.get(nameAttribute);
         final Order order = criteriaBuilder.asc(namePath);
         criteriaQuery.orderBy(order);

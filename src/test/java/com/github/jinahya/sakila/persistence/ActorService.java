@@ -42,7 +42,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorService extends BaseEntityService<Actor> {
+class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEntityService<Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 

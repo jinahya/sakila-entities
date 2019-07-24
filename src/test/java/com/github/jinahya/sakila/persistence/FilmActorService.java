@@ -90,7 +90,7 @@ class FilmActorService extends EntityService<FilmActor> {
         criteriaQuery.select(criteriaBuilder.count(from));
         //final SingularAttribute<FilmActor, Actor> actorAttribute = FilmActor_.actor;
         final SingularAttribute<? super FilmActor, Actor> actorAttribute
-                = singularAttribute(entityClass, FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
+                = singularAttribute(FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
         criteriaQuery.where(criteriaBuilder.equal(from.get(actorAttribute), actor));
         final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
@@ -150,9 +150,9 @@ class FilmActorService extends EntityService<FilmActor> {
                 = singularAttribute(FilmActor.ATTRIBUTE_NAME_ACTOR, Actor.class);
         criteriaQuery.where(criteriaBuilder.equal(from.get(actorAttribute), actor));
 //        final SingularAttribute<Film, Integer> releaseYearAttribute = Film_.releaseYear;
-        final SingularAttribute<? super Film, Integer> releaseYearAttribute
-                = singularAttribute(Film.class, Film.ATTRIBUTE_NAME_RELEASE_YEAR, Integer.class);
-        final Path<Integer> releaseYearPath = from.get(filmAttribute).get(releaseYearAttribute);
+        final SingularAttribute<? super Film, Integer> filmReleaseYearAttribute
+                = singularAttribute(entityManager(), Film.class, Film.ATTRIBUTE_NAME_RELEASE_YEAR, Integer.class);
+        final Path<Integer> releaseYearPath = from.get(filmAttribute).get(filmReleaseYearAttribute);
         criteriaQuery.orderBy(criteriaBuilder.desc(releaseYearPath));
         final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
