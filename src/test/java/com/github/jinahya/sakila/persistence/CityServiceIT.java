@@ -28,6 +28,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -35,6 +37,7 @@ import java.util.stream.Stream;
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.City.COMPARING_CITY;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -60,7 +63,13 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     // -----------------------------------------------------------------------------------------------------------------
     private static Stream<Arguments> sourceForListByCountry() {
         return CountryServiceIT.sourceRandomCountries()
-                .map(a -> arguments(a.get()[0], firstResult(City.class), maxResults(City.class)));
+                .map(a -> {
+                    final Country country = (Country) a.get()[0];
+                    final int cityCount = CountryServiceIT.COUNTRY_ID_CITY_COUNT.get(country.getId());
+                    final Integer firstResult = current().nextBoolean() ? null : current().nextInt(cityCount);
+                    final Integer maxResults = current().nextBoolean() ? null : current().nextInt(cityCount) + 1;
+                    return arguments(country, firstResult, maxResults);
+                });
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -104,13 +113,14 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     @Disabled
     @MethodSource({"sourceForListByCountry"})
     @ParameterizedTest
-    void testListByCountry(@NotNull final Country country, @Nullable final Integer firstResult,
-                           @Nullable final Integer maxResult) {
+    void testListByCountry(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
+                           @Positive @Nullable final Integer maxResult) {
         final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
         list.forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
-                .allSatisfy(city -> assertThat(city).residesIn(country))
+                .isNotEmpty()
+                .allSatisfy(city -> assertThat(city).isNotNull().residesIn(country))
                 .isSortedAccordingTo(COMPARING_CITY)
                 .hasSizeLessThanOrEqualTo(ofNullable(maxResult).orElse(Integer.MAX_VALUE))
         ;
