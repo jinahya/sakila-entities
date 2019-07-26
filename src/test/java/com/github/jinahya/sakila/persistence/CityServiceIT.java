@@ -117,7 +117,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
                            @Positive @Nullable final Integer maxResults) {
         final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResults);
         log.debug("list.size: {}", list.size());
-        list.forEach(city -> log.debug("city: {}", city));
+        list.stream().map(City::getCity).forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
                 .isNotEmpty()

@@ -120,7 +120,7 @@ public class City extends BaseEntity {
     public static final int SIZE_MAX_ADDRESSES = Integer.MAX_VALUE; // TODO: 2019-07-17 what???
 
     // -----------------------------------------------------------------------------------------------------------------
-    public static final Comparator<City> COMPARING_CITY = comparing(City::getCity);
+    public static final Comparator<City> COMPARING_CITY = (c1, c2) -> c1.city.compareToIgnoreCase(c2.city);
 
     public static Comparator<City> comparingCity(final boolean naturalOrder) {
         return naturalOrder ? COMPARING_CITY : COMPARING_CITY.reversed();
