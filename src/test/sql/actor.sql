@@ -36,28 +36,12 @@ FROM actor
 GROUP BY first_name, last_name
 ORDER BY count DESC;
 
-<<<<<<< HEAD
-
-SELECT *
-FROM actor
-WHERE first_name = 'SUSAN'
-  AND last_name = "DAVIS"
-;
-
-=======
->>>>>>> sketch
 -- ----------------------------------------------------------------------------------- first_name, last_name, name_count
 SELECT first_name, last_name, COUNT(1) AS name_count
 FROM actor
 GROUP BY first_name, last_name
 ORDER BY name_count DESC
 ;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> sketch
-=======
 
 
 SELECT first_name, COUNT(1) AS count
@@ -74,4 +58,3 @@ HAVING COUNT(first_name) > 1
 ;
 
 
->>>>>>> sketch
