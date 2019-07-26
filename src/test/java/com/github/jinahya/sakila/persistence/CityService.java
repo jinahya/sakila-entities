@@ -111,7 +111,9 @@ class CityService extends BaseEntityService<City> {
             @NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
             @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
-            final Query query = entityManager().createQuery("SELECT c FROM City AS c WHERE c.country = :country");
+            final Query query = entityManager().createQuery(
+                    "SELECT c FROM City AS c WHERE c.country = :country ORDER BY c.city ASC"
+            );
             query.setParameter("country", country);
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
@@ -121,7 +123,7 @@ class CityService extends BaseEntityService<City> {
         }
         if (current().nextBoolean()) {
             final TypedQuery<City> typedQuery = entityManager().createQuery(
-                    "SELECT c FROM City AS c WHERE c.country = :country",
+                    "SELECT c FROM City AS c WHERE c.country = :country ORDER BY c.city ASC",
                     City.class
             );
             typedQuery.setParameter("country", country);
@@ -135,6 +137,7 @@ class CityService extends BaseEntityService<City> {
             final Root<City> city = criteriaQuery.from(City.class);
             criteriaQuery.select(city);
             criteriaQuery.where(criteriaBuilder.equal(city.get(City.ATTRIBUTE_NAME_COUNTRY), country));
+            criteriaQuery.orderBy(criteriaBuilder.asc(city.get(City.ATTRIBUTE_NAME_CITY)));
             final TypedQuery<City> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
@@ -148,6 +151,10 @@ class CityService extends BaseEntityService<City> {
         final SingularAttribute<? super City, Country> countryAttribute
                 = singularAttribute(City.ATTRIBUTE_NAME_COUNTRY, Country.class);
         criteriaQuery.where(criteriaBuilder.equal(city.get(countryAttribute), country));
+        //final SingularAttribute<City, String> cityAttribute = City_.city;
+        final SingularAttribute<? super City, String> cityAttribute
+                = singularAttribute(City.ATTRIBUTE_NAME_CITY, String.class);
+        criteriaQuery.orderBy(criteriaBuilder.asc(city.get(cityAttribute)));
         final TypedQuery<City> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
