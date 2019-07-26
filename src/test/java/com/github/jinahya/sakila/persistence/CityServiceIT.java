@@ -107,15 +107,15 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
      *
      * @param country     a country to test with.
      * @param firstResult a value for {@code firstResult} parameter.
-     * @param maxResult   a value for {@code maxResults} parameter.
+     * @param maxResults  a value for {@code maxResults} parameter.
      */
     // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestListByCountry"})
     @ParameterizedTest
     void testListByCountry(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
-                           @Positive @Nullable final Integer maxResult) {
-        final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
+                           @Positive @Nullable final Integer maxResults) {
+        final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResults);
         log.debug("list.size: {}", list.size());
         list.forEach(city -> log.debug("city: {}", city));
         assertThat(list)
@@ -123,7 +123,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
                 .isNotEmpty()
                 .allSatisfy(city -> assertThat(city).isNotNull().residesIn(country))
                 .isSortedAccordingTo(COMPARING_CITY)
-                .hasSizeLessThanOrEqualTo(ofNullable(maxResult).orElse(Integer.MAX_VALUE))
+                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
         ;
     }
 }
