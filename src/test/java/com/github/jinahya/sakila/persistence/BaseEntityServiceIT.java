@@ -38,7 +38,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
 import static com.github.jinahya.sakila.persistence.BaseEntity.comparingId;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -152,7 +151,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
         final Optional<U> found = serviceInstance().findById(entity.getId());
         assertThat(found)
                 .isPresent()
-                .hasValueSatisfying(v -> assertThat(v).hasSameIdAs(entity))
+                .hasValueSatisfying(v -> Assertions.assertBaseEntity(v).hasSameIdAs(entity))
         ;
     }
 

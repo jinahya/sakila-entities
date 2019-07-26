@@ -31,22 +31,22 @@ final class Assertions {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static BaseEntityAssert<? extends BaseEntityAssert, BaseEntity> assertThat(final BaseEntity actual) {
+    static BaseEntityAssert<? extends BaseEntityAssert, BaseEntity> assertBaseEntity(final BaseEntity actual) {
         return new BaseEntityAssert_(actual);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static ActorAssert assertThat(final Actor actual) {
+    static ActorAssert assertActor(final Actor actual) {
         return new ActorAssert(actual);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static CityAssert assertThat(final City actual) {
+    static CityAssert assertCity(final City actual) {
         return new CityAssert(actual);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static CountryAssert assertThat(final Country actual) {
+    static CountryAssert assertCountry(final Country actual) {
         return new CountryAssert(actual);
     }
 

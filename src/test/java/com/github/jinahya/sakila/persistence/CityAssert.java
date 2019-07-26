@@ -22,7 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.validation.constraints.NotNull;
 
-import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
+import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -55,7 +55,7 @@ class CityAssert extends BaseEntityAssert<CityAssert, City> {
 
     // --------------------------------------------------------------------------------------------------------- country
     CityAssert residesInTheCountryWhoseHasId(@NotNull final int countryId) {
-        isNotNull().satisfies(a -> assertThat(a.getCountry()).hasId(countryId));
+        isNotNull().satisfies(a -> assertCountry(a.getCountry()).hasId(countryId));
         return this;
     }
 

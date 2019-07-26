@@ -37,7 +37,7 @@ import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
+import static com.github.jinahya.sakila.persistence.Assertions.assertActor;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName;
 import static java.util.Collections.unmodifiableNavigableMap;
@@ -288,7 +288,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
-                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertThat(actor).hasLastName(v)))
+                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertActor(actor).hasLastName(v)))
                 .size()
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
@@ -314,7 +314,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingLastName(ascendingOrder))
-                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertThat(actor).hasFirstName(v)))
+                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertActor(actor).hasFirstName(v)))
                 .size()
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
