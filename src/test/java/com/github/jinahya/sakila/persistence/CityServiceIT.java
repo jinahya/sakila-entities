@@ -103,6 +103,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     void testListByCountry(@NotNull final Country country, @Nullable final Integer firstResult,
                            @Nullable final Integer maxResult) {
         final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
+        list.forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
                 .allSatisfy(city -> assertThat(city).residesIn(country))
