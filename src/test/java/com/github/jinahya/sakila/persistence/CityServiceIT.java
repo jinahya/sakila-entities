@@ -60,7 +60,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    private static Stream<Arguments> sourceForListByCountry() {
+    private static Stream<Arguments> argumentsForTestListByCountry() {
         return CountryServiceIT.sourceRandomCountries()
                 .map(a -> {
                     final Country country = (Country) a.get()[0];
@@ -106,12 +106,12 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResult   a value for {@code maxResults} parameter.
      */
-    @MethodSource({"sourceForListByCountry"})
+    @MethodSource({"argumentsForTestListByCountry"})
     @ParameterizedTest
     void testListByCountry(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
                            @Positive @Nullable final Integer maxResult) {
         final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
-        log.debug("list: {}", list);
+        log.debug("list.size: {}", list.size());
         list.forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
