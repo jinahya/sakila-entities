@@ -32,14 +32,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
-import static com.github.jinahya.sakila.persistence.BaseEntity.find;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
@@ -53,8 +51,18 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <X extends BaseEntity> SingularAttribute<? super X, Integer> idAttribute(final EntityManager entityManager,
-                                                                                    final Class<X> entityClass) {
+
+    /**
+     * Returns the singular attribute for {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute of specified base entity
+     * class.
+     *
+     * @param entityManager an entity manager.
+     * @param entityClass   the entity class whose id attribute is returned.
+     * @param <X>           entity type parameter
+     * @return the id attribute.
+     */
+    static <X extends BaseEntity> SingularAttribute<? super X, Integer> idAttribute(
+            @NotNull final EntityManager entityManager, @NotNull final Class<X> entityClass) {
         return singularAttribute(entityManager, entityClass, BaseEntity.ATTRIBUTE_NAME_ID, Integer.class);
     }
 
@@ -79,11 +87,11 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
     /**
      * Returns the entity instance whose {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute matches to specified value.
      *
-     * @param id the value ofa {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute to match
+     * @param id the value ofa {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute to match.
      * @return the entity identified by specified value; empty if not found.
      * @see javax.persistence.EntityManager#find(Class, Object)
      */
-    public Optional<T> findById(final int id) {
+    public @NotNull Optional<T> findById(@Positive final int id) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery("SELECT e FROM " + entityName() + " AS e WHERE e.id = :id");
             query.setParameter("id", id);
@@ -101,8 +109,7 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
                     entityClass);
             typedQuery.setParameter("id", id);
             try {
-                final T entity = typedQuery.getSingleResult();
-                return Optional.of(entity);
+                return Optional.of(typedQuery.getSingleResult());
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
@@ -114,35 +121,20 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
             criteriaQuery.where(criteriaBuilder.equal(root.get(BaseEntity.ATTRIBUTE_NAME_ID), id));
             final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
             try {
-                final T entity = typedQuery.getSingleResult();
-                return Optional.of(entity);
+                return Optional.of(typedQuery.getSingleResult());
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
         }
-        if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
-            final Root<T> root = criteriaQuery.from(entityClass);
-//            criteriaQuery.where(criteriaBuilder.equal(root.get(BaseEntity_.id), id));
-            criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute()), id));
-            final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
-            try {
-                final T entity = typedQuery.getSingleResult();
-                return Optional.of(entity);
-            } catch (final NoResultException nre) {
-                return Optional.empty();
-            }
-        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<T> root = criteriaQuery.from(entityClass);
+        //final SingularAttribute<BaseEntity, Integer> idAttribute = BaseEntity_.id;
+        final SingularAttribute<? super T, Integer> idAttribute = idAttribute();
+        criteriaQuery.where(criteriaBuilder.equal(root.get(idAttribute), id));
+        final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
         try {
-            final T found = find(
-                    entityManager(),
-                    entityClass,
-//                    (b, r) -> singletonList(b.equal(r.get(BaseEntity_.id), id)),
-                    (b, r) -> singletonList(b.equal(r.get(idAttribute()), id)),
-                    UnaryOperator.identity()
-            );
-            return Optional.of(found);
+            return Optional.of(typedQuery.getSingleResult());
         } catch (final NoResultException nre) {
             return Optional.empty();
         }
@@ -159,8 +151,9 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
      * @param maxResults     maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of entities.
      */
-    public List<T> listSortedByIdIn(final boolean ascendingOrder, @PositiveOrZero @Nullable final Integer firstResult,
-                                    @Positive @Nullable final Integer maxResults) {
+    public @NotNull List<T> listSortedByIdIn(final boolean ascendingOrder,
+                                             @PositiveOrZero @Nullable final Integer firstResult,
+                                             @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT e"
@@ -187,8 +180,8 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
             final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
             final Root<T> from = criteriaQuery.from(entityClass);
             criteriaQuery.select(from);
-            final Path<Integer> id = from.get(BaseEntity.ATTRIBUTE_NAME_ID);
-            criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(id) : criteriaBuilder.desc(id));
+            final Path<Integer> idPath = from.get(BaseEntity.ATTRIBUTE_NAME_ID);
+            criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(idPath) : criteriaBuilder.desc(idPath));
             final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
             ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
             ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
@@ -198,9 +191,10 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         final Root<T> from = criteriaQuery.from(entityClass);
         criteriaQuery.select(from);
-        //final Path<Integer> id = from.get(BaseEntity_.id);
-        final Path<Integer> id = from.get(idAttribute());
-        criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(id) : criteriaBuilder.desc(id));
+        //final SingularAttribute<BaseEntity, Integer> idAttribute = BaseEntity_.id;
+        final SingularAttribute<? super T, Integer> idAttribute = idAttribute();
+        final Path<Integer> idPath = from.get(idAttribute);
+        criteriaQuery.orderBy(ascendingOrder ? criteriaBuilder.asc(idPath) : criteriaBuilder.desc(idPath));
         final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);

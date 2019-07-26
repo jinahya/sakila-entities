@@ -35,6 +35,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
@@ -110,7 +111,47 @@ class CityService extends BaseEntityService<City> {
     public List<@NotNull City> listByCountry(
             @NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
             @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-20 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery("SELECT c FROM City AS c WHERE c.country = :country");
+            query.setParameter("country", country);
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<City> list = query.getResultList();
+            return list;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<City> typedQuery = entityManager().createQuery(
+                    "SELECT c FROM City AS c WHERE c.country = :country",
+                    City.class
+            );
+            typedQuery.setParameter("country", country);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<City> criteriaQuery = criteriaBuilder.createQuery(City.class);
+            final Root<City> city = criteriaQuery.from(City.class);
+            criteriaQuery.select(city);
+            criteriaQuery.where(criteriaBuilder.equal(city.get(City.ATTRIBUTE_NAME_COUNTRY), country));
+            final TypedQuery<City> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<City> criteriaQuery = criteriaBuilder.createQuery(City.class);
+        final Root<City> city = criteriaQuery.from(City.class);
+        criteriaQuery.select(city);
+        //final SingularAttribute<City, Country> countryAttribute = City_.country;
+        final SingularAttribute<? super City, Country> countryAttribute
+                = singularAttribute(City.ATTRIBUTE_NAME_COUNTRY, Country.class);
+        criteriaQuery.where(criteriaBuilder.equal(city.get(countryAttribute), country));
+        final TypedQuery<City> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 }

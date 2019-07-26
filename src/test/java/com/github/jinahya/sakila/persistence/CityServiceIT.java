@@ -98,8 +98,6 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResult   a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
-    @Disabled
     @MethodSource({"sourceForListByCountry"})
     @ParameterizedTest
     void testListByCountry(@NotNull final Country country, @Nullable final Integer firstResult,

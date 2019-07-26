@@ -58,22 +58,6 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The total number of {@link Language}.
-     */
-    static final int LANGUAGE_COUNT = applyEntityManager(v -> entityCountAsInt(v, Language.class));
-
-    /**
-     * Returns a random instance of {@link Language}.
-     *
-     * @return a random instance of {@link Language}.
-     */
-    static Language randomLanguage() {
-        return applyEntityManager(v -> randomEntity(v, Language.class));
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
      * A sorted set of values of {@link Language#ATTRIBUTE_NAME_NAME} attribute.
      */
     static final SortedSet<String> NAMES;
