@@ -67,8 +67,7 @@ class CityService extends BaseEntityService<City> {
      * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of cities.
      */
-    @NotNull
-    public List<@NotNull City> listByCountry(
+    public @NotNull List<@NotNull City> listByCountry(
             @NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
             @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
