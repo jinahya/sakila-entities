@@ -59,7 +59,7 @@ interface FullNamedAssert<T extends AbstractAssert<T, U> & FullNamedAssert<T, U>
      *                               match.
      * @return this assert.
      */
-    default T hasSameFirstNameAs(@NotNull final FullNamed whoseFirstNameExpected) {
+    default T hasSameFirstNameWith(@NotNull final FullNamed whoseFirstNameExpected) {
         return hasFirstName(whoseFirstNameExpected.getFirstName());
     }
 
@@ -72,13 +72,13 @@ interface FullNamedAssert<T extends AbstractAssert<T, U> & FullNamedAssert<T, U>
         return (T) this;
     }
 
-    default T hasSameLastNameAs(@NotNull final FullNamed whoseLastNameExpected) {
+    default T hasSameLastNameWith(@NotNull final FullNamed whoseLastNameExpected) {
         return hasLastName(whoseLastNameExpected.getLastName());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    default FullNamedAssert hasSameFullNameAs(@NotNull final FullNamed whoseFullNameExpected) {
-        return hasSameFirstNameAs(whoseFullNameExpected).hasSameLastNameAs(whoseFullNameExpected);
+    default FullNamedAssert hasSameFullNameWith(@NotNull final FullNamed whoseFullNameExpected) {
+        return hasSameFirstNameWith(whoseFullNameExpected).hasSameLastNameWith(whoseFullNameExpected);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
