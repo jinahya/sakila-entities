@@ -22,7 +22,6 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -103,9 +102,11 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     void testListByCountry(@NotNull final Country country, @Nullable final Integer firstResult,
                            @Nullable final Integer maxResult) {
         final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
+        log.debug("list: {}", list);
         list.forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
+                .isNotEmpty()
                 .allSatisfy(city -> assertThat(city).residesIn(country))
                 .isSortedAccordingTo(COMPARING_CITY)
                 .hasSizeLessThanOrEqualTo(ofNullable(maxResult).orElse(Integer.MAX_VALUE))

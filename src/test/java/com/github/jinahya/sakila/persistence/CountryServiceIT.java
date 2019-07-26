@@ -68,8 +68,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
                     s -> {
                         final NavigableMap<Integer, Integer> map = new TreeMap<>();
                         while (s.hasNext()) {
-                            final Integer countryId = s.nextInt();
-                            final Integer cityCount = s.nextInt();
+                            final int countryId = s.nextInt();
+                            final int cityCount = s.nextInt();
                             final Integer previous = map.put(countryId, cityCount);
                             assert previous == null : "duplicate country id: " + countryId;
                         }
