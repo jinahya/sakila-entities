@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
+import static java.util.Comparator.comparing;
 
 /**
  * An entity class for binding {@value #TABLE_NAME} table.
