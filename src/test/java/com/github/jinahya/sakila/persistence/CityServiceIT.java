@@ -61,7 +61,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    private static Stream<Arguments> sourceForListByCountry() {
+    private static Stream<Arguments> argumentsForTestListByCountry() {
         return CountryServiceIT.sourceRandomCountries()
                 .map(a -> {
                     final Country country = (Country) a.get()[0];
@@ -111,11 +111,12 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
      */
     // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
     @Disabled
-    @MethodSource({"sourceForListByCountry"})
+    @MethodSource({"argumentsForTestListByCountry"})
     @ParameterizedTest
     void testListByCountry(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
                            @Positive @Nullable final Integer maxResult) {
         final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResult);
+        log.debug("list.size: {}", list.size());
         list.forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
