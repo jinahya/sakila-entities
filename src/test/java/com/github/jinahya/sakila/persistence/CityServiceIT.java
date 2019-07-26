@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
-import static com.github.jinahya.sakila.persistence.City.COMPARING_CITY;
+import static com.github.jinahya.sakila.persistence.City.COMPARING_CITY_IGNORE_CASE;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,7 +122,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
                 .isNotNull()
                 .isNotEmpty()
                 .allSatisfy(city -> assertThat(city).isNotNull().residesIn(country))
-                .isSortedAccordingTo(COMPARING_CITY)
+                .isSortedAccordingTo(COMPARING_CITY_IGNORE_CASE)
                 .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
         ;
     }
