@@ -32,6 +32,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -62,8 +63,11 @@ class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEnti
     }
 
     @Override
-    public @NotNull List<Actor> listByFirstName(@NotNull final String firstName) {
-        return FullNamedBaseEntityService.listByFirstName(entityManager(), entityClass, firstName);
+    public @NotNull List<Actor> listByFirstName(@NotNull final String firstName,
+                                                @PositiveOrZero @Nullable Integer firstResult,
+                                                @Positive @Nullable final Integer maxResults) {
+        return FullNamedBaseEntityService.listByFirstName(
+                entityManager(), entityClass, firstName, firstResult, maxResults);
     }
 
     @Override
@@ -72,8 +76,11 @@ class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEnti
     }
 
     @Override
-    public @NotNull List<Actor> listByLastName(@NotNull final String lastName) {
-        return FullNamedBaseEntityService.listByLastName(entityManager(), entityClass, lastName);
+    public @NotNull List<Actor> listByLastName(@NotNull final String lastName,
+                                               @PositiveOrZero @Nullable Integer firstResult,
+                                               @Positive @Nullable final Integer maxResults) {
+        return FullNamedBaseEntityService.listByLastName(
+                entityManager(), entityClass, lastName, firstResult, maxResults);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

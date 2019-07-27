@@ -1,5 +1,7 @@
 package com.github.jinahya.sakila.persistence;
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -8,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -62,7 +65,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
 
     static <T extends FullNamedBaseEntity> @NotNull List<@NotNull T> listByFirstName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String firstName) {
+            @NotNull final Class<T> entityClass, @NotNull String firstName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager.createQuery(
                     "SELECT e " +
@@ -93,15 +97,15 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
             return typedQuery.getResultList();
         }
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         final Root<T> from = criteriaQuery.from(entityClass);
-        criteriaQuery.select(criteriaBuilder.count(from));
+        criteriaQuery.select(from);
         //final SingularAttribute<FullNamedBaseEntity, String> firstNameAttribute = FullNamedBaseEntity_.firstName;
         final SingularAttribute<? super T, String> firstNameAttribute
                 = singularAttribute(entityManager, entityClass, FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class);
         criteriaQuery.where(criteriaBuilder.equal(from.get(firstNameAttribute), firstName));
-        final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
-        return typedQuery.getSingleResult();
+        final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+        return typedQuery.getResultList();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -114,7 +118,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
 
     static <T extends FullNamedBaseEntity> @NotNull List<@NotNull T> listByLastName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String lastName) {
+            @NotNull final Class<T> entityClass, @NotNull String lastName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }

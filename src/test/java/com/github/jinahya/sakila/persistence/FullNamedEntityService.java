@@ -1,5 +1,7 @@
 package com.github.jinahya.sakila.persistence;
 
+import jdk.internal.jline.internal.Nullable;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -8,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -72,14 +75,16 @@ interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedSer
     // -----------------------------------------------------------------------------------------------------------------
     static <T extends FullNamedEntity> @PositiveOrZero long countByLastName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String lastName) {
+            @NotNull final Class<T> entityClass, @NotNull String lastName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     static <T extends FullNamedEntity> @NotNull List<@NotNull T> listByLastName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String lastName) {
+            @NotNull final Class<T> entityClass, @NotNull String lastName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
