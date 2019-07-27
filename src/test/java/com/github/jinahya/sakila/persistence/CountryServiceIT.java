@@ -74,7 +74,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
                             final String country = s.nextLine().trim();
                             assert !country.isEmpty() : "empty country";
                             final boolean added = set.add(country);
-                            assert !added : "duplicate country: " + country;
+                            assert added : "duplicate country: " + country;
                         }
                         return set;
                     })
