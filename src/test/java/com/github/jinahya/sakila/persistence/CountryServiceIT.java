@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -29,13 +30,14 @@ import org.junit.jupiter.params.provider.MethodSource;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableNavigableMap;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -53,19 +55,20 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable navigable map of country id and city count.
+     * An unmodifiable map of country id and city count.
      */
-    static final NavigableMap<Integer, Integer> COUNTRY_ID_CITY_COUNT;
+    static final Map<Integer, Integer> COUNTRY_ID_CITY_COUNT;
 
     static {
         try {
-            COUNTRY_ID_CITY_COUNT = unmodifiableNavigableMap(applyResourceScanner(
+            COUNTRY_ID_CITY_COUNT = unmodifiableMap(applyResourceScanner(
                     "country_map_country_id_city_count.txt",
                     s -> {
-                        final NavigableMap<Integer, Integer> map = new TreeMap<>();
+                        final Map<Integer, Integer> map = new HashMap<>();
                         while (s.hasNext()) {
                             final int countryId = s.nextInt();
                             final int cityCount = s.nextInt();
+                            assert cityCount > 0;
                             final Integer previous = map.put(countryId, cityCount);
                             assert previous == null : "duplicate country id: " + countryId;
                         }
@@ -88,8 +91,9 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static Stream<Arguments> sourceRandomCountries() {
-        return IntStream.range(0, 17).mapToObj(i -> randomEntity(Country.class)).map(Arguments::of);
+    static Stream<Arguments> argumentsOfRandomCountries() {
+        return IntStream.range(0, current().nextInt(8, 17))
+                .mapToObj(i -> randomEntity(Country.class)).map(Arguments::of);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -126,8 +130,12 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     @ParameterizedTest
     void testList(@PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().list(firstResult, maxResults);
-        log.debug("list.size: {}", list.size());
-        list.stream().map(Country::getCountry).forEach(country -> log.debug("country: {}", country));
+        ofNullable(list).ifPresent(v -> {
+            log.debug("list.size: {}", v.size());
+            v.forEach(c -> {
+                log.debug("country: {}", c.getCountry());
+            });
+        });
         assertThat(list)
                 .isNotNull()
                 .isNotEmpty()

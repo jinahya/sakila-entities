@@ -22,6 +22,8 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,11 +46,19 @@ class CityAssert extends BaseEntityAssert<CityAssert, City> {
     }
 
     // ------------------------------------------------------------------------------------------------------------ city
+
+    /**
+     * Asserts the {@link #actual} has the value of {@link City#ATTRIBUTE_NAME_CITY city} attribute as specified value.
+     *
+     * @param city the value for {@link City#ATTRIBUTE_NAME_CITY city} attribute to match.
+     * @return this assert.
+     */
     CityAssert hasCity(@NotNull final String city) {
-        isNotNull().satisfies(a -> assertThat(a.getCity()).satisfies(c -> assertThat(c).isNotNull().isEqualTo(c)));
+        isNotNull().matches(c -> Objects.equals(c.getCity(), city), "actual has city of " + city);
         return this;
     }
 
+    @Deprecated // forRemoval = true
     CityAssert hasName(@NotNull final String city) {
         return hasCity(city);
     }
