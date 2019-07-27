@@ -144,7 +144,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         return toIntExact(entityCount(entityManager, entityClass));
     }
 
-    static Positive int entityCountAsInt(@NotNull final Class<?> entityClass) {
+    static @Positive int entityCountAsInt(@NotNull final Class<?> entityClass) {
         return applyEntityManager(v -> entityCountAsInt(v, entityClass));
     }
 

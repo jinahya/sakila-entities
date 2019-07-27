@@ -56,7 +56,8 @@ class CountryAssert extends BaseEntityAssert<CountryAssert, Country> {
         return this;
     }
 
-    @Deprecated // forRemoval = true
+    @Deprecated
+        // forRemoval = true
     CountryAssert hasName(@NotNull final String country) {
         return hasCountry(country);
     }
