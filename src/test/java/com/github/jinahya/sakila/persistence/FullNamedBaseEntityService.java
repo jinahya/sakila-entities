@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.github.jinahya.sakila.persistence.EntityService.entityName;
 import static com.github.jinahya.sakila.persistence.EntityService.singularAttribute;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends FullNamedService<T> {
@@ -73,6 +74,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
                     " FROM " + entityName(entityClass) + " AS e"
                     + " WHERE e." + FullNamed.ATTRIBUTE_NAME_FIRST_NAME + " = :firstName");
             query.setParameter("firstName", firstName);
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
             @SuppressWarnings({"unchecked"})
             final List<T> list = query.getResultList();
             return list;
@@ -85,6 +88,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
                     entityClass
             );
             typedQuery.setParameter("firstName", firstName);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
         }
         if (current().nextBoolean()) {
@@ -94,6 +99,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
             criteriaQuery.select(from);
             criteriaQuery.where(criteriaBuilder.equal(from.get(FullNamed.ATTRIBUTE_NAME_FIRST_NAME), firstName));
             final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
             return typedQuery.getResultList();
         }
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -105,6 +112,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
                 = singularAttribute(entityManager, entityClass, FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class);
         criteriaQuery.where(criteriaBuilder.equal(from.get(firstNameAttribute), firstName));
         final TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();
     }
 
