@@ -23,9 +23,11 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A service for {@link Country}.
@@ -47,6 +49,17 @@ class CountryService extends BaseEntityService<Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Find the country whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value.
+     *
+     * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
+     * @return an optional of found country.
+     */
+    Optional<Country> find(@NotNull final String country) {
+        // TODO: 2019-07-27 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
+    /**
      * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending order.
      *
      * @param firstResult the position of the first result to retrieve.
@@ -55,21 +68,6 @@ class CountryService extends BaseEntityService<Country> {
      */
     List<Country> list(@PositiveOrZero @Nullable final Integer firstResult,
                        @Positive @Nullable final Integer maxResults) {
-        // TODO: 2019-07-20 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
-     * Lists countries sorted by the number of cities reside in each country in descending order. Countries with same
-     * number of cities should be sorted in {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending
-     * order.
-     *
-     * @param firstResult the position of the first result to retrieve.
-     * @param maxResults  the maximum number of results to retrieve.
-     * @return a list of countries.
-     */
-    List<Country> listCityCount(@PositiveOrZero @Nullable final Integer firstResult,
-                                @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
