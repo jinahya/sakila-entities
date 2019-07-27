@@ -35,6 +35,7 @@ import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -81,6 +82,10 @@ abstract class EntityService<T> {
      */
     static String entityName(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
         return entityType(entityManager, entityClass).getName();
+    }
+
+    static String entityName(@@NotNull final Class<?> entityClass) {
+        return applyEntityManager(v -> entityName(v, entityClass));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
