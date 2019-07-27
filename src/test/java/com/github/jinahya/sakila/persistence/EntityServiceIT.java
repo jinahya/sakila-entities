@@ -33,6 +33,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -113,7 +114,7 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
      * @param entityClass   the class whose entities are counted.
      * @return the number of all entities of specified class.
      */
-    static long entityCount(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
+    static @Positive long entityCount(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
         if (entityManager == null) {
             throw new NullPointerException("entityManager is null");
         }
@@ -133,15 +134,17 @@ abstract class EntityServiceIT<T extends EntityService<U>, U> {
         }
     }
 
-    static long entityCount(@NotNull final Class<?> entityClass) {
+    static @Positive long entityCount(@NotNull final Class<?> entityClass) {
         return applyEntityManager(v -> entityCount(v, entityClass));
     }
 
-    static int entityCountAsInt(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
+    // -----------------------------------------------------------------------------------------------------------------
+    static @Positive int entityCountAsInt(@NotNull final EntityManager entityManager,
+                                          @NotNull final Class<?> entityClass) {
         return toIntExact(entityCount(entityManager, entityClass));
     }
 
-    static int entityCountAsInt(@NotNull final Class<?> entityClass) {
+    static Positive int entityCountAsInt(@NotNull final Class<?> entityClass) {
         return applyEntityManager(v -> entityCountAsInt(v, entityClass));
     }
 

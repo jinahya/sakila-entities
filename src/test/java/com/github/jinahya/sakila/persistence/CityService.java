@@ -53,7 +53,7 @@ class CityService extends BaseEntityService<City> {
      * @param country the value of {@link City#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return the number of cities in specified country.
      */
-    public @PositiveOrZero long countByCountry(@NotNull final Country country) {
+    @PositiveOrZero long count(@NotNull final Country country) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -67,9 +67,9 @@ class CityService extends BaseEntityService<City> {
      * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of cities.
      */
-    public @NotNull List<@NotNull City> listByCountry(
-            @NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
-            @Positive @Nullable final Integer maxResults) {
+    @NotNull List<@NotNull City> list(@NotNull final Country country,
+                                      @PositiveOrZero @Nullable final Integer firstResult,
+                                      @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }

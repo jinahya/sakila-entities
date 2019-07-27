@@ -61,15 +61,17 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    private static Stream<Arguments> argumentsForTestListByCountry() {
-        return CountryServiceIT.sourceRandomCountries()
+    private static Stream<Arguments> argumentsForTestList() {
+        return CountryServiceIT.argumentsOfRandomCountries()
                 .map(a -> {
-                    final Country country = (Country) a.get()[0];
-                    final int cityCount = CountryServiceIT.COUNTRY_ID_CITY_COUNT.get(country.getId());
-                    final Integer firstResult = current().nextBoolean() ? null : current().nextInt(cityCount);
-                    final Integer maxResults = current().nextBoolean() ? null : current().nextInt(cityCount) + 1;
-                    return arguments(country, firstResult, maxResults);
-                });
+                         final Country country = (Country) a.get()[0];
+                         final int cityCount = CountryServiceIT.COUNTRY_ID_CITY_COUNT.get(country.getId());
+                         final Integer firstResult = current().nextBoolean() ? null : current().nextInt(cityCount);
+                         final Integer maxResults = current().nextBoolean() ? null : current().nextInt(cityCount) + 1;
+                         return arguments(country, firstResult, maxResults);
+                     }
+                )
+                ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -84,17 +86,18 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     // ----------------------------------------------------------------------------------------------------------- count
 
     /**
-     * Tests {@link CityService#countByCountry(Country)} method.
+     * Tests {@link CityService#count(Country)} method.
      *
      * @param country a value for {@code country} parameter to test with.
      */
     // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
     @Disabled
-    @MethodSource({"com.github.jinahya.sakila.persistence.CountryServiceIT#sourceRandomCountries"})
+    @MethodSource({"com.github.jinahya.sakila.persistence.CountryServiceIT#argumentsOfRandomCountries"})
     @ParameterizedTest
-    void testCountByCountry(@NotNull final Country country) {
+    void testCount(@NotNull final Country country) {
         final long expected = CountryServiceIT.COUNTRY_ID_CITY_COUNT.get(country.getId());
-        final long actual = serviceInstance().countByCountry(country);
+        assertThat(expected).isPositive();
+        final long actual = serviceInstance().count(country);
         assertThat(actual)
                 .isNotNegative()
                 .isEqualTo(expected);
@@ -103,7 +106,7 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link CityService#listByCountry(Country, Integer, Integer)} method.
+     * Tests {@link CityService#list(Country, Integer, Integer)} method.
      *
      * @param country     a country to test with.
      * @param firstResult a value for {@code firstResult} parameter.
@@ -111,17 +114,17 @@ class CityServiceIT extends BaseEntityServiceIT<CityService, City> {
      */
     // TODO: 2019-07-20 enable, assert fails, implements, and assert passes.
     @Disabled
-    @MethodSource({"argumentsForTestListByCountry"})
+    @MethodSource({"argumentsForTestList"})
     @ParameterizedTest
-    void testListByCountry(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
-                           @Positive @Nullable final Integer maxResults) {
-        final List<City> list = serviceInstance().listByCountry(country, firstResult, maxResults);
+    void testList(@NotNull final Country country, @PositiveOrZero @Nullable final Integer firstResult,
+                  @Positive @Nullable final Integer maxResults) {
+        final List<City> list = serviceInstance().list(country, firstResult, maxResults);
         log.debug("list.size: {}", list.size());
         list.stream().map(City::getCity).forEach(city -> log.debug("city: {}", city));
         assertThat(list)
                 .isNotNull()
                 .isNotEmpty()
-                .allSatisfy(city -> assertCity(city).isNotNull().residesIn(country))
+                .allSatisfy(c -> assertCity(c).residesIn(country))
                 .isSortedAccordingTo(COMPARING_CITY_IGNORE_CASE)
                 .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
         ;
