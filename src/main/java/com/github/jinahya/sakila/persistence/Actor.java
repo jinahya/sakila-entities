@@ -53,7 +53,7 @@ import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_
 @Entity
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Actor.COLUMN_NAME_ACTOR_ID, nullable = false))
 @Table(name = TABLE_NAME)
-public class Actor extends BaseEntity implements FullNamed {
+public class Actor extends FullNamedBaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 

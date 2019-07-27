@@ -23,6 +23,8 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ import java.util.List;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorService extends BaseEntityService<Actor> {
+class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEntityService<Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +42,28 @@ class ActorService extends BaseEntityService<Actor> {
      */
     ActorService() {
         super(Actor.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public @PositiveOrZero long countByFirstName(@NotNull final String firstName) {
+        return FullNamedBaseEntityService.countByFirstName(entityManager(), entityClass, firstName);
+    }
+
+    @Override
+    public @NotNull List<Actor> listByFirstName(@NotNull final String firstName) {
+        return FullNamedBaseEntityService.listByFirstName(entityManager(), entityClass, firstName);
+    }
+
+    @Override
+    public @PositiveOrZero long countByLastName(@NotNull final String lastName) {
+        return FullNamedBaseEntityService.countByLastName(entityManager(), entityClass, lastName);
+    }
+
+    @Override
+    public @NotNull List<Actor> listByLastName(@NotNull final String lastName) {
+        return FullNamedBaseEntityService.listByLastName(entityManager(), entityClass, lastName);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
