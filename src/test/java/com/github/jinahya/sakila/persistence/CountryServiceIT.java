@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -43,6 +44,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
@@ -131,6 +133,8 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     @ParameterizedTest
     void testList(@PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().list(firstResult, maxResults);
+        log.debug("list.size: {}", list.size());
+        list.stream().map(Country::getCountry).forEach(country -> log.debug("country: {}", country));
         assertThat(list)
                 .isNotNull()
                 .isNotEmpty()
