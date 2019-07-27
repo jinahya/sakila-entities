@@ -40,6 +40,7 @@ import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Objects.requireNonNull;
@@ -176,7 +177,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         final Optional<Country> found = serviceInstance().find(country);
         assertThat(found)
                 .isPresent()
-                .hasValueSatisfying(v -> assertThat(v.getCountry()).isEqualTo(country))
+                .hasValueSatisfying(v -> assertCountry(v).hasCountry(country))
         ;
     }
 
