@@ -21,11 +21,9 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import javax.validation.constraints.NotNull;
-
 import java.util.Objects;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A class for asserting {@link City}.
@@ -58,7 +56,8 @@ class CityAssert extends BaseEntityAssert<CityAssert, City> {
         return this;
     }
 
-    @Deprecated // forRemoval = true
+    @Deprecated
+        // forRemoval = true
     CityAssert hasName(@NotNull final String city) {
         return hasCity(city);
     }
