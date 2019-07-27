@@ -24,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A class for asserting {@link City}.
@@ -52,14 +53,8 @@ class CityAssert extends BaseEntityAssert<CityAssert, City> {
      * @return this assert.
      */
     CityAssert hasCity(@NotNull final String city) {
-        isNotNull().matches(c -> Objects.equals(c.getCity(), city), "actual has city of " + city);
+        isNotNull().satisfies(a -> assertThat(a.getCity()).isNotNull().isEqualTo(city));
         return this;
-    }
-
-    @Deprecated
-        // forRemoval = true
-    CityAssert hasName(@NotNull final String city) {
-        return hasCity(city);
     }
 
     // --------------------------------------------------------------------------------------------------------- country

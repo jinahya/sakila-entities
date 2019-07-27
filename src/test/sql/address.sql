@@ -1,5 +1,22 @@
 DESC address;
 
+SELECT city_id, district, address
+FROM address
+ORDER BY city_id ASC, district ASC
+;
+
+SELECT city_id, COUNT(district) AS district_count
+FROM address
+GROUP BY city_id
+ORDER BY district_count DESC
+;
+
+SELECT city_id, COUNT(1) AS address_count
+FROM address
+GROUP BY city_id
+ORDER BY address_count DESC
+;
+
 SELECT DISTINCT a.district AS district, c.city AS city, t.country AS country
 FROM address AS a
          INNER JOIN city AS c ON a.city_id = c.city_id
