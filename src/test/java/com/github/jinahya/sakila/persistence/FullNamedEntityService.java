@@ -67,7 +67,8 @@ interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedSer
 
     static <T extends FullNamedEntity> @NotNull List<@NotNull T> listByFirstName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String firstName) {
+            @NotNull final Class<T> entityClass, @NotNull String firstName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
