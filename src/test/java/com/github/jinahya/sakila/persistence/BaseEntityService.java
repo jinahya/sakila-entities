@@ -78,6 +78,12 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns the single attribute of {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute for specified entity class.
+     *
+     * @return the entity whose {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute is returned.
+     */
     SingularAttribute<? super T, Integer> idAttribute() {
         return idAttribute(entityManager(), entityClass);
     }
@@ -91,7 +97,7 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
      * @return the entity identified by specified value; empty if not found.
      * @see javax.persistence.EntityManager#find(Class, Object)
      */
-    public @NotNull Optional<T> findById(@Positive final int id) {
+    @NotNull Optional<T> findById(@Positive final int id) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery("SELECT e FROM " + entityName() + " AS e WHERE e.id = :id");
             query.setParameter("id", id);
@@ -151,9 +157,9 @@ abstract class BaseEntityService<T extends BaseEntity> extends EntityService<T> 
      * @param maxResults     maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of entities.
      */
-    public @NotNull List<T> listSortedByIdIn(final boolean ascendingOrder,
-                                             @PositiveOrZero @Nullable final Integer firstResult,
-                                             @Positive @Nullable final Integer maxResults) {
+    @NotNull List<T> listSortedByIdIn(final boolean ascendingOrder,
+                                      @PositiveOrZero @Nullable final Integer firstResult,
+                                      @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT e"
