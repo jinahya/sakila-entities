@@ -43,11 +43,20 @@ class CountryAssert extends BaseEntityAssert<CountryAssert, Country> {
     }
 
     // --------------------------------------------------------------------------------------------------------- country
+
+    /**
+     * Asserts that the {@link #actual} has the same {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute as
+     * specified.
+     *
+     * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
+     * @return this assert.
+     */
     CountryAssert hasCountry(@NotNull final String country) {
-        isNotNull().satisfies(a -> assertThat(a.getCountry()).satisfies(c -> assertThat(c).isNotNull().isEqualTo(c)));
+        isNotNull().satisfies(a -> assertThat(a.getCountry()).isNotNull().isEqualTo(country));
         return this;
     }
 
+    @Deprecated // forRemoval = true
     CountryAssert hasName(@NotNull final String country) {
         return hasCountry(country);
     }

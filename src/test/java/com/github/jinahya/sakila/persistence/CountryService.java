@@ -47,33 +47,29 @@ class CountryService extends BaseEntityService<Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in either ascending order or
-     * descending order indicated by specified flag.
+     * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending order.
      *
-     * @param ascendingOrder the flag for sorting direction; {@code true} for ascending order; {@code false} for
-     *                       descending order.
-     * @param firstResult    the position of the first result to retrieve.
-     * @param maxResults     the maximum number of results to retrieve.
+     * @param firstResult the position of the first result to retrieve.
+     * @param maxResults  the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCountryIn(final boolean ascendingOrder,
-                                               @PositiveOrZero @Nullable final Integer firstResult,
-                                               @Positive @Nullable final Integer maxResults) {
+    List<Country> list(@PositiveOrZero @Nullable final Integer firstResult,
+                       @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     /**
-     * Lists countries sorted by the number of cities reside in them in descending order. Countries with same number
-     * number of cities should be sorted in their {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending
+     * Lists countries sorted by the number of cities reside in each country in descending order. Countries with same
+     * number of cities should be sorted in {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending
      * order.
      *
      * @param firstResult the position of the first result to retrieve.
      * @param maxResults  the maximum number of results to retrieve.
      * @return a list of countries.
      */
-    public List<Country> listSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
-                                               @Positive @Nullable final Integer maxResults) {
+    List<Country> listCityCount(@PositiveOrZero @Nullable final Integer firstResult,
+                                @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-20 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }

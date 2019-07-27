@@ -22,10 +22,19 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A class for testing {@link Category} class.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 @Slf4j
 class CategoryTest extends BaseEntityTest<Category> {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance.
+     */
     CategoryTest() {
         super(Category.class);
     }
