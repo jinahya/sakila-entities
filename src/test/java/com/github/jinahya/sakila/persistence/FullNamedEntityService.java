@@ -52,9 +52,10 @@ interface FullNamedEntityService<T extends FullNamedEntity> {
         final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         final Root<T> from = criteriaQuery.from(entityClass);
         criteriaQuery.select(criteriaBuilder.count(from));
-        final SingularAttribute<FullNamedEntity, String> firstNameAttribute = FullNamedEntity_.firstName;
-        final SingularAttribute<? super T, String> firstNameAttribute = singularAttribute(entityManager, entityClass, FullNamed.ATTRIBUTE_NAME_FIRST_NAME);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(FullNamed.ATTRIBUTE_NAME_FIRST_NAME), firstName));
+        //final SingularAttribute<FullNamedEntity, String> firstNameAttribute = FullNamedEntity_.firstName;
+        final SingularAttribute<? super T, String> firstNameAttribute
+                = singularAttribute(entityManager, entityClass, FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(firstNameAttribute), firstName));
         final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
     }
