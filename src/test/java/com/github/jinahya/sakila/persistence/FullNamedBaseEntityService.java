@@ -1,26 +1,14 @@
 package com.github.jinahya.sakila.persistence;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 
-import static com.github.jinahya.sakila.persistence.EntityService.entityName;
-import static com.github.jinahya.sakila.persistence.EntityService.singularAttribute;
-import static java.util.concurrent.ThreadLocalRandom.current;
-
-interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedService<T> {
+interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends FullNamedService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNamedEntity> @PositiveOrZero long countByFirstName(
+    static <T extends FullNamed> @PositiveOrZero long countByFirstName(
             @NotNull final EntityManager entityManager,
             @NotNull final Class<T> entityClass, @NotNull String firstName) {
         if (current().nextBoolean()) {
@@ -62,7 +50,7 @@ interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedSer
         return typedQuery.getSingleResult();
     }
 
-    static <T extends FullNamedEntity> @NotNull List<@NotNull T> listByFirstName(
+    static <T extends FullNamed> @NotNull List<@NotNull T> listByFirstName(
             @NotNull final EntityManager entityManager,
             @NotNull final Class<T> entityClass, @NotNull String firstName) {
         // TODO: 2019-07-27 implement!!!
@@ -70,49 +58,17 @@ interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedSer
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    static <T extends FullNamedEntity> @PositiveOrZero long countByLastName(
+    static <T extends FullNamed> @PositiveOrZero long countByLastName(
             @NotNull final EntityManager entityManager,
             @NotNull final Class<T> entityClass, @NotNull String lastName) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    static <T extends FullNamedEntity> @NotNull List<@NotNull T> listByLastName(
+    static <T extends FullNamed> @NotNull List<@NotNull T> listByLastName(
             @NotNull final EntityManager entityManager,
             @NotNull final Class<T> entityClass, @NotNull String lastName) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    @Override
-    default @PositiveOrZero long countByFirstName(@NotNull final String firstName) {
-        final EntityManager entityManager;
-        {
-            try {
-                final Method entityManagerMethod = EntityService.class.getDeclaredMethod("entityManager");
-                if (!entityManagerMethod.isAccessible()) {
-                    entityManagerMethod.setAccessible(true);
-                }
-                entityManager = (EntityManager) entityManagerMethod.invoke(this);
-            } catch (final ReflectiveOperationException roe) {
-                throw new RuntimeException(roe);
-            }
-        }
-        final Class<T> entityClass;
-        {
-            try {
-                final Field entityClassField = EntityService.class.getDeclaredField("entityClass");
-                if (!entityClassField.isAccessible()) {
-                    entityClassField.setAccessible(true);
-                }
-                @SuppressWarnings({"unchecked"})
-                final Class<T> entityClass_ = (Class<T>) entityClassField.get(this);
-                entityClass = entityClass_;
-            } catch (final ReflectiveOperationException roe) {
-                throw new RuntimeException(roe);
-            }
-        }
-        return countByFirstName(entityManager, entityClass, firstName);
     }
 }
