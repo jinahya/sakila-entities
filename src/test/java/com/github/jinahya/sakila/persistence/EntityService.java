@@ -72,6 +72,8 @@ abstract class EntityService<T> {
         return managedType(entityManager, entityClass).getSingularAttribute(attributeName, attributeType);
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Returns the entity name of the specified entity class.
      *
@@ -84,7 +86,7 @@ abstract class EntityService<T> {
         return entityType(entityManager, entityClass).getName();
     }
 
-    static String entityName(@@NotNull final Class<?> entityClass) {
+    static String entityName(@NotNull final Class<?> entityClass) {
         return applyEntityManager(v -> entityName(v, entityClass));
     }
 
