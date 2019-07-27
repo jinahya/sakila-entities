@@ -1,7 +1,10 @@
 package com.github.jinahya.sakila.persistence;
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -17,7 +20,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
 
     static <T extends FullNamedBaseEntity> @NotNull List<@NotNull T> listByFirstName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String firstName) {
+            @NotNull final Class<T> entityClass, @NotNull String firstName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -32,7 +36,8 @@ interface FullNamedBaseEntityService<T extends FullNamedBaseEntity> extends Full
 
     static <T extends FullNamedBaseEntity> @NotNull List<@NotNull T> listByLastName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String lastName) {
+            @NotNull final Class<T> entityClass, @NotNull String lastName,
+            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
