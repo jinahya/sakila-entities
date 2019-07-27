@@ -1,5 +1,12 @@
 DESC country;
 
+-- ---------------------------------------------------------------------------------------------- find duplicate country
+SELECT country, COUNT(1) AS country_count
+FROM country
+GROUP BY country
+HAVING country_count > 1
+;
+
 SELECT *
 FROM country;
 
@@ -10,8 +17,11 @@ ORDER BY country_id;
 SELECT COUNT(country)
 FROM country;
 
+-- -------------------------------------------------------------------------------------------------------- list country
 SELECT country
-FROM country;
+FROM country
+ORDER BY country ASC
+;
 
 SELECT COUNT(DISTINCT country)
 FROM country;

@@ -27,17 +27,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableNavigableMap;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -52,6 +57,33 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @Slf4j
 class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
 
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * An unmodifiable navigable set of {@link Country#ATTRIBUTE_NAME_COUNTRY country} attributes.
+     */
+    static final NavigableSet<String> COUNTRIES;
+
+    static {
+        try {
+            COUNTRIES = unmodifiableNavigableSet(applyResourceScanner(
+                    "country_set_country.txt",
+                    s -> {
+                        final NavigableSet<String> set = new TreeSet<>();
+                        while (s.hasNext()) {
+                            final String country = s.nextLine().trim();
+                            assert !country.isEmpty() : "empty country";
+                            final boolean added = set.add(country);
+                            assert !added : "duplicate country: " + country;
+                        }
+                        return set;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -99,6 +131,18 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Provides arguments for {@link #testFind(String)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestFind() {
+        return IntStream.range(0, current().nextInt(8, 17))
+                .mapToObj(i -> randomEntity(Country.class))
+                .map(Country::getCountry)
+                .map(Arguments::of);
+    }
+
+    /**
      * Provides arguments for {@link #testList(Integer, Integer)} method.
      *
      * @return a stream of arguments.
@@ -116,6 +160,23 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
      */
     CountryServiceIT() {
         super(CountryService.class, Country.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link CountryService#find(String)} method.
+     *
+     * @param country a value for {@code country} parameter.
+     */
+    @MethodSource({"argumentsForTestFind"})
+    @ParameterizedTest
+    void testFind(@NotNull final String country) {
+        final Optional<Country> found = serviceInstance().find(country);
+        assertThat(found)
+                .isPresent()
+                .hasValueSatisfying(v -> assertThat(v.getCountry()).isEqualTo(country))
+        ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -55,10 +55,4 @@ class CountryAssert extends BaseEntityAssert<CountryAssert, Country> {
         isNotNull().satisfies(a -> assertThat(a.getCountry()).isNotNull().isEqualTo(country));
         return this;
     }
-
-    @Deprecated
-        // forRemoval = true
-    CountryAssert hasName(@NotNull final String country) {
-        return hasCountry(country);
-    }
 }

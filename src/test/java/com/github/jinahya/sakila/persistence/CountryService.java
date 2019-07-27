@@ -23,17 +23,18 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -56,6 +57,61 @@ class CountryService extends BaseEntityService<Country> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Find the country whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value.
+     *
+     * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
+     * @return an optional of found country.
+     */
+    Optional<Country> find(@NotNull final String country) {
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery("SELECT c FROM Country AS c WHERE c.country = :country");
+            query.setParameter("country", country);
+            try {
+                return Optional.of((Country) query.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Country> typedQuery = entityManager().createQuery(
+                    "SELECT c FROM Country AS c WHERE c.country = :country", Country.class);
+            typedQuery.setParameter("country", country);
+            try {
+                return Optional.of(typedQuery.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+            final Root<Country> from = criteriaQuery.from(Country.class);
+            criteriaQuery.select(from);
+            criteriaQuery.where(criteriaBuilder.equal(from.get(Country.ATTRIBUTE_NAME_COUNTRY), country));
+            final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
+            try {
+                return Optional.of(typedQuery.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
+        final Root<Country> from = criteriaQuery.from(Country.class);
+        criteriaQuery.select(from);
+        //final SingularAttribute<Country, String> countryAttribute = Country_.country;
+        final SingularAttribute<? super Country, String> countryAttribute
+                = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(countryAttribute), country));
+        final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
+        try {
+            return Optional.of(typedQuery.getSingleResult());
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
+    }
 
     /**
      * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending order.
