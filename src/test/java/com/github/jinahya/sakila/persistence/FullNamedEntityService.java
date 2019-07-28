@@ -1,6 +1,6 @@
 package com.github.jinahya.sakila.persistence;
 
-import jdk.internal.jline.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;

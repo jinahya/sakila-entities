@@ -7,12 +7,12 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-abstract class FullNamedEntityService2<T extends FullNamedEntity>
+abstract class AbstractFullNamedEntityService<T extends FullNamedEntity>
         extends EntityService<T>
         implements FullNamedEntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    FullNamedEntityService2(final Class<T> entityClass) {
+    AbstractFullNamedEntityService(final Class<T> entityClass) {
         super(entityClass);
     }
 
