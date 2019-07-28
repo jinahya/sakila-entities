@@ -21,8 +21,8 @@ final class FullNamedTests {
     static long countByFirstName(final EntityManager entityManager, final String tableName, final String firstName) {
         final Query query = entityManager.createNativeQuery(
                 "SELECT COUNT(1) FROM " + tableName +
-                " WHERE " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " = : firstName");
-        query.setParameter("firstName", firstName);
+                " WHERE " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " = ?1");
+        query.setParameter(1, firstName);
         return (long) query.getSingleResult();
     }
 
@@ -44,8 +44,8 @@ final class FullNamedTests {
     static long countByLastName(final EntityManager entityManager, final String tableName, final String lastName) {
         final Query query = entityManager.createNativeQuery(
                 "SELECT COUNT(1) FROM " + tableName +
-                " WHERE " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " = : lastName");
-        query.setParameter("lastName", lastName);
+                " WHERE " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " = ?1");
+        query.setParameter(1, lastName);
         return (long) query.getSingleResult();
     }
 
