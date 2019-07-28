@@ -87,64 +87,64 @@ public class Actor extends FullNamedBaseEntity {
         super();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+//    // -----------------------------------------------------------------------------------------------------------------
+//
+//    /**
+//     * Returns a string representation of the object.
+//     *
+//     * @return a string representation of the object.
+//     */
+//    @Override
+//    public String toString() {
+//        return super.toString() + "{"
+//               + "firstName=" + firstName
+//               + ",lastName=" + lastName
+//               + "}";
+//    }
 
-    /**
-     * Returns a string representation of the object.
-     *
-     * @return a string representation of the object.
-     */
-    @Override
-    public String toString() {
-        return super.toString() + "{"
-               + "firstName=" + firstName
-               + ",lastName=" + lastName
-               + "}";
-    }
-
-    // ------------------------------------------------------------------------------------------------------- firstName
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return {@inheritDoc}
-     */
-    @Override
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param firstName new value for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute.
-     */
-    @Override
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
-
-    // -------------------------------------------------------------------------------------------------------- lastName
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return {@inheritDoc}
-     */
-    @Override
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
-     */
-    @Override
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
-    }
+//    // ------------------------------------------------------------------------------------------------------- firstName
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @return {@inheritDoc}
+//     */
+//    @Override
+//    public String getFirstName() {
+//        return firstName;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @param firstName new value for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+//     */
+//    @Override
+//    public void setFirstName(final String firstName) {
+//        this.firstName = firstName;
+//    }
+//
+//    // -------------------------------------------------------------------------------------------------------- lastName
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @return {@inheritDoc}
+//     */
+//    @Override
+//    public String getLastName() {
+//        return lastName;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+//     */
+//    @Override
+//    public void setLastName(final String lastName) {
+//        this.lastName = lastName;
+//    }
 
     // ----------------------------------------------------------------------------------------------------------- films
     // TODO: 2019-07-14 remove!!!
@@ -169,20 +169,20 @@ public class Actor extends FullNamedBaseEntity {
         return filmAdded;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
-    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
-    private String firstName;
-
-    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
-    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
-    private String lastName;
+//    // -----------------------------------------------------------------------------------------------------------------
+//    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
+//    @NotNull
+//    @Basic(optional = false)
+//    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
+//    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
+//    private String firstName;
+//
+//    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
+//    @NotNull
+//    @Basic(optional = false)
+//    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
+//    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
+//    private String lastName;
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-14 remove!!!
