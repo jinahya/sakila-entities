@@ -5,7 +5,6 @@ import org.junit.jupiter.api.TestReporter;
 
 import static com.github.jinahya.sakila.persistence.FullNamedTests.countByFirstName;
 import static com.github.jinahya.sakila.persistence.FullNamedTests.randomFirstName;
-import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 

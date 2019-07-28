@@ -53,7 +53,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
+class ActorServiceIT extends FullNamedBaseEntityServiceIT<ActorService, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -211,7 +211,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      * Creates a new instance.
      */
     ActorServiceIT() {
-        super(ActorService.class, Actor.class);
+        super(ActorService.class, Actor.class, Actor.TABLE_NAME);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
