@@ -12,8 +12,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static com.github.jinahya.sakila.persistence.EntityService.entityName;
