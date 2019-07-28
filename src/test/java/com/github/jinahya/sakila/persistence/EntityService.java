@@ -29,6 +29,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
@@ -79,8 +81,35 @@ abstract class EntityService<T> {
         return entityType(entityManager, entityClass).getName();
     }
 
-    static String entityName(@@NotNull final Class<?> entityClass) {
+    static String entityName(@NotNull final Class<?> entityClass) {
         return applyEntityManager(v -> entityName(v, entityClass));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T extends EntityService<?>> EntityManager entityManager(final T serviceInstance) {
+        try {
+            final Method entityManagerMethod = EntityService.class.getDeclaredMethod("entityManager");
+            if (!entityManagerMethod.isAccessible()) {
+                entityManagerMethod.setAccessible(true);
+            }
+            return (EntityManager) entityManagerMethod.invoke(serviceInstance);
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
+    }
+
+    static <T extends EntityService<?>> Class<?> entityClass(final T serviceInstance) {
+        try {
+            final Field entityClassField = EntityService.class.getDeclaredField("entityClass");
+            if (!entityClassField.isAccessible()) {
+                entityClassField.setAccessible(true);
+            }
+            @SuppressWarnings({"unchecked"})
+            final Class<T> entityClass_ = (Class<T>) entityClassField.get(serviceInstance);
+            return entityClass_;
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------

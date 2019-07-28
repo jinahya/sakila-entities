@@ -46,7 +46,6 @@ class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEnti
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
     @Override
     public @PositiveOrZero long countByFirstName(@NotNull final String firstName) {
         return FullNamedBaseEntityService.countByFirstName(entityManager(), entityClass, firstName);
