@@ -56,7 +56,7 @@ class BaseEntityAssert<T extends BaseEntityAssert<T, U>, U extends BaseEntity> e
      * @return this assert.
      */
     @SuppressWarnings({"unchecked"})
-    public T hasId(final int id) {
+    T hasId(final int id) {
         isNotNull().satisfies(v -> assertThat(v.getId()).isNotNull().isEqualTo(id));
         return (T) this;
     }
@@ -68,7 +68,7 @@ class BaseEntityAssert<T extends BaseEntityAssert<T, U>, U extends BaseEntity> e
      * @param baseEntity the base entity whose {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute is compared to.
      * @return this assert.
      */
-    public T hasSameIdAs(@NotNull final BaseEntity baseEntity) {
+    T hasSameIdAs(@NotNull final BaseEntity baseEntity) {
         return hasId(baseEntity.getId());
     }
 }

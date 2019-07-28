@@ -126,6 +126,12 @@ public class City extends BaseEntity {
         return naturalOrder ? COMPARING_CITY : COMPARING_CITY.reversed();
     }
 
+    public static final Comparator<City> COMPARING_CITY_IGNORE_CASE = (c1, c2) -> c1.city.compareToIgnoreCase(c2.city);
+
+    public static Comparator<City> comparingCityIgnoreCase(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_CITY_IGNORE_CASE : COMPARING_CITY_IGNORE_CASE.reversed();
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**

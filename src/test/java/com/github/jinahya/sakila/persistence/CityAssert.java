@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import javax.validation.constraints.NotNull;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -43,22 +44,25 @@ class CityAssert extends BaseEntityAssert<CityAssert, City> {
     }
 
     // ------------------------------------------------------------------------------------------------------------ city
+
+    /**
+     * Asserts the {@link #actual} has the value of {@link City#ATTRIBUTE_NAME_CITY city} attribute as specified value.
+     *
+     * @param city the value for {@link City#ATTRIBUTE_NAME_CITY city} attribute to match.
+     * @return this assert.
+     */
     CityAssert hasCity(@NotNull final String city) {
-        isNotNull().satisfies(a -> assertThat(a.getCity()).satisfies(c -> assertThat(c).isNotNull().isEqualTo(c)));
+        isNotNull().satisfies(a -> assertThat(a.getCity()).isNotNull().isEqualTo(city));
         return this;
     }
 
-    CityAssert hasName(@NotNull final String city) {
-        return hasCity(city);
-    }
-
     // --------------------------------------------------------------------------------------------------------- country
-    CityAssert residesInCountryWhoseIdIs(@NotNull final int countryId) {
-        isNotNull().satisfies(c -> assertThat(c.getId()).isNotNull().isEqualTo(countryId));
+    CityAssert residesInTheCountryWhoseHasId(@NotNull final int countryId) {
+        isNotNull().satisfies(a -> assertCountry(a.getCountry()).hasId(countryId));
         return this;
     }
 
     CityAssert residesIn(@NotNull final Country country) {
-        return residesInCountryWhoseIdIs(country.getId());
+        return residesInTheCountryWhoseHasId(country.getId());
     }
 }

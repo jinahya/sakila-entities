@@ -37,7 +37,7 @@ import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.Assertions.assertThat;
+import static com.github.jinahya.sakila.persistence.Assertions.assertActor;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingFirstName;
 import static com.github.jinahya.sakila.persistence.FullNamed.comparingLastName;
 import static java.util.Collections.unmodifiableNavigableMap;
@@ -53,23 +53,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The total number of actors in database. The value is {@value}.
-     */
-    static final int ACTOR_COUNT_AS_INT = entityCountAsInt(Actor.class);
-
-    /**
-     * Returns a random actor picked from the database.
-     *
-     * @return a random actor picked from the database.
-     */
-    static Actor randomActor() {
-        return randomEntity(Actor.class);
-    }
+class ActorServiceIT extends FullNamedBaseEntityServiceIT<ActorService, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -186,7 +170,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      */
     private static Stream<Arguments> argumentsForTestListSortedByIdInAscendingOrder() {
         return IntStream.range(1, current().nextInt(8, 17))
-                .mapToObj(i -> randomActor())
+                .mapToObj(i -> randomEntity(Actor.class))
                 .map(v -> arguments(v.getFirstName(), v.getLastName(), firstResult(Actor.class),
                                     maxResults(Actor.class)));
     }
@@ -227,7 +211,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
      * Creates a new instance.
      */
     ActorServiceIT() {
-        super(ActorService.class, Actor.class);
+        super(ActorService.class, Actor.class, Actor.TABLE_NAME);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -288,7 +272,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .listSortedByFirstName(lastName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingFirstName(ascendingOrder))
-                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertThat(actor).hasLastName(v)))
+                .allSatisfy(actor -> ofNullable(lastName).ifPresent(v -> assertActor(actor).hasLastName(v)))
                 .size()
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;
@@ -314,7 +298,7 @@ class ActorServiceIT extends BaseEntityServiceIT<ActorService, Actor> {
                 .listSortedByLastName(firstName, ascendingOrder, firstResult, maxResults);
         assertThat(list)
                 .isSortedAccordingTo(comparingLastName(ascendingOrder))
-                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertThat(actor).hasFirstName(v)))
+                .allSatisfy(actor -> ofNullable(firstName).ifPresent(v -> assertActor(actor).hasFirstName(v)))
                 .size()
                 .satisfies(s -> ofNullable(maxResults).ifPresent(v -> assertThat(s).isLessThanOrEqualTo(v)))
         ;

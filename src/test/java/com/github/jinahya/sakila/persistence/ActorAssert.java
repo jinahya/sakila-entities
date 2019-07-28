@@ -22,10 +22,21 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * A assert class for {@link Actor}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
 @Slf4j
 class ActorAssert extends BaseEntityAssert<ActorAssert, Actor> implements FullNamedAssert<ActorAssert, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance with specified actual value.
+     *
+     * @param actual an actual value.
+     */
     ActorAssert(final Actor actual) {
         super(actual);
     }

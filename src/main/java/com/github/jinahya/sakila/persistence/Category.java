@@ -43,12 +43,12 @@ import static java.util.Comparator.comparing;
  * <blockquote>
  * The {@code category} table lists the categories that can be assigned to a film.
  * <p>
- * The category table is joined to the {@link Film film} table by means of the {@link FilmCategory film_category}
- * table.
+ * The category table is joined to the <code>{@link Film film}</code> table by means of the <code>{@link FilmCategory
+ * film_category}</code> table.
  * </blockquote>
  */
-@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_CATEGORY_ID, nullable = false))
 @Entity
+@AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_CATEGORY_ID, nullable = false))
 @Table(name = TABLE_NAME)
 public class Category extends BaseEntity {
 
@@ -62,7 +62,7 @@ public class Category extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The primary key column name of {@link #TABLE_NAME} table. The value is {@value}.
+     * The primary key column name of {@value #TABLE_NAME} table. The value is {@value}.
      * <blockquote>
      * A surrogate primary key used to uniquely identify each category in the table.
      * </blockquote>
@@ -73,7 +73,7 @@ public class Category extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The database column name for {@link #ATTRIBUTE_NAME_NAME} attribute. The value is {@value}.
+     * The database column name for {@value #ATTRIBUTE_NAME_NAME} attribute. The value is {@value}.
      * <blockquote>
      * The name of the category.
      * </blockquote>
@@ -82,19 +82,19 @@ public class Category extends BaseEntity {
     public static final String COLUMN_NAME_NAME = "name";
 
     /**
-     * The length of the {@link #COLUMN_NAME_NAME} column. The value is {@value}.
+     * The length of the {@value #COLUMN_NAME_NAME} column. The value is {@value}.
      */
     public static final int COLUMN_LENGTH_NAME = 25;
 
     /**
-     * The entity attribute name for {@link #COLUMN_NAME_NAME} column. The value is {@value}.
+     * The entity attribute name for {@value #COLUMN_NAME_NAME} column. The value is {@value}.
      */
     public static final String ATTRIBUTE_NAME_NAME = "name";
 
     public static final int SIZE_MIN_NAME = 0; // TODO: 2019-07-17 empty???
 
     /**
-     * The maximum length of {@link #ATTRIBUTE_NAME_NAME} attribute. The value is {@value}.
+     * The maximum length of {@value #ATTRIBUTE_NAME_NAME} attribute. The value is {@value}.
      */
     public static final int SIZE_MAX_NAME = COLUMN_LENGTH_NAME; // TODO: 2019-07-17 column vs attribute length ???
 
@@ -108,6 +108,10 @@ public class Category extends BaseEntity {
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * The comparator for comparing categories with {@value #ATTRIBUTE_NAME_NAME} attributes.
+     */
     public static final Comparator<Category> COMPARING_NAME = comparing(Category::getName);
 
     public static Comparator<Category> comparingName(final boolean natural) {
@@ -125,6 +129,11 @@ public class Category extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
@@ -215,5 +224,5 @@ public class Category extends BaseEntity {
             targetEntity = Film.class // default; void.class
             )
     @NamedAttribute(ATTRIBUTE_NAME_FILMS)
-    private Set<Film> films;
+    private Set<Film> films; // TODO: 2019-07-23 equals/hashCode???
 }

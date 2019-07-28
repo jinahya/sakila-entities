@@ -25,16 +25,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.ManagedType;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.metamodel.SingularAttribute;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static com.github.jinahya.sakila.persistence.PersistenceUtil.uncloseable;
-import static java.util.Collections.synchronizedMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -46,11 +45,29 @@ import static java.util.Objects.requireNonNull;
 abstract class EntityService<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
+    static Metamodel metamodel(@NotNull final EntityManager entityManager) {
+        return entityManager.getEntityManagerFactory().getMetamodel();
+    }
 
-    /**
-     * A map of entity classes and entity names.
-     */
-    private static final Map<Class<?>, String> ENTITY_NAMES = synchronizedMap(new WeakHashMap<>());
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X> ManagedType<X> managedType(@NotNull final EntityManager entityManager,
+                                          @NotNull final Class<X> entityClass) {
+        return metamodel(entityManager).managedType(entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X> EntityType<X> entityType(@NotNull final EntityManager entityManager,
+                                        @NotNull final Class<X> entityClass) {
+        return metamodel(entityManager).entity(entityClass);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <X, Y> SingularAttribute<? super X, Y> singularAttribute(final EntityManager entityManager,
+                                                                    final Class<X> entityClass,
+                                                                    final String attributeName,
+                                                                    final Class<Y> attributeType) {
+        return managedType(entityManager, entityClass).getSingularAttribute(attributeName, attributeType);
+    }
 
     /**
      * Returns the entity name of the specified entity class.
@@ -58,24 +75,41 @@ abstract class EntityService<T> {
      * @param entityManager an entity manager.
      * @param entityClass   the entity class whose name is returned.
      * @return the entity name of {@code entityClass}.
-     * @see #entityName(Class)
+     * @see EntityType#getName()
      */
     static String entityName(@NotNull final EntityManager entityManager, @NotNull final Class<?> entityClass) {
-        synchronized (ENTITY_NAMES) {
-            return ENTITY_NAMES.computeIfAbsent(entityClass, k ->
-                    entityManager.getEntityManagerFactory().getMetamodel().entity(k).getName());
+        return entityType(entityManager, entityClass).getName();
+    }
+
+    static String entityName(@NotNull final Class<?> entityClass) {
+        return applyEntityManager(v -> entityName(v, entityClass));
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T extends EntityService<?>> EntityManager entityManager(final T serviceInstance) {
+        try {
+            final Method entityManagerMethod = EntityService.class.getDeclaredMethod("entityManager");
+            if (!entityManagerMethod.isAccessible()) {
+                entityManagerMethod.setAccessible(true);
+            }
+            return (EntityManager) entityManagerMethod.invoke(serviceInstance);
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
         }
     }
 
-    /**
-     * Returns the entity name of the specified entity class.
-     *
-     * @param entityClass the entity class whose entity name is returned.
-     * @return the entity name of {@code entityClass}.
-     * @see #entityName(EntityManager, Class)
-     */
-    static String entityName(@NotNull final Class<?> entityClass) {
-        return PersistenceProducer.applyEntityManager(m -> entityName(m, entityClass));
+    static <T extends EntityService<?>> Class<?> entityClass(final T serviceInstance) {
+        try {
+            final Field entityClassField = EntityService.class.getDeclaredField("entityClass");
+            if (!entityClassField.isAccessible()) {
+                entityClassField.setAccessible(true);
+            }
+            @SuppressWarnings({"unchecked"})
+            final Class<T> entityClass_ = (Class<T>) entityClassField.get(serviceInstance);
+            return entityClass_;
+        } catch (final ReflectiveOperationException roe) {
+            throw new RuntimeException(roe);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -105,6 +139,22 @@ abstract class EntityService<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Returns the entity name of the {@link #entityClass}.
+     *
+     * @return the name of the {@code #entityClass}.
+     */
+    final @NotNull String entityName() {
+        return entityName(entityManager(), entityClass);
+    }
+
+    final @NotNull <A> SingularAttribute<? super T, A> singularAttribute(@NotNull final String attributeName,
+                                                                         @NotNull final Class<A> attributeType) {
+        return singularAttribute(entityManager(), entityClass, attributeName, attributeType);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
      * Returns an entity manager for accessing persistence context.
      *
      * @return an entity manager.
@@ -114,47 +164,6 @@ abstract class EntityService<T> {
             entityManagerUncloseable = uncloseable(entityManager);
         }
         return entityManagerUncloseable;
-    }
-
-    /**
-     * Applies the (injected) entity manager to specified function and returns the result.
-     *
-     * @param function the function to be applied.
-     * @param <R>      result type parameter
-     * @return the result of the {@code function}.
-     */
-    <R> R applyEntityManager(@NotNull final Function<? super EntityManager, ? extends R> function) {
-        return requireNonNull(function, "function is null").apply(entityManager());
-    }
-
-    <U, R> R applyEntityManager(@NotNull final BiFunction<? super EntityManager, ? super U, ? extends R> function,
-                                @NotNull final Supplier<? extends U> supplier) {
-        return applyEntityManager(v -> requireNonNull(function, "function is null")
-                .apply(v, requireNonNull(supplier, "supplier is null").get()));
-    }
-
-    void acceptEntityManager(@NotNull final Consumer<? super EntityManager> consumer) {
-        applyEntityManager(v -> {
-            requireNonNull(consumer, "consumer is null").accept(v);
-            return null;
-        });
-    }
-
-    <U> void acceptEntityManager(@NotNull final BiConsumer<? super EntityManager, ? super U> consumer,
-                                 @NotNull final Supplier<? extends U> supplier) {
-        acceptEntityManager(v -> requireNonNull(consumer, "consumer is null")
-                .accept(v, requireNonNull(supplier, "supplier is null").get()));
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns the entity name of the {@link #entityClass}.
-     *
-     * @return the name of the {@code #entityClass}.
-     */
-    final @NotNull String entityName() {
-        return entityName(entityManager(), entityClass);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

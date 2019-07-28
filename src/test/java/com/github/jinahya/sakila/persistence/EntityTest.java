@@ -22,14 +22,11 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * An abstract class for testing an entity class.
@@ -81,28 +78,12 @@ abstract class EntityTest<T> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asserts this test class is annotated with {@code @Slf4j}.
+     * Tests miscellaneous things.
      */
     @Test
-    void assertAnnotatedWithSlf4j() {
-        final Class<?> clazz = getClass();
-        final String message = "Annotate @Slf4j on " + clazz;
-        try {
-            final Field log = clazz.getDeclaredField("log");
-            assertEquals(Logger.class, log.getType(), message);
-        } catch (final NoSuchFieldException nsfe) {
-            fail(message);
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Validates all field names of {@link #entityClass} and its superclasses against {@link NamedAttribute#value()}.
-     */
-    @Test
-    void verifyNamedAttributes() {
-        NamedAttributeTests.verify(entityClass);
+    void miscellaneous() {
+        MiscellaneousTests.verifyNamedAttributes(entityClass);
+        MiscellaneousTests.assertAnnotatedWithSlf4j(getClass());
     }
 
     // -----------------------------------------------------------------------------------------------------------------

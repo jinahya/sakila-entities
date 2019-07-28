@@ -38,6 +38,7 @@ import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Language.comparingName;
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableSortedSet;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -59,7 +60,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
     /**
      * The total number of {@link Language}.
      */
-    static final int LANGUAGE_COUNT = entityCountAsInt(Language.class);
+    static final int LANGUAGE_COUNT = applyEntityManager(v -> entityCountAsInt(v, Language.class));
 
     /**
      * Returns a random instance of {@link Language}.
@@ -67,7 +68,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      * @return a random instance of {@link Language}.
      */
     static Language randomLanguage() {
-        return randomEntity(Language.class);
+        return applyEntityManager(v -> randomEntity(v, Language.class));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -104,8 +105,9 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      * @return a stream of arguments.
      */
     private static Stream<Arguments> argumentsForTestingStreamOrderedByName() {
-        return range(8, 17).mapToObj(i -> arguments(
-                current().nextBoolean(), firstResult(Language.class), maxResults(Language.class)));
+        return applyEntityManager(
+                v -> range(8, 17).mapToObj(i -> arguments(
+                        current().nextBoolean(), firstResult(v, Language.class), maxResults(v, Language.class))));
     }
 
     /**
@@ -135,7 +137,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
     /**
      * Asserts {@link LanguageService#findByName(String)} returns empty for an unknown language.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
     void assertFindByNameReturnsEmptyIfNameIsUnknown() {
@@ -149,7 +151,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      *
      * @param name a value for {@code name} parameter.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestingFindByName"})
     @ParameterizedTest
@@ -169,7 +171,7 @@ class LanguageServiceIT extends BaseEntityServiceIT<LanguageService, Language> {
      * @param firstResult    a value for {@code firstResult} parameter.
      * @param maxResults     a value for {@code maxResults} parameter.
      */
-    // TODO: 2019-07-16 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @MethodSource({"argumentsForTestingStreamOrderedByName"})
     @ParameterizedTest

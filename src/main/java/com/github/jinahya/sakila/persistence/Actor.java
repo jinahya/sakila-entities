@@ -24,6 +24,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -49,10 +50,10 @@ import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_
  * @see <a href="https://dev.mysql.com/doc/sakila/en/sakila-structure-tables-actor.html">The actor table (Sakila Sample
  * Database)</a>
  */
+@Entity
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = Actor.COLUMN_NAME_ACTOR_ID, nullable = false))
-@Entity(name = Actor.ENTITY_NAME)
 @Table(name = TABLE_NAME)
-public class Actor extends BaseEntity implements FullNamed {
+public class Actor extends FullNamedBaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -64,21 +65,10 @@ public class Actor extends BaseEntity implements FullNamed {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * The value for {@link Entity#name()}.
-     *
-     * @deprecated Use default value.
-     */
-    // TODO: 2019-07-14 remove!!!
-    @Deprecated // for Removal = true
-    public static final String ENTITY_NAME = "Actor";
-
-    static {
-        assert ENTITY_NAME.equals(Actor.class.getSimpleName());
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
+     * The primary key column name of this entity class. The value is {@value}.
+     * <blockquote>
+     * A surrogate primary key used to uniquely identify each actor in the table.
+     * </blockquote>
      * {@code SMALLINT(5) PK NN UN AI}
      */
     public static final String COLUMN_NAME_ACTOR_ID = "actor_id";
@@ -97,42 +87,64 @@ public class Actor extends BaseEntity implements FullNamed {
         super();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+//    // -----------------------------------------------------------------------------------------------------------------
+//
+//    /**
+//     * Returns a string representation of the object.
+//     *
+//     * @return a string representation of the object.
+//     */
+//    @Override
+//    public String toString() {
+//        return super.toString() + "{"
+//               + "firstName=" + firstName
+//               + ",lastName=" + lastName
+//               + "}";
+//    }
 
-    /**
-     * Returns a string representation of the object.
-     *
-     * @return a string representation of the object.
-     */
-    @Override
-    public String toString() {
-        return super.toString() + "{"
-               + "firstName=" + firstName
-               + ",lastName=" + lastName
-               + "}";
-    }
-
-    // ------------------------------------------------------------------------------------------------------- firstName
-    @Override
-    public String getFirstName() {
-        return firstName;
-    }
-
-    @Override
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
-
-    // -------------------------------------------------------------------------------------------------------- lastName
-    @Override
-    public String getLastName() {
-        return lastName;
-    }
-
-    @Override
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
-    }
+//    // ------------------------------------------------------------------------------------------------------- firstName
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @return {@inheritDoc}
+//     */
+//    @Override
+//    public String getFirstName() {
+//        return firstName;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @param firstName new value for {@link #ATTRIBUTE_NAME_FIRST_NAME} attribute.
+//     */
+//    @Override
+//    public void setFirstName(final String firstName) {
+//        this.firstName = firstName;
+//    }
+//
+//    // -------------------------------------------------------------------------------------------------------- lastName
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @return {@inheritDoc}
+//     */
+//    @Override
+//    public String getLastName() {
+//        return lastName;
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     *
+//     * @param lastName new value for {@value #ATTRIBUTE_NAME_LAST_NAME} attribute.
+//     */
+//    @Override
+//    public void setLastName(final String lastName) {
+//        this.lastName = lastName;
+//    }
 
     // ----------------------------------------------------------------------------------------------------------- films
     // TODO: 2019-07-14 remove!!!
@@ -150,39 +162,43 @@ public class Actor extends BaseEntity implements FullNamed {
         if (film == null) {
             throw new NullPointerException("film is null");
         }
-        final boolean filmAdded = getFilms().add(film);
+        final boolean filmAdded = getFilms().add(film); // TODO: 2019-07-23 equals/hashCode???
         if (!film.getActors().contains(this)) {
             final boolean addedToFilm = film.addActor(this);
         }
         return filmAdded;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
-    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
-    private String firstName;
-
-    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
-    @NotNull
-    @Basic(optional = false)
-    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
-    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
-    private String lastName;
+//    // -----------------------------------------------------------------------------------------------------------------
+//    @Size(min = SIZE_MIN_FIRST_NAME, max = SIZE_MAX_FIRST_NAME)
+//    @NotNull
+//    @Basic(optional = false)
+//    @Column(name = COLUMN_NAME_FIRST_NAME, nullable = false, length = SIZE_MAX_FIRST_NAME)
+//    @NamedAttribute(ATTRIBUTE_NAME_FIRST_NAME)
+//    private String firstName;
+//
+//    @Size(min = SIZE_MIN_LAST_NAME, max = SIZE_MAX_LAST_NAME)
+//    @NotNull
+//    @Basic(optional = false)
+//    @Column(name = COLUMN_NAME_LAST_NAME, nullable = false, length = SIZE_MAX_LAST_NAME)
+//    @NamedAttribute(ATTRIBUTE_NAME_LAST_NAME)
+//    private String lastName;
 
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-14 remove!!!
     @Deprecated
-    @ManyToMany(cascade = {
-            //CascadeType.ALL,
-            //CascadeType.DETACH,
-            //CascadeType.MERGE,
-            //CascadeType.PERSIST,
-            //CascadeType.REFRESH,
-            //CascadeType.REMOVE
-    })
+    @ManyToMany(
+            cascade = {
+//                    CascadeType.ALL,
+//                    CascadeType.DETACH,
+//                    CascadeType.MERGE,
+//                    CascadeType.PERSIST,
+//                    CascadeType.REFRESH,
+//                    CascadeType.REMOVE
+            },
+            fetch = FetchType.LAZY, // default
+            targetEntity = Film.class
+    )
     @JoinTable(name = FilmActor.TABLE_NAME,
                joinColumns = {
                        @JoinColumn(name = FilmActor.COLUMN_NAME_ACTOR_ID, referencedColumnName = COLUMN_NAME_ACTOR_ID)

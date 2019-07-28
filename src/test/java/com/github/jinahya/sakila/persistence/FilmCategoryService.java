@@ -23,10 +23,19 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
+
+import static com.github.jinahya.sakila.persistence.FilmCategory.ATTRIBUTE_NAME_CATEGORY;
+import static com.github.jinahya.sakila.persistence.FilmCategory.ATTRIBUTE_NAME_FILM;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A service class for {@link FilmCategory}.
@@ -43,6 +52,65 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      */
     FilmCategoryService() {
         super(FilmCategory.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    public Optional<FilmCategory> find(@NotNull final Film film, @NotNull final Category category) {
+        if (current().nextBoolean()) {
+            try {
+                return Optional.of((FilmCategory) entityManager()
+                        .createQuery("SELECT fe"
+                                     + " FROM FilmCategory AS fe"
+                                     + " WHERE fe.film = :film AND fe.category = :category")
+                        .setParameter("film", film)
+                        .setParameter("category", category).getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            try {
+                return Optional.of((entityManager()
+                        .createQuery("SELECT fe"
+                                     + " FROM FilmCategory AS fe"
+                                     + " WHERE fe.film = :film AND fe.category = :category",
+                                     FilmCategory.class)
+                        .setParameter("film", film)
+                        .setParameter("category", category).getSingleResult())
+                );
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<FilmCategory> criteriaQuery = criteriaBuilder.createQuery(FilmCategory.class);
+            final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+            criteriaQuery.where(criteriaBuilder.and(
+                    criteriaBuilder.equal(from.get(ATTRIBUTE_NAME_FILM), film),
+                    criteriaBuilder.equal(from.get(ATTRIBUTE_NAME_CATEGORY), category)));
+            try {
+                return Optional.of((entityManager().createQuery(criteriaQuery).getSingleResult()));
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<FilmCategory> criteriaQuery = criteriaBuilder.createQuery(FilmCategory.class);
+        final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
+        criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(
+                                from.get(singularAttribute(ATTRIBUTE_NAME_FILM, Film.class)), film),
+                        criteriaBuilder.equal(
+                                from.get(singularAttribute(ATTRIBUTE_NAME_CATEGORY, Category.class)), category)
+                )
+        );
+        try {
+            return Optional.of((entityManager().createQuery(criteriaQuery).getSingleResult()));
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -98,9 +166,9 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of films categorized as specified category.
      */
-    public @NotNull List<@NotNull Category> listFilms(@NotNull final Category category,
-                                                      @PositiveOrZero @Nullable final Integer firstResult,
-                                                      @Positive @Nullable final Integer maxResults) {
+    public @NotNull List<@NotNull Film> listFilms(@NotNull final Category category,
+                                                  @PositiveOrZero @Nullable final Integer firstResult,
+                                                  @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-21 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }

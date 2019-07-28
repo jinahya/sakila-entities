@@ -105,10 +105,17 @@ public class Country extends BaseEntity {
     public static final int SIZE_MAX_CITIES = Integer.MAX_VALUE;
 
     // -----------------------------------------------------------------------------------------------------------------
+    public static final Comparator<Country> COMPARING_COUNTRY_IGNORE_CASE
+            = (c1, c2) -> c1.country.compareToIgnoreCase(c2.country);
+
+    public static Comparator<Country> comparingCountryIgnoreCase(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_COUNTRY_IGNORE_CASE : COMPARING_COUNTRY_IGNORE_CASE.reversed();
+    }
+
     public static final Comparator<Country> COMPARING_COUNTRY = comparing(Country::getCountry);
 
-    public static Comparator<Country> comparingCountry(final boolean natural) {
-        return natural ? COMPARING_COUNTRY : COMPARING_COUNTRY.reversed();
+    public static Comparator<Country> comparingCountry(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_COUNTRY : COMPARING_COUNTRY.reversed();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

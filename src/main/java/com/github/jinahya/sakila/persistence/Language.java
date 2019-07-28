@@ -36,7 +36,6 @@ import java.util.Set;
 
 import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID;
 import static com.github.jinahya.sakila.persistence.Language.COLUMN_NAME_LANGUAGE_ID;
-import static com.github.jinahya.sakila.persistence.Language.ENTITY_NAME;
 import static com.github.jinahya.sakila.persistence.Language.TABLE_NAME;
 import static java.util.Comparator.comparing;
 
@@ -52,22 +51,9 @@ import static java.util.Comparator.comparing;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_LANGUAGE_ID, nullable = false))
-@Entity(name = ENTITY_NAME)
+@Entity
 @Table(name = TABLE_NAME)
 public class Language extends BaseEntity {
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * The value for {@link Entity#name()}. The value is {@value}.
-     */
-    // TODO: 2019-07-17 remove!!!
-    @Deprecated // forRemoval = true
-    public static final String ENTITY_NAME = "Language";
-
-    static {
-        assert ENTITY_NAME.equals(Language.class.getSimpleName());
-    }
 
     // -----------------------------------------------------------------------------------------------------------------
 

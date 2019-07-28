@@ -20,39 +20,22 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import javax.validation.constraints.NotNull;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * A class for asserting {@link Country}.
+ * A class for testing {@link Inventory} class.
  *
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
-class CountryAssert extends BaseEntityAssert<CountryAssert, Country> {
+@Slf4j
+class InventoryTest extends BaseEntityTest<Inventory> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Creates a new instance.
-     *
-     * @param actual an actual.
      */
-    CountryAssert(final Country actual) {
-        super(actual);
-    }
-
-    // --------------------------------------------------------------------------------------------------------- country
-
-    /**
-     * Asserts that the {@link #actual} has the same {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute as
-     * specified.
-     *
-     * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
-     * @return this assert.
-     */
-    CountryAssert hasCountry(@NotNull final String country) {
-        isNotNull().satisfies(a -> assertThat(a.getCountry()).isNotNull().isEqualTo(country));
-        return this;
+    InventoryTest() {
+        super(Inventory.class);
     }
 }

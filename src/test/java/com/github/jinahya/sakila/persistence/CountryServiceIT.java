@@ -27,20 +27,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.github.jinahya.sakila.persistence.Country.comparingCountry;
-import static java.util.Collections.unmodifiableNavigableMap;
-import static java.util.Comparator.comparingInt;
+import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableNavigableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -58,19 +60,47 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * An unmodifiable navigable map of country id and city count.
+     * An unmodifiable navigable set of {@link Country#ATTRIBUTE_NAME_COUNTRY country} attributes.
      */
-    static final NavigableMap<Integer, Integer> COUNTRY_ID_CITY_COUNT;
+    static final NavigableSet<String> COUNTRIES;
 
     static {
         try {
-            COUNTRY_ID_CITY_COUNT = unmodifiableNavigableMap(applyResourceScanner(
+            COUNTRIES = unmodifiableNavigableSet(applyResourceScanner(
+                    "country_set_country.txt",
+                    s -> {
+                        final NavigableSet<String> set = new TreeSet<>();
+                        while (s.hasNext()) {
+                            final String country = s.nextLine().trim();
+                            assert !country.isEmpty() : "empty country";
+                            final boolean added = set.add(country);
+                            assert added : "duplicate country: " + country;
+                        }
+                        return set;
+                    })
+            );
+        } catch (final IOException ioe) {
+            ioe.printStackTrace();
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * An unmodifiable map of country id and city count.
+     */
+    static final Map<Integer, Integer> COUNTRY_ID_CITY_COUNT;
+
+    static {
+        try {
+            COUNTRY_ID_CITY_COUNT = unmodifiableMap(applyResourceScanner(
                     "country_map_country_id_city_count.txt",
                     s -> {
-                        final NavigableMap<Integer, Integer> map = new TreeMap<>();
+                        final Map<Integer, Integer> map = new HashMap<>();
                         while (s.hasNext()) {
-                            final Integer countryId = s.nextInt();
-                            final Integer cityCount = s.nextInt();
+                            final int countryId = s.nextInt();
+                            final int cityCount = s.nextInt();
+                            assert cityCount > 0;
                             final Integer previous = map.put(countryId, cityCount);
                             assert previous == null : "duplicate country id: " + countryId;
                         }
@@ -92,27 +122,35 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         return cityCount(requireNonNull(country, "country is null").getId());
     }
 
-    static final Comparator<Country> COMPARING_CITY_COUNT = comparingInt(CountryServiceIT::cityCount);
-
     // -----------------------------------------------------------------------------------------------------------------
-    static Stream<Arguments> sourceRandomCountries() {
-        return IntStream.range(0, 17).mapToObj(i -> randomEntity(Country.class)).map(Arguments::of);
+    static Stream<Arguments> argumentsOfRandomCountries() {
+        return IntStream.range(0, current().nextInt(8, 17))
+                .mapToObj(i -> randomEntity(Country.class)).map(Arguments::of);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Provides arguments for {@link #testListSortedByCountryIn(boolean, Integer, Integer)} method.
+     * Provides arguments for {@link #testFind(String)} method.
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> sourceForTestListSortedByCountryIn() {
-        return IntStream.range(0, 17).mapToObj(i -> arguments(
-                current().nextBoolean(), firstResult(Country.class), maxResults(Country.class)));
+    private static Stream<Arguments> argumentsForTestFind() {
+        return IntStream.range(0, current().nextInt(8, 17))
+                .mapToObj(i -> randomEntity(Country.class))
+                .map(Country::getCountry)
+                .map(Arguments::of);
     }
 
-    private static Stream<Arguments> sourceForTestListSortedByCityCount() {
-        return IntStream.range(0, 17).mapToObj(i -> arguments(firstResult(Country.class), maxResults(Country.class)));
+    /**
+     * Provides arguments for {@link #testList(Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestList() {
+        return IntStream.range(0, 17).mapToObj(i -> arguments(
+                current().nextBoolean() ? null : firstResult(Country.class),
+                current().nextBoolean() ? null : maxResults(Country.class)));
     }
 
     // -----------------------------------------------------------------------------------------------------------------a
@@ -127,44 +165,48 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link CountryService#listSortedByCountryIn(boolean, Integer, Integer)} method.
+     * Tests {@link CountryService#find(String)} method.
      *
-     * @param ascendingOrder a value for {@code ascendingOrder} parameter.
-     * @param firstResult    a value for {@code firstResult} parameter.
-     * @param maxResults     a value for {@code maxResults} parameter.
+     * @param country a value for {@code country} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
+    // TODO: 2019-07-27 enable, assert fails, implement, and assert passes.
     @Disabled
-    @MethodSource({"sourceForTestListSortedByCountryIn"})
+    @MethodSource({"argumentsForTestFind"})
     @ParameterizedTest
-    void testListSortedByCountryIn(final boolean ascendingOrder, @PositiveOrZero @Nullable final Integer firstResult,
-                                   @Positive @Nullable final Integer maxResults) {
-        final List<Country> list = serviceInstance().listSortedByCountryIn(ascendingOrder, firstResult, maxResults);
-        assertThat(list)
-                .isNotNull()
-                .isSortedAccordingTo(comparingCountry(ascendingOrder))
-                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
+    void testFind(@NotNull final String country) {
+        final Optional<Country> found = serviceInstance().find(country);
+        assertThat(found)
+                .isPresent()
+                .hasValueSatisfying(v -> assertCountry(v).hasCountry(country))
         ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Tests {@link CountryService#listSortedByCityCount(Integer, Integer)} method.
+     * Tests {@link CountryService#list(Integer, Integer)} method.
      *
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
-    // TODO: 7/17/2019 enable, assert fails, implement, assert passes.
+    // TODO: 7/17/2019 enable, assert fails, implement, and assert passes.
     @Disabled
-    @MethodSource({"sourceForTestListSortedByCityCount"})
+    @MethodSource({"argumentsForTestList"})
     @ParameterizedTest
-    void testListSortedByCityCount(@PositiveOrZero @Nullable final Integer firstResult,
-                                   @Positive @Nullable final Integer maxResults) {
-        final List<Country> list = serviceInstance().listSortedByCityCount(firstResult, maxResults);
-        assertThat(list).isSortedAccordingTo(COMPARING_CITY_COUNT.reversed());
-        list.stream().collect(Collectors.groupingBy(CountryServiceIT::cityCount)).values()
-                .forEach(v -> assertThat(v).isSortedAccordingTo(Country.COMPARING_COUNTRY));
+    void testList(@PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
+        final List<Country> list = serviceInstance().list(firstResult, maxResults);
+        ofNullable(list).ifPresent(v -> {
+            log.debug("list.size: {}", v.size());
+            v.forEach(c -> {
+                log.debug("country: {}", c.getCountry());
+            });
+        });
+        assertThat(list)
+                .isNotNull()
+                .isNotEmpty()
+                .isSortedAccordingTo(Country.COMPARING_COUNTRY_IGNORE_CASE)
+                .hasSizeLessThanOrEqualTo(ofNullable(maxResults).orElse(Integer.MAX_VALUE))
+        ;
     }
 }
 

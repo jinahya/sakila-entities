@@ -35,6 +35,7 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
@@ -108,11 +109,13 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
 
     // -----------------------------------------------------------------------------------------------------------------
     private static Stream<Arguments> actorArgumentsStream() {
-        return IntStream.range(1, 16).mapToObj(i -> randomEntity(Actor.class)).map(Arguments::of);
+        return applyEntityManager(
+                v -> IntStream.range(1, 16).mapToObj(i -> randomEntity(v, Actor.class)).map(Arguments::of));
     }
 
     private static Stream<Arguments> filmArgumentsStream() {
-        return IntStream.range(1, 16).mapToObj(i -> randomEntity(Film.class)).map(Arguments::of);
+        return applyEntityManager(
+                v -> IntStream.range(1, 16).mapToObj(i -> randomEntity(v, Film.class)).map(Arguments::of));
     }
 
     // -----------------------------------------------------------------------------------------------------------------

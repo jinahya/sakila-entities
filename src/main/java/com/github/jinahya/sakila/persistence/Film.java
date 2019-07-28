@@ -30,6 +30,7 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Converter;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -47,6 +48,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,6 +57,7 @@ import static com.github.jinahya.sakila.persistence.BaseEntity.ATTRIBUTE_NAME_ID
 import static com.github.jinahya.sakila.persistence.Film.COLUMN_NAME_FILM_ID;
 import static com.github.jinahya.sakila.persistence.Film.TABLE_NAME;
 import static java.lang.Math.toIntExact;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
@@ -103,6 +106,22 @@ public class Film extends BaseEntity {
     public static final String ATTRIBUTE_NAME_TITLE = "title";
 
     public static final int SIZE_MAX_TITLE = 255;
+
+    /**
+     * A comparator for comparing {@link #ATTRIBUTE_NAME_TITLE title} attribute.
+     */
+    public static final Comparator<Film> COMPARING_TITLE = comparing(Film::getTitle);
+
+    /**
+     * Returns a comparator for comparing {@link #ATTRIBUTE_NAME_TITLE title} attribute in either natural or reversed
+     * indicated by specified flag.
+     *
+     * @param natural the flag for ordering; {@code true} for natual ordering; {@code false} for reversed ordering.
+     * @return a comparator for comparing {@link #ATTRIBUTE_NAME_TITLE title} attribute.
+     */
+    public static Comparator<Film> comparingTitle(final boolean natural) {
+        return natural ? COMPARING_TITLE : COMPARING_TITLE.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -522,6 +541,11 @@ public class Film extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
@@ -653,12 +677,12 @@ public class Film extends BaseEntity {
     }
 
     //@Transient
-    public Duration getLengthInJavaTime() {
+    public Duration getLengthAsDuration() {
         return ofNullable(getLength()).map(v -> Duration.of(v, ChronoUnit.MINUTES)).orElse(null);
     }
 
-    public void setLengthInJavaTime(final Duration lengthInJavaTime) {
-        setLength(ofNullable(lengthInJavaTime).map(v -> toIntExact(v.toMinutes())).orElse(null));
+    public void setLengthAsDuration(final Duration lengthAsDuration) {
+        setLength(ofNullable(lengthAsDuration).map(v -> toIntExact(v.toMinutes())).orElse(null));
     }
 
     // ------------------------------------------------------------------------------------------------- replacementCost
@@ -684,20 +708,33 @@ public class Film extends BaseEntity {
         return specialFeatures;
     }
 
+    // TODO: 2019-07-23 private!!!
     public void setSpecialFeatures(final String specialFeatures) {
         this.specialFeatures = specialFeatures;
     }
 
-    public Set<SpecialFeature> getSpecialFeaturesAsEnumSet() {
+    /**
+     * Returns special features of this film as a set.
+     *
+     * @return the special feature of this film as a set; {@code null} if {@link #ATTRIBUTE_NAME_SPECIAL_FEATURES
+     * specialFeatures} attribute is {@code null}.
+     */
+    public EnumSet<SpecialFeature> getSpecialFeaturesAsSet() {
         return ofNullable(getSpecialFeatures())
                 .map(v -> Arrays.stream(v.split(",")).map(SpecialFeature::valueOf)
                         .collect(toCollection(() -> EnumSet.noneOf(SpecialFeature.class)))).orElse(null);
     }
 
-    public void setSpecialFeaturesAsEnumSet(final EnumSet<SpecialFeature> specialFeaturesAsEnumSet) {
-        this.specialFeatures = ofNullable(specialFeaturesAsEnumSet)
-                .map(a -> a.stream().map(SpecialFeature::getDatabaseColumn).collect(joining(",")))
-                .orElse(null);
+    /**
+     * Replaces the current value of {@link #ATTRIBUTE_NAME_SPECIAL_FEATURES specialFeatures} attribute with specified
+     * value.
+     *
+     * @param specialFeaturesAsSet new value for {@link #ATTRIBUTE_NAME_SPECIAL_FEATURES specialFeatures} attribute.
+     */
+    public void setSpecialFeaturesAsSet(final EnumSet<SpecialFeature> specialFeaturesAsSet) {
+        setSpecialFeatures(ofNullable(specialFeaturesAsSet)
+                                   .map(a -> a.stream().map(SpecialFeature::getDatabaseColumn).collect(joining(",")))
+                                   .orElse(null));
     }
 
     // ------------------------------------------------------------------------------------------------------ categories
@@ -739,7 +776,7 @@ public class Film extends BaseEntity {
         if (actor == null) {
             throw new NullPointerException("actor is null");
         }
-        final boolean actorAdded = getActors().add(actor);
+        final boolean actorAdded = getActors().add(actor); // TODO: 2019-07-23 equals/hashCode???
         if (!actor.getFilms().contains(this)) {
             final boolean addedToActor = actor.addFilm(this);
         }
@@ -826,12 +863,27 @@ public class Film extends BaseEntity {
     // -----------------------------------------------------------------------------------------------------------------
     // TODO: 2019-07-11 remove!!!
     @Deprecated
-    @ManyToMany
+    @ManyToMany(
+            cascade = {
+//                    CascadeType.ALL,
+//                    CascadeType.DETACH,
+//                    CascadeType.MERGE,
+//                    CascadeType.PERSIST,
+//                    CascadeType.REFRESH,
+//                    CascadeType.REMOVE
+            },
+            fetch = FetchType.LAZY, // default
+            targetEntity = Category.class
+    )
     @JoinTable(name = FilmCategory.TABLE_NAME,
-               joinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID,
-                                          referencedColumnName = COLUMN_NAME_FILM_ID)},
-               inverseJoinColumns = {@JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
-                                                 referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)})
+               joinColumns = {
+                       @JoinColumn(name = FilmCategory.COLUMN_NAME_FILM_ID, referencedColumnName = COLUMN_NAME_FILM_ID)
+               },
+               inverseJoinColumns = {
+                       @JoinColumn(name = FilmCategory.COLUMN_NAME_CATEGORY_ID,
+                                   referencedColumnName = Category.COLUMN_NAME_CATEGORY_ID)
+               }
+    )
     @NamedAttribute(ATTRIBUTE_NAME_CATEGORIES)
     private Set<Category> categories;
 
