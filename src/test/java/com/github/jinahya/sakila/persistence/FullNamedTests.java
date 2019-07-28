@@ -10,7 +10,7 @@ final class FullNamedTests {
     // -----------------------------------------------------------------------------------------------------------------
     static String randomFirstName(final EntityManager entityManager, final String tableName) {
         final Query query = entityManager.createNativeQuery(
-                "SELECT " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMTI 1");
+                "SELECT " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMIT 1");
         return (String) query.getSingleResult();
     }
 
@@ -33,7 +33,7 @@ final class FullNamedTests {
     // -----------------------------------------------------------------------------------------------------------------
     static String randomLastName(final EntityManager entityManager, final String tableName) {
         final Query query = entityManager.createNativeQuery(
-                "SELECT " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMTI 1");
+                "SELECT " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMIT 1");
         return (String) query.getSingleResult();
     }
 
