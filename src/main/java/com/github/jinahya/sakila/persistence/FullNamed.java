@@ -69,10 +69,25 @@ public interface FullNamed {
         return naturalOrder ? COMPARING_FIRST_NAME : COMPARING_FIRST_NAME.reversed();
     }
 
+    Comparator<FullNamed> COMPARING_FIRST_NAME_IGNORE_CASE
+            = (f1, f2) -> f1.getFirstName().compareToIgnoreCase(f2.getFirstName());
+
+    static Comparator<FullNamed> comparingFirstNameIgnoreCase(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_FIRST_NAME_IGNORE_CASE : COMPARING_FIRST_NAME_IGNORE_CASE.reversed();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     Comparator<FullNamed> COMPARING_LAST_NAME = comparing(FullNamed::getLastName);
 
     static Comparator<FullNamed> comparingLastName(final boolean naturalOrder) {
         return naturalOrder ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
+    }
+
+    Comparator<FullNamed> COMPARING_LAST_NAME_IGNORE_CASE
+            = (f1, f2) -> f1.getLastName().compareToIgnoreCase(f2.getLastName());
+
+    static Comparator<FullNamed> getComparingLastNameIgnoreCase(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_LAST_NAME_IGNORE_CASE : COMPARING_LAST_NAME_IGNORE_CASE.reversed();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
