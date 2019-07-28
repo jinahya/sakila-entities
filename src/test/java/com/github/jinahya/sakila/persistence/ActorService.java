@@ -31,9 +31,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
@@ -45,7 +42,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEntityService<Actor> {
+class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -54,33 +51,6 @@ class ActorService extends BaseEntityService<Actor> implements FullNamedBaseEnti
      */
     ActorService() {
         super(Actor.class);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    @Override
-    public @PositiveOrZero long countByFirstName(@NotNull final String firstName) {
-        return FullNamedBaseEntityService.countByFirstName(entityManager(), entityClass, firstName);
-    }
-
-    @Override
-    public @NotNull List<Actor> listByFirstName(@NotNull final String firstName,
-                                                @PositiveOrZero @Nullable Integer firstResult,
-                                                @Positive @Nullable final Integer maxResults) {
-        return FullNamedBaseEntityService.listByFirstName(
-                entityManager(), entityClass, firstName, firstResult, maxResults);
-    }
-
-    @Override
-    public @PositiveOrZero long countByLastName(@NotNull final String lastName) {
-        return FullNamedBaseEntityService.countByLastName(entityManager(), entityClass, lastName);
-    }
-
-    @Override
-    public @NotNull List<Actor> listByLastName(@NotNull final String lastName,
-                                               @PositiveOrZero @Nullable Integer firstResult,
-                                               @Positive @Nullable final Integer maxResults) {
-        return FullNamedBaseEntityService.listByLastName(
-                entityManager(), entityClass, lastName, firstResult, maxResults);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
