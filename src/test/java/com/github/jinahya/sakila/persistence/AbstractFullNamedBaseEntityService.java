@@ -120,18 +120,18 @@ abstract class AbstractFullNamedBaseEntityService<T extends FullNamedBaseEntity>
         criteriaQuery.select(from);
         //final SingularAttribute<FullNamedBaseEntity, String> firstNameAttribute = FullNamedBaseEntity_.firstName;
         final SingularAttribute<? super T, String> firstNameAttribute
-                = singularAttribute(entityManager(), entityClass, FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(firstNameAttribute), firstName));
-        //final SingularAttribute<FullNamedBaseEntity, String> lastNameAttribute = FullNamedBaseEntity_.firstName;
-        final SingularAttribute<? super T, String> lastNameAttribute
-                = singularAttribute(FullName.ATTRIBUTE_NAME_LAST_NAME, String.class);
-        //final SingularAttribute<BaseEntity, Integer> idAttribute = BaseEntity_.id;
-        final SingularAttribute<? super T, Integer> idAttribute = idAttribute();
-        final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
+                = singularAttribute(FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class);
+//        criteriaQuery.where(criteriaBuilder.equal(from.get(FullNamedBaseEntity_.firstName), firstName));
+        criteriaQuery.where(criteriaBuilder.equal(
+                from.get(singularAttribute(FullNamed.ATTRIBUTE_NAME_FIRST_NAME, String.class)),
+                firstName));
         criteriaQuery.orderBy(
-                criteriaBuilder.asc(from.get(lastNameAttribute)),
-                criteriaBuilder.asc(from.get(idAttribute))
+                //criteriaBuilder.asc(from.get(FullNamedBaseEntity_.lastName)),
+                criteriaBuilder.asc(from.get(singularAttribute(FullName.ATTRIBUTE_NAME_LAST_NAME, String.class))),
+                //criteriaBuilder.asc(from.get(BaseEntity_.id)),
+                criteriaBuilder.asc(from.get(idAttribute()))
         );
+        final TypedQuery<T> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
         return typedQuery.getResultList();
