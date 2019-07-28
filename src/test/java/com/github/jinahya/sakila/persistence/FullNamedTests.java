@@ -10,8 +10,7 @@ final class FullNamedTests {
     // -----------------------------------------------------------------------------------------------------------------
     static String randomFirstName(final EntityManager entityManager, final String tableName) {
         final Query query = entityManager.createNativeQuery(
-                "SELECT " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMTI 1",
-                String.class);
+                "SELECT " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMTI 1");
         return (String) query.getSingleResult();
     }
 
@@ -22,8 +21,7 @@ final class FullNamedTests {
     static long countByFirstName(final EntityManager entityManager, final String tableName, final String firstName) {
         final Query query = entityManager.createNativeQuery(
                 "SELECT COUNT(1) FROM " + tableName +
-                " WHERE " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " = : firstName",
-                String.class);
+                " WHERE " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " = : firstName");
         query.setParameter("firstName", firstName);
         return (long) query.getSingleResult();
     }
@@ -35,13 +33,24 @@ final class FullNamedTests {
     // -----------------------------------------------------------------------------------------------------------------
     static String randomLastName(final EntityManager entityManager, final String tableName) {
         final Query query = entityManager.createNativeQuery(
-                "SELECT " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMTI 1",
-                String.class);
+                "SELECT " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMTI 1");
         return (String) query.getSingleResult();
     }
 
     static String randomLastName(final String tableName) {
         return applyEntityManager(v -> randomLastName(v, tableName));
+    }
+
+    static long countByLastName(final EntityManager entityManager, final String tableName, final String lastName) {
+        final Query query = entityManager.createNativeQuery(
+                "SELECT COUNT(1) FROM " + tableName +
+                " WHERE " + FullNamedEntity.COLUMN_NAME_LAST_NAME + " = : lastName");
+        query.setParameter("lastName", lastName);
+        return (long) query.getSingleResult();
+    }
+
+    static long countByLastName(final String tableName, final String lastName) {
+        return applyEntityManager(v -> countByLastName(v, tableName, lastName));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
