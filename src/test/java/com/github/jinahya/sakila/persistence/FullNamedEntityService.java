@@ -6,8 +6,6 @@ import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 
 interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedService<T> {

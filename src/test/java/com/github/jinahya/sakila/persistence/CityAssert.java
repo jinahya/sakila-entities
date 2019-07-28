@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertCountry;
 import static org.assertj.core.api.Assertions.assertThat;
