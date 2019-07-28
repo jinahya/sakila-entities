@@ -76,8 +76,7 @@ interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedSer
     // -----------------------------------------------------------------------------------------------------------------
     static <T extends FullNamedEntity> @PositiveOrZero long countByLastName(
             @NotNull final EntityManager entityManager,
-            @NotNull final Class<T> entityClass, @NotNull String lastName,
-            @PositiveOrZero @Nullable Integer firstResult, @Positive @Nullable final Integer maxResults) {
+            @NotNull final Class<T> entityClass, @NotNull String lastName) {
         // TODO: 2019-07-27 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -93,32 +92,38 @@ interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedSer
     // -----------------------------------------------------------------------------------------------------------------
     @Override
     default @PositiveOrZero long countByFirstName(@NotNull final String firstName) {
-        final EntityManager entityManager;
-        {
-            try {
-                final Method entityManagerMethod = EntityService.class.getDeclaredMethod("entityManager");
-                if (!entityManagerMethod.isAccessible()) {
-                    entityManagerMethod.setAccessible(true);
-                }
-                entityManager = (EntityManager) entityManagerMethod.invoke(this);
-            } catch (final ReflectiveOperationException roe) {
-                throw new RuntimeException(roe);
-            }
-        }
-        final Class<T> entityClass;
-        {
-            try {
-                final Field entityClassField = EntityService.class.getDeclaredField("entityClass");
-                if (!entityClassField.isAccessible()) {
-                    entityClassField.setAccessible(true);
-                }
-                @SuppressWarnings({"unchecked"})
-                final Class<T> entityClass_ = (Class<T>) entityClassField.get(this);
-                entityClass = entityClass_;
-            } catch (final ReflectiveOperationException roe) {
-                throw new RuntimeException(roe);
-            }
-        }
+        final EntityManager entityManager = EntityService.entityManager((EntityService<?>) this);
+        @SuppressWarnings({"unchecked"})
+        final Class<T> entityClass = (Class<T>) EntityService.entityClass((EntityService<?>) this);
         return countByFirstName(entityManager, entityClass, firstName);
+    }
+
+    @Override
+    default @NotNull List<@NotNull T> listByFirstName(@NotNull final String firstName,
+                                                      @PositiveOrZero @Nullable Integer firstResult,
+                                                      @Positive @Nullable final Integer maxResults) {
+        final EntityManager entityManager = EntityService.entityManager((EntityService<?>) this);
+        @SuppressWarnings({"unchecked"})
+        final Class<T> entityClass = (Class<T>) EntityService.entityClass((EntityService<?>) this);
+        return listByFirstName(entityManager, entityClass, firstName, firstResult, maxResults);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Override
+    default @PositiveOrZero long countByLastName(@NotNull final String lastName) {
+        final EntityManager entityManager = EntityService.entityManager((EntityService<?>) this);
+        @SuppressWarnings({"unchecked"})
+        final Class<T> entityClass = (Class<T>) EntityService.entityClass((EntityService<?>) this);
+        return countByLastName(entityManager, entityClass, lastName);
+    }
+
+    @Override
+    default @NotNull List<@NotNull T> listByLastName(@NotNull final String lastName,
+                                                     @PositiveOrZero @Nullable Integer lastResult,
+                                                     @Positive @Nullable final Integer maxResults) {
+        final EntityManager entityManager = EntityService.entityManager((EntityService<?>) this);
+        @SuppressWarnings({"unchecked"})
+        final Class<T> entityClass = (Class<T>) EntityService.entityClass((EntityService<?>) this);
+        return listByLastName(entityManager, entityClass, lastName, lastResult, maxResults);
     }
 }
