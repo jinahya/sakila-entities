@@ -63,6 +63,11 @@ abstract class FullNamedBaseEntity extends BaseEntity implements FullNamed {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return a string representation of the object.
+     */
     @Override
     public String toString() {
         return super.toString() + "{"
