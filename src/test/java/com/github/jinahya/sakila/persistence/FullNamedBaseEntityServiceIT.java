@@ -52,7 +52,9 @@ abstract class FullNamedBaseEntityServiceIT<
         assertThat(list)
                 .isNotNull()
                 .isNotEmpty()
-                .isSortedAccordingTo(FullNamed.COMPARING_LAST_NAME_IGNORE_CASE)
+                .isSortedAccordingTo(
+                        FullNamedBaseEntity.COMPARING_LAST_NAME_IGNORE_CASE.thenComparing(BaseEntity.COMPARING_ID))
+        ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
