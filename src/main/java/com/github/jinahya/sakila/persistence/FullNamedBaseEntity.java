@@ -25,12 +25,41 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Comparator;
 
 import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
 import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 
 @MappedSuperclass
 abstract class FullNamedBaseEntity extends BaseEntity implements FullNamed {
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static Comparator<FullNamedBaseEntity> COMPARING_FIRST_NAME = FullNamed.COMPARING_FIRST_NAME::compare;
+
+    static Comparator<FullNamedBaseEntity> comparingFirstName(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_FIRST_NAME : COMPARING_FIRST_NAME.reversed();
+    }
+
+    static Comparator<FullNamedBaseEntity> COMPARING_FIRST_NAME_IGNORE_CASE
+            = FullNamed.COMPARING_FIRST_NAME_IGNORE_CASE::compare;
+
+    static Comparator<FullNamedBaseEntity> comparingFirstNameIgnoreCase(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_FIRST_NAME_IGNORE_CASE : COMPARING_FIRST_NAME_IGNORE_CASE.reversed();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static Comparator<FullNamedBaseEntity> COMPARING_LAST_NAME = FullNamed.COMPARING_LAST_NAME::compare;
+
+    static Comparator<FullNamedBaseEntity> comparingLastName(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_LAST_NAME : COMPARING_LAST_NAME.reversed();
+    }
+
+    static Comparator<FullNamedBaseEntity> COMPARING_LAST_NAME_IGNORE_CASE
+            = FullNamed.COMPARING_LAST_NAME_IGNORE_CASE::compare;
+
+    static Comparator<FullNamedBaseEntity> getComparingLastNameIgnoreCase(final boolean naturalOrder) {
+        return naturalOrder ? COMPARING_LAST_NAME_IGNORE_CASE : COMPARING_LAST_NAME_IGNORE_CASE.reversed();
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 

@@ -1,44 +1,33 @@
 # sakila-entities
+
 Defines entities for [Sakila Sample Database](https://dev.mysql.com/doc/sakila/en/).
 
+## docker
 
-## sakila-db
+We need a running database for integration-testing our entities.
 
-### additional rows inserted for testing
+### build image
 
-|table    |country_id|values  |
-|---------|----------|--------|
-|`country`|`65535`   |`Asgard`|
+Let's build the image.
 
-### running sakila-db with Docker
-We need a running database for testing our entities.
-
-#### generate shellscripts
 ```bash
-$ mvn -Dmysql.host=<your.docker.address> process-resources
+$ docker build -t jinahya/sakila-db .
 ```
 
-#### build the image if you haven't done yet
-```bash
-$ sh ./.sakila-db.build.sh
-```
+### run container
 
-#### run sakila-db
 ```bash
-$ sh ./.sakila-db.run.sh
+$ docker run --rm -d --name sakila-db -p 33306:3306 jinahya/sakila-db
 ``` 
 
-#### connect to sakila-db
+### connect to the container
+
 ```bash
-$ sh ./.sakila-db.mysql.sh
+$ docker exec -it sakila-db mysql -usakila -psakila -Dsakila
 ```
 
-##### connect to sakila-db from outside
-```bash
-$ mysql --host=127.0.0.1 --port=33306 --user=sakila --password=sakila --database=sakila
-```
+### stop the container
 
-#### stop sakila-db container
 ```bash
-$ sh ./.sakila-db.stop.sh
+$ docker stop sakila-db
 ```

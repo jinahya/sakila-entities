@@ -8,12 +8,30 @@ import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEnt
 final class FullNamedTests {
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a randomly selected {@link FullNamedEntity#COLUMN_NAME_FIRST_NAME first_name} column from the table of
+     * specified name.
+     *
+     * @param entityManager an entity manager to use with {@link EntityManager#createNamedQuery(String)}.
+     * @param tableName     the name of the table.
+     * @return a randomly selected {@link FullNamedEntity#COLUMN_NAME_FIRST_NAME first_name} column.
+     * @see #randomFirstName(String)
+     */
     static String randomFirstName(final EntityManager entityManager, final String tableName) {
         final Query query = entityManager.createNativeQuery(
                 "SELECT " + FullNamedEntity.COLUMN_NAME_FIRST_NAME + " FROM " + tableName + " ORDER BY RAND() LIMIT 1");
         return (String) query.getSingleResult();
     }
 
+    /**
+     * Returns a randomly selected {@link FullNamedEntity#COLUMN_NAME_FIRST_NAME first_name} column from the table of
+     * specified name.
+     *
+     * @param tableName the name of the table.
+     * @return a randomly selected {@link FullNamedEntity#COLUMN_NAME_FIRST_NAME first_name} column.
+     * @see #randomFirstName(EntityManager, String)
+     */
     static String randomFirstName(final String tableName) {
         return applyEntityManager(v -> randomFirstName(v, tableName));
     }
@@ -54,6 +72,10 @@ final class FullNamedTests {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a new instance.
+     */
     private FullNamedTests() {
         super();
     }
