@@ -121,7 +121,7 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
      * @param firstResult a value for {@code firstResult} argument.
      * @param maxResults  a value for {@code maxResults} argument.
      */
-    @MethodSource({"argumentForTestCount"})
+    @MethodSource({"argumentForTestList"})
     @ParameterizedTest
     void testList(final City city, final Integer firstResult, final Integer maxResults) {
         final List<Address> list = serviceInstance().list(city, firstResult, maxResults);
