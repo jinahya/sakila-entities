@@ -71,7 +71,7 @@ class CountryService extends BaseEntityService<Country> {
             final Query query = entityManager().createQuery("SELECT c FROM Country AS c WHERE c.country = :country");
             query.setParameter("country", country);
             try {
-                return Optional.of((Country) query.getSingleResult());
+                return Optional.of((Country) query.getSingleResult()); // NonUniqueResultException
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
@@ -81,7 +81,7 @@ class CountryService extends BaseEntityService<Country> {
                     "SELECT c FROM Country AS c WHERE c.country = :country", Country.class);
             typedQuery.setParameter("country", country);
             try {
-                return Optional.of(typedQuery.getSingleResult());
+                return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
@@ -94,7 +94,7 @@ class CountryService extends BaseEntityService<Country> {
             criteriaQuery.where(criteriaBuilder.equal(from.get(Country.ATTRIBUTE_NAME_COUNTRY), country));
             final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
             try {
-                return Optional.of(typedQuery.getSingleResult());
+                return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
@@ -109,7 +109,7 @@ class CountryService extends BaseEntityService<Country> {
         criteriaQuery.where(criteriaBuilder.equal(from.get(countryAttribute), country));
         final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
         try {
-            return Optional.of(typedQuery.getSingleResult());
+            return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
         } catch (final NoResultException nre) {
             return Optional.empty();
         }
