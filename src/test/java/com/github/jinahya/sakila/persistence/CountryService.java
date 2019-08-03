@@ -52,6 +52,9 @@ class CountryService extends BaseEntityService<Country> {
      * Find the country whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value. Note
      * that the {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute is not unique but all values are distinct to
      * each other in the table.
+     * <blockquote><pre>{@code
+     * SELECT c.* FROM country AS c WHERE c.country = ?
+     * }</pre></blockquote>
      *
      * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return an optional of found country.
@@ -63,6 +66,9 @@ class CountryService extends BaseEntityService<Country> {
 
     /**
      * Lists countries sorted by {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute in ascending order.
+     * <blockquote><pre>{@code
+     * SELECT c.* FROM country AS c ORDER BY c.country ASC LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param firstResult the position of the first result to retrieve.
      * @param maxResults  the maximum number of results to retrieve.

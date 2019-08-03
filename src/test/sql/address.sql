@@ -1,5 +1,17 @@
 DESC address;
 
+SELECT c.city_id, COUNT(*) AS address_count
+FROM address AS a JOIN city AS c ON a.city_id = c.city_id
+GROUP By a.city_id
+ORDER BY c.city_id ASC
+;
+
+SELECT c.city_id, COUNT(*) AS address_count
+FROM city AS c LEFT OUTER JOIN address AS a ON c.city_id = a.city_id
+GROUP BY c.city_id
+ORDER BY address_count DESC
+;
+
 SELECT city_id, district, address
 FROM address
 ORDER BY city_id ASC, district ASC
@@ -50,3 +62,4 @@ FROM (SELECT ST_AsText(location)                     AS txt,
       FROM address
       ORDER BY address_id ASC) AS s
 ;
+
