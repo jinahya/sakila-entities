@@ -120,53 +120,6 @@ class CategoryService extends BaseEntityService<Category> {
     }
 
     /**
-     * Lists categories whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value sorted by
-     * {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute in ascending order.
-     *
-     * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME name} attribute to match.
-     * @return a list of categories.
-     */
-    public List<Category> listByName(@NotNull final String name) {
-        if (current().nextBoolean()) {
-            final Query query = entityManager().createQuery(
-                    "SELECT c FROM Category AS c WHERE c.name = :name ORDER BY c.id ASC");
-            query.setParameter("name", name);
-            @SuppressWarnings({"unchecked"})
-            final List<Category> list = query.getResultList();
-            return list;
-        }
-        if (current().nextBoolean()) {
-            final TypedQuery<Category> typedQuery = entityManager().createQuery(
-                    "SELECT c FROM Category AS c WHERE c.name = :name ORDER BY c.id ASC",
-                    Category.class
-            );
-            typedQuery.setParameter("name", name);
-            return typedQuery.getResultList();
-        }
-        if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-            final Root<Category> from = criteriaQuery.from(Category.class);
-            criteriaQuery.select(from);
-            final Path<String> namePath = from.get(Category.ATTRIBUTE_NAME_NAME);
-            criteriaQuery.where(criteriaBuilder.equal(namePath, name));
-            criteriaQuery.orderBy(criteriaBuilder.asc(from.get(BaseEntity.ATTRIBUTE_NAME_ID)));
-            final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
-            return typedQuery.getResultList();
-        }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-        final Root<Category> from = criteriaQuery.from(Category.class);
-        criteriaQuery.select(from);
-        //final SingularAttribute<Category, String> nameAttribute = Category_.name;
-        final SingularAttribute<? super Category, String> nameAttribute
-                = singularAttribute(Category.ATTRIBUTE_NAME_NAME, String.class);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(nameAttribute), name));
-        final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
-        return typedQuery.getResultList();
-    }
-
-    /**
      * Returns a list of categories sorted by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending order.
      *
      * @param firstResult the position of the first result to retrieve.
