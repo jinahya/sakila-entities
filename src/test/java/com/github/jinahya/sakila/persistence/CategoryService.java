@@ -23,6 +23,7 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -31,10 +32,12 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -57,6 +60,64 @@ class CategoryService extends BaseEntityService<Category> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Finds the category whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value. Note
+     * that {@link Category#ATTRIBUTE_NAME_NAME name} attribute is not unique but all values in table are distinct to
+     * each other.
+     *
+     * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME name} attribute to match.
+     * @return an optional of found; empty if not found.
+     */
+    @NotNull Optional<Category> findByName(@NotBlank final String name) {
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT c FROM Category AS c WHERE c.name = :name");
+            query.setParameter("name", name);
+            try {
+                return Optional.of((Category) query.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Category> typedQuery = entityManager().createQuery(
+                    "SELECT c FROM Category AS c WHERE c.name = :name",
+                    Category.class
+            );
+            typedQuery.setParameter("name", name);
+            try {
+                return Optional.of(typedQuery.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+            final Root<Category> from = criteriaQuery.from(Category.class);
+            criteriaQuery.select(from);
+            final Path<String> namePath = from.get(Category.ATTRIBUTE_NAME_NAME);
+            criteriaQuery.where(criteriaBuilder.equal(namePath, name));
+            final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
+            try {
+                return Optional.of(typedQuery.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+        final Root<Category> from = criteriaQuery.from(Category.class);
+        criteriaQuery.select(from);
+        criteriaQuery.where(criteriaBuilder.equal(from.get(Category_.name), name));
+        final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
+        try {
+            return Optional.of(typedQuery.getSingleResult());
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
+    }
 
     /**
      * Lists categories whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value sorted by
