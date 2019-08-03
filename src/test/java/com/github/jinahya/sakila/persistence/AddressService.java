@@ -3,10 +3,17 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A service class for {@link Address} class.
@@ -37,8 +44,33 @@ class AddressService extends BaseEntityService<Address> {
      * @return the number of address reside in specified city.
      */
     @PositiveOrZero long count(@NotNull final City city) {
-        // TODO: 2019-07-27 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery("SELECT COUNT(a) FROM Address AS a WHERE a.city = :city");
+            query.setParameter("city", city);
+            return (long) query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Long> query = entityManager().createQuery(
+                    "SELECT COUNT(a) FROM Address AS a WHERE a.city = :city", Long.class);
+            query.setParameter("city", city);
+            return query.getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+            final Root<Address> root = criteriaQuery.from(entityClass);
+            criteriaQuery.select(criteriaBuilder.count(root));
+            criteriaQuery.where(criteriaBuilder.equal(root.get(Address.ATTRIBUTE_NAME_CITY), city));
+            final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<Address> root = criteriaQuery.from(entityClass);
+        criteriaQuery.select(criteriaBuilder.count(root));
+        criteriaQuery.where(criteriaBuilder.equal(root.get(Address_.city), city));
+        final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     /**
