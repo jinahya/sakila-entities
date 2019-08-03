@@ -59,7 +59,9 @@ class CountryService extends BaseEntityService<Country> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Find the country whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value.
+     * Find the country whose {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute matches to specified value. Note
+     * that the {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute is not unique but all values are distinct to
+     * each other in the table.
      *
      * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return an optional of found country.
