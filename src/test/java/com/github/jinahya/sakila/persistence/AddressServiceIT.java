@@ -7,11 +7,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Address.COMPARING_ADDRESS_IGNORE_CASE;
+import static com.github.jinahya.sakila.persistence.Address.COMPARING_DISTRICT_IGNORE_CASE;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -68,6 +73,23 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
                         .orElseThrow(() -> new RuntimeException("invalid index"))
                 );
     }
+
+    /**
+     * Provides arguments for {@link #testList(City, Integer, Integer)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentForTestList() {
+        return IntStream.range(0, 8).mapToObj(i -> {
+            final City city = randomEntity(City.class);
+            final Integer addressCount = CITY_ID_ADDRESS_CONT.get(city.getId());
+            final Integer firstResult
+                    = current().nextBoolean() || addressCount == null
+                      ? null : current().nextInt(0, CITY_ID_ADDRESS_CONT.get(city.getId()));
+            final Integer maxResults = current().nextBoolean() ? null : current().nextInt() >>> 1;
+            return Arguments.of(city, firstResult, maxResults);
+        });
+    }
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -90,5 +112,23 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
     void testCount(final City city, final int expected) {
         final long actual = serviceInstance().count(city);
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Tests {@link AddressService#count(City)} method.
+     *
+     * @param city        a value for {@code city} argument.
+     * @param firstResult a value for {@code firstResult} argument.
+     * @param maxResults  a value for {@code maxResults} argument.
+     */
+    @MethodSource({"argumentForTestCount"})
+    @ParameterizedTest
+    void testList(final City city, final Integer firstResult, final Integer maxResults) {
+        final List<Address> list = serviceInstance().list(city, firstResult, maxResults);
+        log.debug("list: {}", list);
+        assertThat(list)
+                .isNotNull()
+                .isSortedAccordingTo(COMPARING_DISTRICT_IGNORE_CASE.thenComparing(COMPARING_ADDRESS_IGNORE_CASE))
+        ;
     }
 }

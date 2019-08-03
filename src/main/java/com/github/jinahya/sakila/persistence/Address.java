@@ -249,6 +249,14 @@ public class Address extends BaseEntity {
      */
     public static final Comparator<Address> COMPARING_DISTRICT = comparing(Address::getDistrict);
 
+    public static final Comparator<Address> COMPARING_DISTRICT_IGNORE_CASE
+            = (a1, a2) -> a1.district.compareToIgnoreCase(a2.district);
+
+    public static final Comparator<Address> COMPARING_ADDRESS = comparing(Address::getAddress);
+
+    public static final Comparator<Address> COMPARING_ADDRESS_IGNORE_CASE
+            = (a1, a2) -> a1.address.compareToIgnoreCase(a2.address);
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
