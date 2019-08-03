@@ -1,6 +1,7 @@
 package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -108,6 +109,8 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
      * @param city     a value for {@code city} argument.
      * @param expected an expected result of the method.
      */
+    // TODO: 2019-08-03 enable, assert fails, implement, and assert passes!
+    @Disabled
     @MethodSource({"argumentForTestCount"})
     @ParameterizedTest
     void testCount(final City city, final int expected) {
@@ -122,6 +125,8 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
      * @param firstResult a value for {@code firstResult} argument.
      * @param maxResults  a value for {@code maxResults} argument.
      */
+    // TODO: 2019-08-03 enable, assert fails, implement, and assert passes!
+    @Disabled
     @MethodSource({"argumentForTestList"})
     @ParameterizedTest
     void testList(final City city, final Integer firstResult, final Integer maxResults) {
