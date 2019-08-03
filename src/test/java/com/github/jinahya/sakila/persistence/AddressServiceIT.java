@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import static com.github.jinahya.sakila.persistence.Address.COMPARING_ADDRESS_IGNORE_CASE;
 import static com.github.jinahya.sakila.persistence.Address.COMPARING_DISTRICT_IGNORE_CASE;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -125,7 +126,7 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
     @ParameterizedTest
     void testList(final City city, final Integer firstResult, final Integer maxResults) {
         final List<Address> list = serviceInstance().list(city, firstResult, maxResults);
-        log.debug("list: {}", list);
+        ofNullable(list).ifPresent(l -> l.forEach(e -> log.debug("address: {}", e)));
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(COMPARING_DISTRICT_IGNORE_CASE.thenComparing(COMPARING_ADDRESS_IGNORE_CASE))
