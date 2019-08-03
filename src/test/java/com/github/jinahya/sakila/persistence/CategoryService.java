@@ -23,10 +23,12 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A service for {@link Category} entity.
@@ -46,6 +48,19 @@ class CategoryService extends BaseEntityService<Category> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Finds the category whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value. Note
+     * that {@link Category#ATTRIBUTE_NAME_NAME name} attribute is not unique but all values in table are distinct to
+     * each other.
+     *
+     * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME name} attribute to match.
+     * @return an optional of found; empty if not found.
+     */
+    @NotNull Optional<Category> findByName(@NotBlank final String name) {
+        // TODO: 2019-07-16 implement!!!
+        throw new UnsupportedOperationException("not implemented yet");
+    }
 
     /**
      * Lists categories whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value sorted by

@@ -33,11 +33,14 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Collections.synchronizedMap;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.range;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +82,27 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    static final Set<String> NAMES;
+
+    static {
+        try {
+            NAMES = unmodifiableSet(applyResourceScanner(
+                    "category_set_name.txt", s -> {
+                        final Set<String> set = new HashSet<>();
+                        while (s.hasNext()) {
+                            final String name = s.next();
+                            final boolean added = set.add(name);
+                            assert added : "duplicate name: " + name;
+                        }
+                        return set;
+                    }
+            ));
+        } catch (final IOException ioe) {
+            throw new InstantiationError(ioe.getMessage());
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Provides arguments for {@link #testListByName(String)} method.
@@ -108,6 +132,8 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     }
 
     // ------------------------------------------------------------------------------------------------------ findByName
+
+    // ------------------------------------------------------------------------------------------------------ listByName
 
     /**
      * Asserts {@link CategoryService#listByName(String)} method returns an empty for an unknown category.
