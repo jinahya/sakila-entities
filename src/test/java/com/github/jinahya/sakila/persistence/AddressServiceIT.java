@@ -126,7 +126,11 @@ class AddressServiceIT extends BaseEntityServiceIT<AddressService, Address> {
     @ParameterizedTest
     void testList(final City city, final Integer firstResult, final Integer maxResults) {
         final List<Address> list = serviceInstance().list(city, firstResult, maxResults);
-        ofNullable(list).ifPresent(l -> l.forEach(e -> log.debug("address: {}", e)));
+        log.debug("list: {}", list);
+        ofNullable(list).ifPresent(l -> {
+            log.debug("list.size: {}", list.size());
+            l.forEach(e -> log.debug("address: {}", e));
+        });
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(COMPARING_DISTRICT_IGNORE_CASE.thenComparing(COMPARING_ADDRESS_IGNORE_CASE))
