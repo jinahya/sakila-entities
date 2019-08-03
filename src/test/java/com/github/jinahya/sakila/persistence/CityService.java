@@ -58,7 +58,10 @@ class CityService extends BaseEntityService<City> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Counts cities resides in specified country.
+     * Counts all cities which each resides in specified country.
+     * <blockquote><pre>{@code
+     * SELECT COUNT(*) FROM city WHERE country_id = ?
+     * }</pre></blockquote>
      *
      * @param country the value of {@link City#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return the number of cities in specified country.
@@ -99,8 +102,11 @@ class CityService extends BaseEntityService<City> {
     }
 
     /**
-     * Lists cities resides in specified country sorted by {@link City#ATTRIBUTE_NAME_CITY city} attribute in ascending
-     * order.
+     * Lists cities which each resides in specified country sorted by {@link City#ATTRIBUTE_NAME_CITY city} attribute in
+     * ascending order.
+     * <blockquote><pre>{@code
+     * SELECT * FROM city WHERE country_id = ? ORDER BY city ASC LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param country     the value of {@link City#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @param firstResult position of the first result, numbered from 0; {@code null} for an unspecified result.
