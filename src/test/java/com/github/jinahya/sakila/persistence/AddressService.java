@@ -13,6 +13,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
@@ -50,10 +51,10 @@ class AddressService extends BaseEntityService<Address> {
             return (long) query.getSingleResult();
         }
         if (current().nextBoolean()) {
-            final TypedQuery<Long> query = entityManager().createQuery(
+            final TypedQuery<Long> typedQuery = entityManager().createQuery(
                     "SELECT COUNT(a) FROM Address AS a WHERE a.city = :city", Long.class);
-            query.setParameter("city", city);
-            return query.getSingleResult();
+            typedQuery.setParameter("city", city);
+            return typedQuery.getSingleResult();
         }
         if (current().nextBoolean()) {
             final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
@@ -85,7 +86,44 @@ class AddressService extends BaseEntityService<Address> {
      */
     @NotNull List<@NotNull Address> list(@NotNull final City city, @PositiveOrZero @Nullable Integer firstResult,
                                          @Positive @Nullable Integer maxResults) {
-        // TODO: 2019-07-27 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT a FROM Address AS a WHERE a.city = :city ORDER BY a.district ASC, a.address ASC");
+            query.setParameter("city", city);
+            ofNullable(firstResult).ifPresent(query::setFirstResult);
+            ofNullable(maxResults).ifPresent(query::setMaxResults);
+            @SuppressWarnings({"unchecked"})
+            final List<Address> list = query.getResultList();
+            return list;
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<Address> typedQuery = entityManager().createQuery(
+                    "SELECT a FROM Address AS a WHERE a.city = :city ORDER BY a.district ASC, a.address ASC",
+                    Address.class);
+            typedQuery.setParameter("city", city);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
+            final Root<Address> root = criteriaQuery.from(entityClass);
+            criteriaQuery.select(root);
+            criteriaQuery.where(criteriaBuilder.equal(root.get(Address.ATTRIBUTE_NAME_CITY), city));
+            final TypedQuery<Address> typedQuery = entityManager().createQuery(criteriaQuery);
+            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+            return typedQuery.getResultList();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
+        final Root<Address> root = criteriaQuery.from(entityClass);
+        criteriaQuery.select(root);
+        criteriaQuery.where(criteriaBuilder.equal(root.get(Address_.city), city));
+        final TypedQuery<Address> typedQuery = entityManager().createQuery(criteriaQuery);
+        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
+        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
+        return typedQuery.getResultList();
     }
 }
