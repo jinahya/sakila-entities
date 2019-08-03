@@ -36,9 +36,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertCategory;
 import static java.util.Collections.synchronizedMap;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Optional.ofNullable;
@@ -105,11 +107,11 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Provides arguments for {@link #testListByName(String)} method.
+     * Provides arguments for {@link #testFindByName(String)} method.
      *
      * @return a stream of arguments.
      */
-    private static Stream<Arguments> argumentsForTestListByName() {
+    private static Stream<Arguments> argumentsForTestFindByName() {
         return range(0, 8).mapToObj(i -> randomEntity(Category.class)).map(Category::getName).map(Arguments::of);
     }
 
@@ -133,32 +135,31 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
 
     // ------------------------------------------------------------------------------------------------------ findByName
 
-    // ------------------------------------------------------------------------------------------------------ listByName
-
     /**
-     * Asserts {@link CategoryService#listByName(String)} method returns an empty for an unknown category.
+     * Asserts {@link CategoryService#findByName(String)} method returns an empty for an unknown category.
      */
     // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
-    void assertListByNameReturnsEmptyForUnknown() {
+    void assertFindByNameReturnsEmptyForUnknown() {
         final String name = "周星馳";
-        assertThat(serviceInstance().listByName(name)).isEmpty();
+        assertThat(serviceInstance().findByName(name)).isEmpty();
     }
 
     /**
-     * Tests {@link CategoryService#listByName(String)} method.
+     * Tests {@link CategoryService#findByName(String)} method.
      *
      * @param name a value for {@code name} parameter.
      */
     // TODO: 2019-07-16 enable, assert fails, implement, and assert passes.
     @Disabled
-    @MethodSource({"argumentsForTestListByName"})
+    @MethodSource({"argumentsForTestFindByName"})
     @ParameterizedTest
-    void testListByName(@NotNull final String name) {
-        assertThat(serviceInstance().listByName(name))
-                .isNotEmpty()
-                .allSatisfy(v -> assertThat(v.getName()).isEqualTo(name))
+    void testFindByName(@NotNull final String name) {
+        final Optional<Category> found = serviceInstance().findByName(name);
+        assertThat(found)
+                .isPresent()
+                .hasValueSatisfying(v -> assertCategory(v).hasName(name))
         ;
     }
 

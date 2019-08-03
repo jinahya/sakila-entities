@@ -63,18 +63,6 @@ class CategoryService extends BaseEntityService<Category> {
     }
 
     /**
-     * Lists categories whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value sorted by
-     * {@link BaseEntity#ATTRIBUTE_NAME_ID id} attribute in ascending order.
-     *
-     * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME name} attribute to match.
-     * @return a list of categories.
-     */
-    public List<Category> listByName(@NotNull final String name) {
-        // TODO: 2019-07-16 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    /**
      * Returns a list of categories sorted by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending order.
      *
      * @param firstResult the position of the first result to retrieve.

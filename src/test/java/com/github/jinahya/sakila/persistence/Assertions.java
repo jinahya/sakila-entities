@@ -41,6 +41,11 @@ final class Assertions {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    static CategoryAssert assertCategory(final Category actual) {
+        return new CategoryAssert(actual);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     static CityAssert assertCity(final City actual) {
         return new CityAssert(actual);
     }
