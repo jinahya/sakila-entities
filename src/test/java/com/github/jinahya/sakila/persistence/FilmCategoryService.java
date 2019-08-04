@@ -55,28 +55,33 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    public Optional<FilmCategory> find(@NotNull final Film film, @NotNull final Category category) {
+    Optional<FilmCategory> find(@NotNull final Film film, @NotNull final Category category) {
         if (current().nextBoolean()) {
             try {
-                return Optional.of((FilmCategory) entityManager()
-                        .createQuery("SELECT fe"
-                                     + " FROM FilmCategory AS fe"
-                                     + " WHERE fe.film = :film AND fe.category = :category")
-                        .setParameter("film", film)
-                        .setParameter("category", category).getSingleResult());
+                return Optional.of(
+                        (FilmCategory) entityManager()
+                                .createQuery("SELECT fe"
+                                             + " FROM FilmCategory AS fe"
+                                             + " WHERE fe.film = :film AND fe.category = :category")
+                                .setParameter("film", film)
+                                .setParameter("category", category)
+                                .getSingleResult()
+                );
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
         }
         if (current().nextBoolean()) {
             try {
-                return Optional.of((entityManager()
-                        .createQuery("SELECT fe"
-                                     + " FROM FilmCategory AS fe"
-                                     + " WHERE fe.film = :film AND fe.category = :category",
-                                     FilmCategory.class)
-                        .setParameter("film", film)
-                        .setParameter("category", category).getSingleResult())
+                return Optional.of(
+                        (entityManager()
+                                .createQuery("SELECT fe"
+                                             + " FROM FilmCategory AS fe"
+                                             + " WHERE fe.film = :film AND fe.category = :category",
+                                             FilmCategory.class)
+                                .setParameter("film", film)
+                                .setParameter("category", category)
+                                .getSingleResult())
                 );
             } catch (final NoResultException nre) {
                 return Optional.empty();
@@ -101,9 +106,12 @@ class FilmCategoryService extends EntityService<FilmCategory> {
         criteriaQuery.where(
                 criteriaBuilder.and(
                         criteriaBuilder.equal(
-                                from.get(singularAttribute(ATTRIBUTE_NAME_FILM, Film.class)), film),
+//                                from.get(singularAttribute(ATTRIBUTE_NAME_FILM, Film.class)), film),
+                                from.get(FilmCategory_.film), film),
                         criteriaBuilder.equal(
-                                from.get(singularAttribute(ATTRIBUTE_NAME_CATEGORY, Category.class)), category)
+//                                from.get(singularAttribute(ATTRIBUTE_NAME_CATEGORY, Category.class)), category
+                                from.get(FilmCategory_.category), category
+                        )
                 )
         );
         try {
