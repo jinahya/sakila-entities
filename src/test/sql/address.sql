@@ -1,13 +1,15 @@
 DESC address;
 
 SELECT c.city_id, COUNT(*) AS address_count
-FROM address AS a JOIN city AS c ON a.city_id = c.city_id
+FROM address AS a
+         JOIN city AS c ON a.city_id = c.city_id
 GROUP By a.city_id
 ORDER BY c.city_id ASC
 ;
 
 SELECT c.city_id, COUNT(*) AS address_count
-FROM city AS c LEFT OUTER JOIN address AS a ON c.city_id = a.city_id
+FROM city AS c
+         LEFT OUTER JOIN address AS a ON c.city_id = a.city_id
 GROUP BY c.city_id
 ORDER BY address_count DESC
 ;
