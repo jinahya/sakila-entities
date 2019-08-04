@@ -34,9 +34,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertBaseEntity;
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -181,6 +183,14 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     @MethodSource({"argumentsForTestFind"})
     @ParameterizedTest
     void testFind(@NotNull final Film film, @NotNull final Category category) {
+        final Optional<FilmCategory> found = serviceInstance().find(film, category);
+        assertThat(found)
+                .isNotEmpty()
+                .hasValueSatisfying(v -> {
+                    assertBaseEntity(v.getFilm()).hasId(film.getId());
+                    assertBaseEntity(v.getCategory()).hasId(category.getId())
+                })
+        ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

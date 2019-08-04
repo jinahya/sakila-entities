@@ -58,5 +58,8 @@ HAVING COUNT(first_name) > 1
 ;
 
 
-SELECT first_name FROM actor ORDER BY RAND() LIMIT 1;
+SELECT first_name
+FROM actor
+ORDER BY RAND()
+LIMIT 1;
 
