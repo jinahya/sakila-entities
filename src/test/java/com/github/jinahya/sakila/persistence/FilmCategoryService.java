@@ -23,19 +23,11 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Optional;
-
-import static com.github.jinahya.sakila.persistence.FilmCategory.ATTRIBUTE_NAME_CATEGORY;
-import static com.github.jinahya.sakila.persistence.FilmCategory.ATTRIBUTE_NAME_FILM;
-import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
  * A service class for {@link FilmCategory}.
@@ -55,70 +47,18 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Finds the entity whose {@link FilmCategory#ATTRIBUTE_NAME_FILM film} attribute and {@link
+     * FilmCategory#ATTRIBUTE_NAME_CATEGORY category} attribute match to specified values.
+     *
+     * @param film     the value of {@link FilmCategory#ATTRIBUTE_NAME_FILM film} attribute to match.
+     * @param category the value of {@link FilmCategory#ATTRIBUTE_NAME_CATEGORY category} attribute to match.
+     * @return an optional of matched entity; empty if not matched.
+     */
     Optional<FilmCategory> find(@NotNull final Film film, @NotNull final Category category) {
-        if (current().nextBoolean()) {
-            try {
-                return Optional.of(
-                        (FilmCategory) entityManager()
-                                .createQuery("SELECT fe"
-                                             + " FROM FilmCategory AS fe"
-                                             + " WHERE fe.film = :film AND fe.category = :category")
-                                .setParameter("film", film)
-                                .setParameter("category", category)
-                                .getSingleResult()
-                );
-            } catch (final NoResultException nre) {
-                return Optional.empty();
-            }
-        }
-        if (current().nextBoolean()) {
-            try {
-                return Optional.of(
-                        (entityManager()
-                                .createQuery("SELECT fe"
-                                             + " FROM FilmCategory AS fe"
-                                             + " WHERE fe.film = :film AND fe.category = :category",
-                                             FilmCategory.class)
-                                .setParameter("film", film)
-                                .setParameter("category", category)
-                                .getSingleResult())
-                );
-            } catch (final NoResultException nre) {
-                return Optional.empty();
-            }
-        }
-        if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<FilmCategory> criteriaQuery = criteriaBuilder.createQuery(FilmCategory.class);
-            final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
-            criteriaQuery.where(criteriaBuilder.and(
-                    criteriaBuilder.equal(from.get(ATTRIBUTE_NAME_FILM), film),
-                    criteriaBuilder.equal(from.get(ATTRIBUTE_NAME_CATEGORY), category)));
-            try {
-                return Optional.of((entityManager().createQuery(criteriaQuery).getSingleResult()));
-            } catch (final NoResultException nre) {
-                return Optional.empty();
-            }
-        }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<FilmCategory> criteriaQuery = criteriaBuilder.createQuery(FilmCategory.class);
-        final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
-        criteriaQuery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(
-//                                from.get(singularAttribute(ATTRIBUTE_NAME_FILM, Film.class)), film),
-                                from.get(FilmCategory_.film), film),
-                        criteriaBuilder.equal(
-//                                from.get(singularAttribute(ATTRIBUTE_NAME_CATEGORY, Category.class)), category
-                                from.get(FilmCategory_.category), category
-                        )
-                )
-        );
-        try {
-            return Optional.of((entityManager().createQuery(criteriaQuery).getSingleResult()));
-        } catch (final NoResultException nre) {
-            return Optional.empty();
-        }
+        // TODO: 2019-08-04 implement!
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     // -----------------------------------------------------------------------------------------------------------------
