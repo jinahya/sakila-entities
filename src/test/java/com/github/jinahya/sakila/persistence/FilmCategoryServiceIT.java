@@ -105,6 +105,18 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Provides arguments for {@link #testFind(Film, Category)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestFind() {
+        return IntStream.range(0, 8).mapToObj(i -> {
+            final FilmCategory entity = randomEntity(FilmCategory.class);
+            return Arguments.of(entity.getFilm(), entity.getCategory());
+        });
+    }
+
+    /**
      * Provides arguments for {@link #testCountCategories(Film)} method.
      *
      * @return a stream of arguments.
@@ -150,6 +162,21 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      */
     FilmCategoryServiceIT() {
         super(FilmCategoryService.class, FilmCategory.class);
+    }
+
+    // ------------------------------------------------------------------------------------------------------------ find
+
+    /**
+     * Tests {@link FilmCategoryService#find(Film, Category)} method.
+     *
+     * @param film     a value for {@code film} argument.
+     * @param category a value for {@code category} argument.
+     */
+    // TODO: 2019-08-04 enable, assert fails, implement, and assert passes!
+    @Disabled
+    @MethodSource({"argumentsForTestFind"})
+    @ParameterizedTest
+    void testFind(@NotNull final Film film, @NotNull final Category category) {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
