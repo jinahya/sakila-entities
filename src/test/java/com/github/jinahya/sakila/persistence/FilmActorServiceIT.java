@@ -27,11 +27,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -59,16 +57,19 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     static final Map<Integer, Integer> ACTOR_ID_FILM_COUNT;
 
     static {
-        final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_map_actor_id_film_count.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    map.put(scanner.nextInt(), scanner.nextInt());
-                }
-            }
-            ACTOR_ID_FILM_COUNT = unmodifiableMap(map);
+            ACTOR_ID_FILM_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_actor_map_actor_id_film_count.txt",
+                    s -> {
+                        final Map<Integer, Integer> m = new HashMap<>();
+                        while (s.hasNext()) {
+                            final int actorId = s.nextInt();
+                            final int filmCount = s.nextInt();
+                            final Integer previous = m.put(actorId, filmCount);
+                            assert previous == null : "duplicate actorId: " + actorId;
+                        }
+                        return m;
+                    }));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -87,16 +88,20 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     static final Map<Integer, Integer> FILM_ID_ACTOR_COUNT;
 
     static {
-        final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_film_id_actor_count.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    map.put(scanner.nextInt(), scanner.nextInt());
-                }
-            }
-            FILM_ID_ACTOR_COUNT = unmodifiableMap(map);
+            FILM_ID_ACTOR_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_actor_film_id_actor_count.txt",
+                    s -> {
+                        final Map<Integer, Integer> m = new HashMap<>();
+                        while (s.hasNext()) {
+                            final int filmId = s.nextInt();
+                            final int actorCount = s.nextInt();
+                            final Integer previous = m.put(filmId, actorCount);
+                            assert previous == null : "duplicate filmId: " + filmId;
+                        }
+                        return m;
+                    }
+            ));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -128,6 +133,9 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    // TODO: 2019-08-04 add test case for find(Film, Actor)
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Tests {@link FilmActorService#countFilms(Actor)} method.
@@ -153,7 +161,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @Disabled
     @MethodSource({"actorArgumentsStream"})
     @ParameterizedTest
-    void testListFilmsOfSingleActor(final Actor actor) {
+    void testListFilms(final Actor actor) {
         {
             final List<Film> films = serviceInstance().listFilms(actor, null, null);
             assertThat(films)
