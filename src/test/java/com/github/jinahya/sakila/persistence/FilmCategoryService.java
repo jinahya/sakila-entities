@@ -71,7 +71,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param category the value of {@link FilmCategory#ATTRIBUTE_NAME_CATEGORY category} attribute to match.
      * @return an optional of matched entity; empty if not matched.
      */
-    Optional<FilmCategory> find(@NotNull final Film film, @NotNull final Category category) {
+    @NotNull Optional<FilmCategory> find(@NotNull final Film film, @NotNull final Category category) {
         if (current().nextBoolean()) {
             try {
                 return Optional.of(
@@ -144,7 +144,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param film the film whose categories are counted.
      * @return the number of categories of specified film.
      */
-    public @PositiveOrZero long countCategories(@NotNull final Film film) {
+    @PositiveOrZero long countCategories(@NotNull final Film film) {
         final EntityManager entityManager = entityManager();
         if (current().nextBoolean()) {
             final Query query = entityManager.createQuery(
@@ -193,9 +193,9 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of categories of specified film.
      */
-    public @NotNull List<@NotNull Category> listCategories(@NotNull final Film film,
-                                                           @PositiveOrZero @Nullable final Integer firstResult,
-                                                           @Positive @Nullable final Integer maxResults) {
+    @NotNull List<@NotNull Category> listCategories(@NotNull final Film film,
+                                                    @PositiveOrZero @Nullable final Integer firstResult,
+                                                    @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT fc.category FROM FilmCategory AS fc WHERE fc.film = :film");
@@ -250,7 +250,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param category the category as which films are categorized.
      * @return the number of films categorized as specified category.
      */
-    public @PositiveOrZero long countFilms(@NotNull final Category category) {
+    @PositiveOrZero long countFilms(@NotNull final Category category) {
         final EntityManager entityManager = entityManager();
         if (current().nextBoolean()) {
             final Query query = entityManager.createQuery(
@@ -299,9 +299,9 @@ class FilmCategoryService extends EntityService<FilmCategory> {
      * @param maxResults  maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of films categorized as specified category.
      */
-    public @NotNull List<@NotNull Film> listFilms(@NotNull final Category category,
-                                                  @PositiveOrZero @Nullable final Integer firstResult,
-                                                  @Positive @Nullable final Integer maxResults) {
+    @NotNull List<@NotNull Film> listFilms(@NotNull final Category category,
+                                           @PositiveOrZero @Nullable final Integer firstResult,
+                                           @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery(
                     "SELECT fc.film FROM FilmCategory AS fc WHERE fc.category = :category");
