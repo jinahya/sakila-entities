@@ -32,7 +32,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -121,13 +120,8 @@ class FilmCategoryService extends EntityService<FilmCategory> {
         final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
         criteriaQuery.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(
-//                                from.get(singularAttribute(ATTRIBUTE_NAME_FILM, Film.class)), film),
-                                from.get(FilmCategory_.film), film),
-                        criteriaBuilder.equal(
-//                                from.get(singularAttribute(ATTRIBUTE_NAME_CATEGORY, Category.class)), category
-                                from.get(FilmCategory_.category), category
-                        )
+                        criteriaBuilder.equal(from.get(FilmCategory_.film), film),
+                        criteriaBuilder.equal(from.get(FilmCategory_.category), category)
                 )
         );
         try {
@@ -136,6 +130,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
             return Optional.empty();
         }
     }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -173,11 +168,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
         final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
         criteriaQuery.select(criteriaBuilder.count(from));
-        //final SingularAttribute<FilmCategory, Film> filmAttribute = FilmCategory_.film;
-        final SingularAttribute<? super FilmCategory, Film> filmAttribute
-                = singularAttribute(FilmCategory.ATTRIBUTE_NAME_FILM, Film.class);
-        final Path<Film> filmPath = from.get(filmAttribute);
-        final Predicate predicate = criteriaBuilder.equal(filmPath, film);
+        final Predicate predicate = criteriaBuilder.equal(from.get(FilmCategory_.film), film);
         criteriaQuery.where(predicate);
         final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
@@ -228,14 +219,8 @@ class FilmCategoryService extends EntityService<FilmCategory> {
         final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
         final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
         final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
-        //final SingularAttribute<FilmCategory, Category> categoryAttribute = FilmCategory_.category;
-        final SingularAttribute<? super FilmCategory, Category> categoryAttribute
-                = singularAttribute(FilmCategory.ATTRIBUTE_NAME_CATEGORY, Category.class);
-        criteriaQuery.select(from.get(categoryAttribute));
-        //final SingularAttribute<FilmCategory, Film> filmAttribute = FilmCategory_.film;
-        final SingularAttribute<? super FilmCategory, Film> filmAttribute
-                = singularAttribute(FilmCategory.ATTRIBUTE_NAME_FILM, Film.class);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(filmAttribute), film));
+        criteriaQuery.select(from.get(FilmCategory_.category));
+        criteriaQuery.where(criteriaBuilder.equal(from.get(FilmCategory_.film), film));
         final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
@@ -279,10 +264,7 @@ class FilmCategoryService extends EntityService<FilmCategory> {
         final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
         final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
         criteriaQuery.select(criteriaBuilder.count(from));
-        //final SingularAttribute<FilmCategory, Category> categoryAttribute = FilmCategory_.category;
-        final SingularAttribute<? super FilmCategory, Category> categoryAttribute
-                = singularAttribute(FilmCategory.ATTRIBUTE_NAME_CATEGORY, Category.class);
-        final Path<Category> categoryPath = from.get(categoryAttribute);
+        final Path<Category> categoryPath = from.get(FilmCategory_.category);
         final Predicate predicate = criteriaBuilder.equal(categoryPath, category);
         criteriaQuery.where(predicate);
         final TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
@@ -334,14 +316,8 @@ class FilmCategoryService extends EntityService<FilmCategory> {
         final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
         final CriteriaQuery<Film> criteriaQuery = criteriaBuilder.createQuery(Film.class);
         final Root<FilmCategory> from = criteriaQuery.from(FilmCategory.class);
-        //final SingularAttribute<FilmCategory, Film> filmAttribute = FilmCategory_.film;
-        final SingularAttribute<? super FilmCategory, Film> filmAttribute
-                = singularAttribute(FilmCategory.ATTRIBUTE_NAME_FILM, Film.class);
-        criteriaQuery.select(from.get(filmAttribute));
-        //final SingularAttribute<FilmCategory, Film> categoryAttribute = FilmCategory_.category;
-        final SingularAttribute<? super FilmCategory, Category> categoryAttribute
-                = singularAttribute(FilmCategory.ATTRIBUTE_NAME_CATEGORY, Category.class);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(categoryAttribute), category));
+        criteriaQuery.select(from.get(FilmCategory_.film));
+        criteriaQuery.where(criteriaBuilder.equal(from.get(FilmCategory_.category), category));
         final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
