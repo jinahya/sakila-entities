@@ -188,7 +188,7 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
                 .isNotEmpty()
                 .hasValueSatisfying(v -> {
                     assertBaseEntity(v.getFilm()).hasId(film.getId());
-                    assertBaseEntity(v.getCategory()).hasId(category.getId())
+                    assertBaseEntity(v.getCategory()).hasId(category.getId());
                 })
         ;
     }
