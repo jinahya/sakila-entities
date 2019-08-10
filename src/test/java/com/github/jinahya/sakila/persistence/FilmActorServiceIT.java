@@ -207,7 +207,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
         {
             final List<Actor> actors = serviceInstance().listActors(film, null, null);
             assertThat(actors)
-                    .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME)
+                    .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME_IGNORE_CASE)
                     .hasSize(actorCount(film))
             ;
         }
