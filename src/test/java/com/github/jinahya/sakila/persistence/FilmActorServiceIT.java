@@ -21,7 +21,6 @@ package com.github.jinahya.sakila.persistence;
  */
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -148,8 +147,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      * @param film  a value for {@code film} argument.
      * @param actor a value for {@code actor} argument.
      */
-    // TODO: 2019-08-10 enable, assert fails, implement, and assert passes.
-    @Disabled
     @MethodSource({"argumentsForTestFind"})
     @ParameterizedTest
     void testFind(@NotNull final Film film, @NotNull final Actor actor) {
