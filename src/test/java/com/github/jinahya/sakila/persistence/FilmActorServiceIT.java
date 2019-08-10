@@ -26,15 +26,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertActor;
+import static com.github.jinahya.sakila.persistence.Assertions.assertFilm;
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Comparator.comparing;
@@ -59,16 +61,19 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     static final Map<Integer, Integer> ACTOR_ID_FILM_COUNT;
 
     static {
-        final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_map_actor_id_film_count.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    map.put(scanner.nextInt(), scanner.nextInt());
-                }
-            }
-            ACTOR_ID_FILM_COUNT = unmodifiableMap(map);
+            ACTOR_ID_FILM_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_actor_map_actor_id_film_count.txt",
+                    s -> {
+                        final Map<Integer, Integer> m = new HashMap<>();
+                        while (s.hasNext()) {
+                            final int actorId = s.nextInt();
+                            final int filmCount = s.nextInt();
+                            final Integer previous = m.put(actorId, filmCount);
+                            assert previous == null : "duplicate actorId: " + actorId;
+                        }
+                        return m;
+                    }));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -87,16 +92,20 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     static final Map<Integer, Integer> FILM_ID_ACTOR_COUNT;
 
     static {
-        final Map<Integer, Integer> map = new HashMap<>();
         try {
-            try (InputStream stream
-                         = FilmActorServiceIT.class.getResourceAsStream("film_actor_film_id_actor_count.txt");
-                 Scanner scanner = new Scanner(stream)) {
-                while (scanner.hasNext()) {
-                    map.put(scanner.nextInt(), scanner.nextInt());
-                }
-            }
-            FILM_ID_ACTOR_COUNT = unmodifiableMap(map);
+            FILM_ID_ACTOR_COUNT = unmodifiableMap(applyResourceScanner(
+                    "film_actor_film_id_actor_count.txt",
+                    s -> {
+                        final Map<Integer, Integer> m = new HashMap<>();
+                        while (s.hasNext()) {
+                            final int filmId = s.nextInt();
+                            final int actorCount = s.nextInt();
+                            final Integer previous = m.put(filmId, actorCount);
+                            assert previous == null : "duplicate filmId: " + filmId;
+                        }
+                        return m;
+                    }
+            ));
         } catch (final IOException ioe) {
             ioe.printStackTrace();
             throw new InstantiationError(ioe.getMessage());
@@ -108,6 +117,13 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    private static Stream<Arguments> argumentsForTestFind() {
+        return IntStream.range(0, 8).mapToObj(i -> {
+            final FilmActor entity = randomEntity(FilmActor.class);
+            return Arguments.of(entity.getFilm(), entity.getActor());
+        });
+    }
+
     private static Stream<Arguments> actorArgumentsStream() {
         return applyEntityManager(
                 v -> IntStream.range(1, 16).mapToObj(i -> randomEntity(v, Actor.class)).map(Arguments::of));
@@ -125,6 +141,28 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      */
     FilmActorServiceIT() {
         super(FilmActorService.class, FilmActor.class);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests {@link FilmActorService#find(Film, Actor)} with given arguments.
+     *
+     * @param film  a value for {@code film} argument.
+     * @param actor a value for {@code actor} argument.
+     */
+    // TODO: 2019-08-10 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @MethodSource({"argumentsForTestFind"})
+    @ParameterizedTest
+    void testFind(@NotNull final Film film, @NotNull final Actor actor) {
+        final Optional<FilmActor> optional = serviceInstance().find(film, actor);
+        assertThat(optional)
+                .isPresent()
+                .hasValueSatisfying(v -> {
+                    assertFilm(v.getFilm()).hasId(film.getId());
+                    assertActor(v.getActor()).hasId(actor.getId());
+                });
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -153,7 +191,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @Disabled
     @MethodSource({"actorArgumentsStream"})
     @ParameterizedTest
-    void testListFilmsOfSingleActor(final Actor actor) {
+    void testListFilms(final Actor actor) {
         {
             final List<Film> films = serviceInstance().listFilms(actor, null, null);
             assertThat(films)
@@ -208,7 +246,7 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
         {
             final List<Actor> actors = serviceInstance().listActors(film, null, null);
             assertThat(actors)
-                    .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME)
+                    .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME_IGNORE_CASE)
                     .hasSize(actorCount(film))
             ;
         }

@@ -94,7 +94,7 @@
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
-        <version>5.4.3.Final</version>
+        <version>5.4.4.Final</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate.orm</groupId>
@@ -132,7 +132,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.12.2</version>
+      <version>3.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -279,14 +279,14 @@
             </configuration>
           </execution>
           <execution>
-            <id>enforce-require-maven-version-to-[3.3.9,)</id>
+            <id>enforce-require-maven-version-to-[3.5.4,)</id>
             <goals>
               <goal>enforce</goal>
             </goals>
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>[3.3.9,)</version>
+                  <version>[3.5.4,)</version>
                 </requireMavenVersion>
               </rules>
             </configuration>

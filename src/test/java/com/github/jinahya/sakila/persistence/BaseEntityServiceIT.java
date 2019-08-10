@@ -38,7 +38,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertBaseEntity;
 import static com.github.jinahya.sakila.persistence.BaseEntity.comparingId;
+import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -61,6 +63,11 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
         final Map<Integer, Boolean> seen = new ConcurrentHashMap<>();
         return seen.putIfAbsent(e.getId(), Boolean.TRUE) == null;
     };
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static <T extends BaseEntity> Optional<T> findById(final Class<T> entityClass, final int entityId) {
+        return applyEntityManager(v -> ofNullable(v.find(entityClass, entityId)));
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -151,7 +158,7 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
         final Optional<U> found = serviceInstance().findById(entity.getId());
         assertThat(found)
                 .isPresent()
-                .hasValueSatisfying(v -> Assertions.assertBaseEntity(v).hasSameIdAs(entity))
+                .hasValueSatisfying(v -> assertBaseEntity(v).hasSameIdAs(entity))
         ;
     }
 

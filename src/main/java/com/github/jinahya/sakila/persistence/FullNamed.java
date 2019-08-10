@@ -144,7 +144,7 @@ public interface FullNamed {
     void setLastName(String lastName);
 
     // -----------------------------------------------------------------------------------------------------------------
-    default String format(final FullNameFormatter formatter, final String delimiter) {
+    default String getFullName(final FullNameFormatter formatter, final String delimiter) {
         return formatter.format(this, delimiter);
     }
 }

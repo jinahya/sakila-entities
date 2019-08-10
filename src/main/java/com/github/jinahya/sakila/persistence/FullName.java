@@ -32,7 +32,6 @@ import java.util.Objects;
 import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_FIRST_NAME;
 import static com.github.jinahya.sakila.persistence.FullNamedEntity.COLUMN_NAME_LAST_NAME;
 import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
 
 /**
  * An embeddable class for {@value #ATTRIBUTE_NAME_FIRST_NAME} attribute and {@value #ATTRIBUTE_NAME_LAST_NAME}
@@ -117,79 +116,6 @@ public class FullName implements FullNamed, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getFirstName(), getLastName());
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Returns a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined specified
-     * delimiter.
-     *
-     * @param delimiter the delimiter.
-     * @return a string of {@value #ATTRIBUTE_NAME_FIRST_NAME} and {@value #ATTRIBUTE_NAME_LAST_NAME} joined with
-     * specified delimiter.
-     * @deprecated Use {@link #toString(FullNameFormatter, String)}
-     */
-    // TODO: 2019-07-13 remove!!!!
-    @Deprecated // forRemoval = true
-    public String getAsFirstNameFirst(@NotNull final String delimiter) {
-        if (true) {
-            return toString(FullNameFormatter.FIRST_NAME_FIRST, delimiter);
-        }
-        return firstName + delimiter + lastName;
-    }
-
-    /**
-     * Returns a full name as first name first delimited with a white space.
-     *
-     * @return a full name as first name first delimited with a white space.
-     * @deprecated Use {@link #toString(FullNameFormatter, String)}
-     */
-    // TODO: 2019-07-13 remove!!!
-    @Deprecated // forRemoval = true
-    public String getAsFirstNameFirst() {
-        return getAsFirstNameFirst(" ");
-    }
-
-    /**
-     * Returns a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
-     * specified delimiter.
-     *
-     * @param delimiter the delimiter.
-     * @return a string of {@value #ATTRIBUTE_NAME_LAST_NAME} and {@value #ATTRIBUTE_NAME_FIRST_NAME} joined with
-     * specified delimiter.
-     * @deprecated Use {@link #toString(FullNameFormatter, String)}
-     */
-    // TODO: 2019-07-13 remove!!!
-    @Deprecated // forRemoval = true
-    public String getAsLastNameFirst(@NotNull final String delimiter) {
-        if (true) {
-            return toString(FullNameFormatter.LAST_NAME_FIRST, delimiter);
-        }
-        return lastName + delimiter + firstName;
-    }
-
-    /**
-     * Returns a full name as last name first delimited with a comma followed by a white space.
-     *
-     * @return a full name as last name first delimited with a comma followed by a white space.
-     * @deprecated Use {@link #toString(FullNameFormatter, String)}
-     */
-    // TODO: 2019-07-13 remove!!!
-    @Deprecated // forRemoval = true
-    public String getAsLastNameFirst() {
-        return getAsLastNameFirst(", ");
-    }
-
-    /**
-     * Returns a full name of this object using specified order and delimiter.
-     *
-     * @param order     the order of the name.
-     * @param delimiter the delimiter.
-     * @return a formatted full name of this object.
-     */
-    public String toString(final FullNameFormatter order, final String delimiter) {
-        return requireNonNull(order, "order is null").format(this, requireNonNull(delimiter, "delimiter is null"));
     }
 
     // ------------------------------------------------------------------------------------------------------- firstName

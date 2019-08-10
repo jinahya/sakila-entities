@@ -20,24 +20,34 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-import org.jetbrains.annotations.Nullable;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
 
-interface FullNamedService<T extends FullNamed> {
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * A assert class for {@link Actor}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
+@Slf4j
+class CategoryAssert extends BaseEntityAssert<CategoryAssert, Category> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    @PositiveOrZero long countByFirstName(@NotNull String firstName);
 
-    @NotNull List<@NotNull T> listByFirstName(@NotNull String firstName, @PositiveOrZero @Nullable Integer firstResult,
-                                              @Positive @Nullable final Integer maxResults);
+    /**
+     * Creates a new instance with specified actual value.
+     *
+     * @param actual an actual value.
+     */
+    CategoryAssert(final Category actual) {
+        super(actual);
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @PositiveOrZero long countByLastName(@NotNull String lastName);
-
-    @NotNull List<@NotNull T> listByLastName(@NotNull String lastName, @PositiveOrZero @Nullable Integer firstResult,
-                                             @Positive @Nullable final Integer maxResults);
+    CategoryAssert hasName(@NotBlank final String name) {
+        isNotNull().satisfies(a -> assertThat(a.getName()).isNotNull().isEqualTo(name));
+        return this;
+    }
 }

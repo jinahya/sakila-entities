@@ -20,11 +20,24 @@ package com.github.jinahya.sakila.persistence;
  * #L%
  */
 
-abstract class FullNamedEntityServiceIT<T extends EntityService<U> & FullNamedEntityService<U>, U extends FullNamedEntity>
-        extends EntityServiceIT<T, U> {
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * A assert class for {@link Film}.
+ *
+ * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
+ */
+@Slf4j
+class FilmAssert extends BaseEntityAssert<FilmAssert, Film> {
 
     // -----------------------------------------------------------------------------------------------------------------
-    FullNamedEntityServiceIT(final Class<T> serviceClass, final Class<U> entityClass) {
-        super(serviceClass, entityClass);
+
+    /**
+     * Creates a new instance with specified actual value.
+     *
+     * @param actual an actual value.
+     */
+    FilmAssert(final Film actual) {
+        super(actual);
     }
 }

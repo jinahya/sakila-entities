@@ -41,6 +41,11 @@ final class Assertions {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    static CategoryAssert assertCategory(final Category actual) {
+        return new CategoryAssert(actual);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     static CityAssert assertCity(final City actual) {
         return new CityAssert(actual);
     }
@@ -48,6 +53,11 @@ final class Assertions {
     // -----------------------------------------------------------------------------------------------------------------
     static CountryAssert assertCountry(final Country actual) {
         return new CountryAssert(actual);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    static FilmAssert assertFilm(final Film actual) {
+        return new FilmAssert(actual);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

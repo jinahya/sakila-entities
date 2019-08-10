@@ -34,9 +34,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertBaseEntity;
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,6 +109,18 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
+     * Provides arguments for {@link #testFind(Film, Category)} method.
+     *
+     * @return a stream of arguments.
+     */
+    private static Stream<Arguments> argumentsForTestFind() {
+        return IntStream.range(0, 8).mapToObj(i -> {
+            final FilmCategory entity = randomEntity(FilmCategory.class);
+            return Arguments.of(entity.getFilm(), entity.getCategory());
+        });
+    }
+
+    /**
      * Provides arguments for {@link #testCountCategories(Film)} method.
      *
      * @return a stream of arguments.
@@ -154,6 +168,29 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      */
     FilmCategoryServiceIT() {
         super(FilmCategoryService.class, FilmCategory.class);
+    }
+
+    // ------------------------------------------------------------------------------------------------------------ find
+
+    /**
+     * Tests {@link FilmCategoryService#find(Film, Category)} method.
+     *
+     * @param film     a value for {@code film} argument.
+     * @param category a value for {@code category} argument.
+     */
+    // TODO: 2019-08-04 enable, assert fails, implement, and assert passes!
+    @Disabled
+    @MethodSource({"argumentsForTestFind"})
+    @ParameterizedTest
+    void testFind(@NotNull final Film film, @NotNull final Category category) {
+        final Optional<FilmCategory> found = serviceInstance().find(film, category);
+        assertThat(found)
+                .isNotEmpty()
+                .hasValueSatisfying(v -> {
+                    assertBaseEntity(v.getFilm()).hasId(film.getId());
+                    assertBaseEntity(v.getCategory()).hasId(category.getId());
+                })
+        ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
