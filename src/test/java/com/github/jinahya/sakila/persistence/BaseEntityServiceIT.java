@@ -147,8 +147,6 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
     /**
      * Tests {@link BaseEntityService#findById(int)}.
      */
-    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
-    @Disabled
     @RepeatedTest(16)
     void testFindById() {
         final U entity = randomEntity(entityManager(), entityClass);
@@ -166,8 +164,6 @@ abstract class BaseEntityServiceIT<T extends BaseEntityService<U>, U extends Bas
      *
      * @param testReporter a test reporter.
      */
-    // TODO: 2019-07-19 enable, assert fails, implement, and assert passes.
-    @Disabled
     @RepeatedTest(16)
     void testListSortedById(final TestReporter testReporter) {
         final boolean ascendingOrder = current().nextBoolean();
