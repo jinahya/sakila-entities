@@ -65,9 +65,10 @@ class CategoryService extends BaseEntityService<Category> {
     /**
      * Returns a list of categories sorted by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending order.
      *
-     * @param firstResult the position of the first result to retrieve.
-     * @param maxResults  the maximum number of results to retrieve.
-     * @return a stream of, optionally paged, category.
+     * @param firstResult the position of the first result to retrieve, numbered from {@code 0}; {@code null} for an
+     *                    unspecified result.
+     * @param maxResults  the maximum number of results to retrieve; {@code null} for an unspecified result.
+     * @return a list of, optionally paged, category.
      */
     public List<Category> listSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
                                            @Positive @Nullable final Integer maxResults) {
