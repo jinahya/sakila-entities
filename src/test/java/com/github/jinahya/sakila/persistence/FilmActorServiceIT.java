@@ -199,8 +199,6 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
      *
      * @param film a film to test with.
      */
-    // TODO: 2019-07-13 enable, assert fails, implement, and assert passes.
-    @Disabled
     @MethodSource({"filmArgumentsStream"})
     @ParameterizedTest
     void testListActors(final Film film) {
