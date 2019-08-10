@@ -26,13 +26,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.github.jinahya.sakila.persistence.Assertions.assertActor;
+import static com.github.jinahya.sakila.persistence.Assertions.assertFilm;
 import static com.github.jinahya.sakila.persistence.PersistenceProducer.applyEntityManager;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Comparator.comparing;
@@ -113,6 +117,13 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    private static Stream<Arguments> argumentsForTestFind() {
+        return IntStream.range(0, 8).mapToObj(i -> {
+            final FilmActor entity = randomEntity(FilmActor.class);
+            return Arguments.of(entity.getFilm(), entity.getActor());
+        });
+    }
+
     private static Stream<Arguments> actorArgumentsStream() {
         return applyEntityManager(
                 v -> IntStream.range(1, 16).mapToObj(i -> randomEntity(v, Actor.class)).map(Arguments::of));
@@ -133,7 +144,26 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // TODO: 2019-08-04 add test case for find(Film, Actor)
+
+    /**
+     * Tests {@link FilmActorService#find(Film, Actor)} with given arguments.
+     *
+     * @param film  a value for {@code film} argument.
+     * @param actor a value for {@code actor} argument.
+     */
+    // TODO: 2019-08-10 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @MethodSource({"argumentsForTestFind"})
+    @ParameterizedTest
+    void testFind(@NotNull final Film film, @NotNull final Actor actor) {
+        final Optional<FilmActor> optional = serviceInstance().find(film, actor);
+        assertThat(optional)
+                .isPresent()
+                .hasValueSatisfying(v -> {
+                    assertFilm(v.getFilm()).hasId(film.getId());
+                    assertActor(v.getActor()).hasId(actor.getId());
+                });
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
 

@@ -59,7 +59,7 @@ class FilmActorService extends EntityService<FilmActor> {
      * @param actor a value for {@link FilmActor#ATTRIBUTE_NAME_ACTOR actor} attribute to match.
      * @return an optional of found entity; empty if not found.
      */
-    @NotNull Optional<FilmActor> find(final Film film, final Actor actor) {
+    @NotNull Optional<FilmActor> find(@NotNull final Film film, @NotNull final Actor actor) {
         // TODO: 2019-08-04 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
