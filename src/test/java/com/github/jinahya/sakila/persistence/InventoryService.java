@@ -53,7 +53,7 @@ class InventoryService extends BaseEntityService<Inventory> {
      * @param film the film to check.
      * @return the number of stores that {@code film} is available.
      */
-    public @PositiveOrZero long countStores(@NotNull final Film film) {
+    @PositiveOrZero long countStores(@NotNull final Film film) {
         // TODO: 2019-07-22 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -69,9 +69,9 @@ class InventoryService extends BaseEntityService<Inventory> {
      * @param maxResults  maximum results to retrieve; {@code null} for an unspecified result.
      * @return a list of stores.
      */
-    public @NotNull List<@NotNull Store> listStores(@NotNull final Film film,
-                                                    @PositiveOrZero @Nullable final Integer firstResult,
-                                                    @Positive @Nullable final Integer maxResults) {
+    @NotNull List<@NotNull Store> listStores(@NotNull final Film film,
+                                             @PositiveOrZero @Nullable final Integer firstResult,
+                                             @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-22 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -84,7 +84,7 @@ class InventoryService extends BaseEntityService<Inventory> {
      * @param store the store whose films are counted.
      * @return the number of films available in {@code store}.
      */
-    public @PositiveOrZero long countFilms(@NotNull final Film store) {
+    @PositiveOrZero long countFilms(@NotNull final Film store) {
         // TODO: 2019-07-22 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -97,9 +97,9 @@ class InventoryService extends BaseEntityService<Inventory> {
      * @param maxResults  maximum results to retrieve; {@code null} for an unspecified result.
      * @return a list of films.
      */
-    public @NotNull List<@NotNull Film> listFilm(@NotNull final Store store,
-                                                 @PositiveOrZero @Nullable final Integer firstResult,
-                                                 @Positive @Nullable final Integer maxResults) {
+    @NotNull List<@NotNull Film> listFilm(@NotNull final Store store,
+                                          @PositiveOrZero @Nullable final Integer firstResult,
+                                          @Positive @Nullable final Integer maxResults) {
         // TODO: 2019-07-22 implement!!!
         throw new UnsupportedOperationException("not implemented yet");
     }
