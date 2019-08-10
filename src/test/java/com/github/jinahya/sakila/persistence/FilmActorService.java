@@ -175,11 +175,34 @@ class FilmActorService extends EntityService<FilmActor> {
      * @return the number of actors mapped to specified film.
      */
     @PositiveOrZero long countActors(@NotNull final Film film) {
-        return entityManager()
-                .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.film = :film", Long.class)
-                .setParameter("film", film)
-                .getSingleResult();
-        // TODO: 2019-08-04 do more!!!
+        if (current().nextBoolean()) {
+            return (long) entityManager()
+                    .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.film = :film")
+                    .setParameter("film", film)
+                    .getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            return entityManager()
+                    .createQuery("SELECT COUNT(fa) FROM FilmActor AS fa WHERE fa.film = :film", Long.class)
+                    .setParameter("film", film)
+                    .getSingleResult();
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+            final Root<FilmActor> filmActor = criteriaQuery.from(FilmActor.class);
+            criteriaQuery.select(criteriaBuilder.count(filmActor));
+            criteriaQuery.where(criteriaBuilder.equal(filmActor.get(FilmActor.ATTRIBUTE_NAME_FILM), film));
+            final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+            return typedQuery.getSingleResult();
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<FilmActor> filmActor = criteriaQuery.from(FilmActor.class);
+        criteriaQuery.select(criteriaBuilder.count(filmActor));
+        criteriaQuery.where(criteriaBuilder.equal(filmActor.get(FilmActor_.film), film));
+        final TypedQuery<Long> typedQuery = entityManager().createQuery(criteriaQuery);
+        return typedQuery.getSingleResult();
     }
 
     /**

@@ -47,7 +47,7 @@ ORDER BY f.film_id ASC
 -- ------------------------------------------------------------------------------------------  count actors of each film
 SELECT f.film_id, COUNT(fa.actor_id) AS actor_count
 FROM film AS f
-         LEFT JOIN film_actor AS fa ON f.film_id = fa.film_id
+         LEFT OUTER JOIN film_actor AS fa ON f.film_id = fa.film_id
 GROUP BY f.film_id
 ORDER BY actor_count DESC
 ;
