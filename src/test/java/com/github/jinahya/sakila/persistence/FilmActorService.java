@@ -22,6 +22,7 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -66,9 +67,57 @@ class FilmActorService extends EntityService<FilmActor> {
      * @param actor a value for {@link FilmActor#ATTRIBUTE_NAME_ACTOR actor} attribute to match.
      * @return an optional of found entity; empty if not found.
      */
-    @NotNull Optional<FilmActor> find(final Film film, final Actor actor) {
-        // TODO: 2019-08-04 implement!!!
-        throw new UnsupportedOperationException("not implemented yet");
+    @NotNull Optional<FilmActor> find(@NotNull final Film film, @NotNull final Actor actor) {
+        if (current().nextBoolean()) {
+            final Query query = entityManager().createQuery(
+                    "SELECT fa FROM FilmActor AS fa WHERE fa.film = :film AND fa.actor = :actor")
+                    .setParameter("film", film)
+                    .setParameter("actor", actor);
+            try {
+                return Optional.of((FilmActor) query.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final TypedQuery<FilmActor> typedQuery = entityManager().createQuery(
+                    "SELECT fa FROM FilmActor AS fa WHERE fa.film = :film AND fa.actor = :actor", FilmActor.class)
+                    .setParameter("film", film)
+                    .setParameter("actor", actor);
+            try {
+                return Optional.of(typedQuery.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        if (current().nextBoolean()) {
+            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<FilmActor> criteriaQuery = criteriaBuilder.createQuery(FilmActor.class);
+            final Root<FilmActor> filmActor = criteriaQuery.from(FilmActor.class);
+            criteriaQuery.where(criteriaBuilder.and(
+                    criteriaBuilder.equal(filmActor.get(FilmActor.ATTRIBUTE_NAME_FILM), film),
+                    criteriaBuilder.equal(filmActor.get(FilmActor.ATTRIBUTE_NAME_ACTOR), actor)
+            ));
+            final TypedQuery<FilmActor> typedQuery = entityManager().createQuery(criteriaQuery);
+            try {
+                return Optional.of(typedQuery.getSingleResult());
+            } catch (final NoResultException nre) {
+                return Optional.empty();
+            }
+        }
+        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<FilmActor> criteriaQuery = criteriaBuilder.createQuery(FilmActor.class);
+        final Root<FilmActor> filmActor = criteriaQuery.from(FilmActor.class);
+        criteriaQuery.where(criteriaBuilder.and(
+                criteriaBuilder.equal(filmActor.get(FilmActor_.film), film),
+                criteriaBuilder.equal(filmActor.get(FilmActor_.actor), actor)
+        ));
+        final TypedQuery<FilmActor> typedQuery = entityManager().createQuery(criteriaQuery);
+        try {
+            return Optional.of(typedQuery.getSingleResult());
+        } catch (final NoResultException nre) {
+            return Optional.empty();
+        }
     }
 
     /**
