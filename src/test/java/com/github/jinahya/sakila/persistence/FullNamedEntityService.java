@@ -1,5 +1,6 @@
 package com.github.jinahya.sakila.persistence;
 
+
 /*-
  * #%L
  * sakila-entities
@@ -19,6 +20,7 @@ package com.github.jinahya.sakila.persistence;
  * limitations under the License.
  * #L%
  */
+
 interface FullNamedEntityService<T extends FullNamedEntity> extends FullNamedService<T> {
 
 }
