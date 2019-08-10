@@ -1,5 +1,6 @@
 package com.github.jinahya.sakila.persistence;
 
+
 /*-
  * #%L
  * sakila-entities
