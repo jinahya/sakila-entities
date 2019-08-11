@@ -79,9 +79,9 @@ class InventoryService extends BaseEntityService<Inventory> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Counts films available on specified store.
+     * Counts distinct films available on specified store.
      *
-     * @param store the store whose films are counted.
+     * @param store the store whose distinct films are counted.
      * @return the number of films available in {@code store}.
      */
     @PositiveOrZero long countFilms(@NotNull final Film store) {
@@ -90,7 +90,8 @@ class InventoryService extends BaseEntityService<Inventory> {
     }
 
     /**
-     * List films available on specified store sorted by {@link Film#ATTRIBUTE_NAME_TITLE title} in ascending order.
+     * List distinct films available on specified store sorted by {@link Film#ATTRIBUTE_NAME_TITLE title} in ascending
+     * order.
      *
      * @param store       the store whose films are listed.
      * @param firstResult first index of the result; {@code null} for an unspecified result.
