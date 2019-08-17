@@ -33,10 +33,6 @@ import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
-<<<<<<<HEAD
-=======
-        >>>>>>>sketch
-
 /**
  * A service for {@link Language}.
  *
