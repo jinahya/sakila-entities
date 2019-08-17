@@ -30,6 +30,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +70,9 @@ class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
      * @param maxResults  maximum number of results to retrieve.
      * @return a list of actors.
      */
-    public List<Actor> listSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
-                                                      @Nullable final Integer firstResult,
-                                                      @Nullable final Integer maxResults) {
+    List<Actor> listSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
+                                               @PositiveOrZero @Nullable final Integer firstResult,
+                                               @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM Actor AS a");
             if (firstName != null || lastName != null) {
@@ -183,8 +185,9 @@ class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
      * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
-    public List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
-                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
+    List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
+                                      @PositiveOrZero @Nullable final Integer firstResult,
+                                      @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
                     .append(entityName())
@@ -282,8 +285,9 @@ class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
      * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
-    public List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
-                                            @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
+    List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
+                                     @PositiveOrZero @Nullable final Integer firstResult,
+                                     @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final StringBuilder queryBuilder = new StringBuilder("SELECT a FROM ")
                     .append(entityName())
