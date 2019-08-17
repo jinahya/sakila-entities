@@ -23,6 +23,8 @@ package com.github.jinahya.sakila.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -57,9 +59,9 @@ class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
      * @param maxResults  maximum number of results to retrieve.
      * @return a list of actors.
      */
-    public List<Actor> listSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
-                                                      @Nullable final Integer firstResult,
-                                                      @Nullable final Integer maxResults) {
+    List<Actor> listSortedByIdInAscendingOrder(@Nullable final String firstName, @Nullable final String lastName,
+                                               @PositiveOrZero @Nullable final Integer firstResult,
+                                               @Positive @Nullable final Integer maxResults) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
@@ -92,8 +94,9 @@ class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
      * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
-    public List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
-                                            @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
+    List<Actor> listSortedByLastName(@Nullable final String firstName, final boolean ascendingOrder,
+                                     @PositiveOrZero @Nullable final Integer firstResult,
+                                     @Positive @Nullable final Integer maxResults) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 }
