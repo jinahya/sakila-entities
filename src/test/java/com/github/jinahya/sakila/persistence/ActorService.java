@@ -77,8 +77,9 @@ class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
      * @param maxResults     maximum number of results to retrieve.
      * @return a list of actors.
      */
-    public List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
-                                             @Nullable final Integer firstResult, @Nullable final Integer maxResults) {
+    List<Actor> listSortedByFirstName(@Nullable final String lastName, final boolean ascendingOrder,
+                                      @PositiveOrZero @Nullable final Integer firstResult,
+                                      @Positive @Nullable final Integer maxResults) {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
