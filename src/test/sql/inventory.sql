@@ -41,14 +41,19 @@ ORDER BY i.inventory_id ASC
 ;
 
 select i.*
-from inventory AS i LEFT JOIN (SELECT * from rental where return_date IS NULL) AS r ON i.inventory_id = r.inventory_id
+from inventory AS i
+         LEFT JOIN (SELECT * from rental where return_date IS NULL) AS r ON i.inventory_id = r.inventory_id
 WHERE r.inventory_id IS NULL
 -- ORDER BY i.inventory_id ASC
 ;
 
-select * from rental where inventory_id = 9;
+select *
+from rental
+where inventory_id = 9;
 
-select * from inventory where inventory_id = 9;
+select *
+from inventory
+where inventory_id = 9;
 
 SELECT distinct i.*
 FROM inventory AS i
