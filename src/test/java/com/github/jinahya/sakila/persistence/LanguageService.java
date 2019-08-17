@@ -25,13 +25,17 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
+
+<<<<<<<HEAD
+=======
+        >>>>>>>sketch
 
 /**
  * A service for {@link Language}.
@@ -58,7 +62,7 @@ class LanguageService extends BaseEntityService<Language> {
      * @param name the value of {@link Language#ATTRIBUTE_NAME_NAME name} attribute to match.
      * @return an optional of found entity.
      */
-    public Optional<Language> findByName(@NotNull final String name) {
+    Optional<Language> findByName(@NotBlank final String name) {
         final TypedQuery<Language> typedQuery = entityManager().createQuery(
                 "SELECT l FROM Language AS l WHERE l.name = :name", Language.class);
         typedQuery.setParameter("name", name);
@@ -79,9 +83,9 @@ class LanguageService extends BaseEntityService<Language> {
      * @param maxResults     an optional value for {@link javax.persistence.TypedQuery#setMaxResults(int)}
      * @return a stream of, optionally paged, languages.
      */
-    public Stream<Language> streamOrderedByName(final boolean ascendingOrder,
-                                                @PositiveOrZero @Nullable final Integer firstResult,
-                                                @Positive @Nullable final Integer maxResults) {
+    Stream<Language> streamOrderedByName(final boolean ascendingOrder,
+                                         @PositiveOrZero @Nullable final Integer firstResult,
+                                         @Positive @Nullable final Integer maxResults) {
         final TypedQuery<Language> typedQuery = entityManager().createQuery(
                 "SELECT l FROM Language AS l ORDER BY l.name " + (ascendingOrder ? "ASC" : "DESC"),
                 Language.class);

@@ -29,3 +29,49 @@ ORDER BY o.country ASC, c.city ASC, a.district ASC, a.address AsC, s.store_id AS
 select *
 from inventory
 where film_id = 480;
+
+
+-- ---------------------------------------------------------------------------------------------------------------------
+SELECT distinct i.*
+FROM inventory AS i
+         LEFT JOIN rental AS r ON i.inventory_id = r.inventory_id
+WHERE r.rental_id IS NULL
+   OR r.return_date IS NOT NULL
+ORDER BY i.inventory_id ASC
+;
+
+select i.*
+from inventory AS i
+         LEFT JOIN (SELECT * from rental where return_date IS NULL) AS r ON i.inventory_id = r.inventory_id
+WHERE r.inventory_id IS NULL
+-- ORDER BY i.inventory_id ASC
+;
+
+select *
+from rental
+where inventory_id = 9;
+
+select *
+from inventory
+where inventory_id = 9;
+
+SELECT distinct i.*
+FROM inventory AS i
+WHERE i.inventory_id NOT IN (SELECT inventory_id FROM rental where return_date IS NULL)
+ORDER BY i.inventory_id ASC
+;
+
+SELECT i.*
+FROM inventory AS i
+WHERE NOT EXISTS(SELECT * FROM rental AS r WHERE i.inventory_id = r.inventory_id AND return_date IS NULL)
+ORDER BY i.inventory_id ASC
+;
+
+select count(*)
+from inventory;
+
+select r.rental_id, r.return_date, i.inventory_id
+from rental AS r
+         LEFT JOIN inventory i on r.inventory_id = i.inventory_id
+order by i.inventory_id ASC
+;
