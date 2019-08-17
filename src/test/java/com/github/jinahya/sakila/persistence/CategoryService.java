@@ -127,8 +127,8 @@ class CategoryService extends BaseEntityService<Category> {
      * @param maxResults  the maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of, optionally paged, category.
      */
-    public List<Category> listSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
-                                           @Positive @Nullable final Integer maxResults) {
+    List<Category> listSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
+                                    @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery("SELECT c FROM Category AS c ORDER BY c.name ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);
