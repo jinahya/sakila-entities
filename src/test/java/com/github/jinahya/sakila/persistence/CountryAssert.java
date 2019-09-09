@@ -45,8 +45,8 @@ class CountryAssert extends BaseEntityAssert<CountryAssert, Country> {
     // --------------------------------------------------------------------------------------------------------- country
 
     /**
-     * Asserts that the {@link #actual} has the same {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute as
-     * specified.
+     * Asserts that the {@link #actual} has the same value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute
+     * as specified.
      *
      * @param country the value for {@link Country#ATTRIBUTE_NAME_COUNTRY country} attribute to match.
      * @return this assert.
