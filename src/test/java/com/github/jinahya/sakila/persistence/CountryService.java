@@ -97,7 +97,7 @@ class CountryService extends BaseEntityService<Country> {
             criteriaQuery.where(criteriaBuilder.equal(from.get(Country.ATTRIBUTE_NAME_COUNTRY), country));
             final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
             try {
-                return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
+                return Optional.of(typedQuery.getSingleResult());
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
@@ -106,13 +106,10 @@ class CountryService extends BaseEntityService<Country> {
         final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
         final Root<Country> from = criteriaQuery.from(Country.class);
         criteriaQuery.select(from);
-        //final SingularAttribute<Country, String> countryAttribute = Country_.country;
-        final SingularAttribute<? super Country, String> countryAttribute
-                = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(countryAttribute), country));
+        criteriaQuery.where(criteriaBuilder.equal(from.get(Country_.country), country));
         final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
         try {
-            return Optional.of(typedQuery.getSingleResult()); // NonUniqueResultException
+            return Optional.of(typedQuery.getSingleResult());
         } catch (final NoResultException nre) {
             return Optional.empty();
         }
@@ -161,10 +158,7 @@ class CountryService extends BaseEntityService<Country> {
         final CriteriaQuery<Country> criteriaQuery = criteriaBuilder.createQuery(Country.class);
         final Root<Country> from = criteriaQuery.from(Country.class);
         criteriaQuery.select(from);
-        //final SingularAttribute<? super Country, String> countryAttribute = Country_.country;
-        final SingularAttribute<? super Country, String> countryAttribute
-                = singularAttribute(Country.ATTRIBUTE_NAME_COUNTRY, String.class);
-        criteriaQuery.orderBy(criteriaBuilder.asc(from.get(countryAttribute)));
+        criteriaQuery.orderBy(criteriaBuilder.asc(from.get(Country_.country)));
         final TypedQuery<Country> typedQuery = entityManager().createQuery(criteriaQuery);
         ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
         ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
