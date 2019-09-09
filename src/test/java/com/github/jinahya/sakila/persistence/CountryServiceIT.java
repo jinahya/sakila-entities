@@ -163,7 +163,7 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         super(CountryService.class, Country.class);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------------ find
 
     /**
      * Tests {@link CountryService#find(String)} method.
@@ -183,19 +183,17 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     }
 
     /**
-     * Asserts {@link CountryService#find(String)} method an empty optional for an unknown country.
+     * Asserts {@link CountryService#find(String)} method returns an empty optional for an unknown country.
      */
     // TODO: 09/09/2019 enable, assert fails, implement, and assert passes.
     @Disabled
     @Test
     void assertFindReturnsEmptyForUnknownCountry() {
         final Optional<Country> found = serviceInstance().find("Machu Picchu");
-        assertThat(found)
-                .isEmpty()
-        ;
+        assertThat(found).isEmpty();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------------ list
 
     /**
      * Tests {@link CountryService#list(Integer, Integer)} method.
