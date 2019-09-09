@@ -22,6 +22,8 @@ package com.github.jinahya.sakila.persistence;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -175,6 +177,19 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
         assertThat(found)
                 .isPresent()
                 .hasValueSatisfying(v -> assertCountry(v).hasCountry(country))
+        ;
+    }
+
+    /**
+     * Asserts {@link CountryService#find(String)} method an empty optional for an unknown country.
+     */
+    // TODO: 09/09/2019 enable, assert fails, implement, and assert passes.
+    @Disabled
+    @Test
+    void assertFindReturnsEmptyForUnknownCountry() {
+        final Optional<Country> found = serviceInstance().find("Machu Picchu");
+        assertThat(found)
+                .isEmpty()
         ;
     }
 
