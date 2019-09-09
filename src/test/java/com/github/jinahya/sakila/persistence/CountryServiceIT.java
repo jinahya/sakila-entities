@@ -207,12 +207,6 @@ class CountryServiceIT extends BaseEntityServiceIT<CountryService, Country> {
     @ParameterizedTest
     void testList(@PositiveOrZero @Nullable final Integer firstResult, @Positive @Nullable final Integer maxResults) {
         final List<Country> list = serviceInstance().list(firstResult, maxResults);
-        ofNullable(list).ifPresent(v -> {
-            log.debug("list.size: {}", v.size());
-            v.forEach(c -> {
-                log.debug("country: {}", c.getCountry());
-            });
-        });
         assertThat(list)
                 .isNotNull()
                 .isNotEmpty()
