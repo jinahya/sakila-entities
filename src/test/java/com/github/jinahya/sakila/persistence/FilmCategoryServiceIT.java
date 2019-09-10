@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 
 import static com.github.jinahya.sakila.persistence.Assertions.assertBaseEntity;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -153,7 +154,7 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
      */
     private static Stream<Arguments> argumentsForTestListFilms() {
         return IntStream.range(0, 8)
-                .mapToObj(i -> arguments(randomEntity(Category.class), firstResult(Film.class), maxResults(Film.class)))
+                .mapToObj(i -> arguments(randomEntity(Category.class), current().nextInt(8), current().nextInt(100)))
                 ;
     }
 
