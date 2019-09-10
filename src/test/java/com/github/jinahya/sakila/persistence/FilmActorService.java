@@ -163,6 +163,14 @@ class FilmActorService extends EntityService<FilmActor> {
     /**
      * Lists films that specified actor ever played, sorted by {@link Film#ATTRIBUTE_NAME_RELEASE_YEAR releaseYear}
      * attribute in descending order.
+     * <blockquote><pre>{@code
+     * SELECT f.*
+     * FROM film_actor AS fa
+     *     INNER JOIN film AS f on fa.film_id = f.film_id
+     * WHERE fa.actor_id = ?
+     * ORDER BY f.release_year DESC
+     * LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param actor       the actor whose films are listed.
      * @param firstResult position of the first result, numbered from {@code 0}.
@@ -257,6 +265,14 @@ class FilmActorService extends EntityService<FilmActor> {
     /**
      * Lists actors played in specified film ordered by {@link Actor#ATTRIBUTE_NAME_FIRST_NAME firstName} in ascending
      * order.
+     * <blockquote><pre>{@code
+     * SELECT a.*
+     * FROM film_actor AS fa
+     *     INNER JOIN actor AS a ON fa.actor_id = a.id
+     * WHERE fa.film_id = ?
+     * ORDER BY a.first_name ASC
+     * LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param film        the film whose actors are listed.
      * @param firstResult a value for {@link TypedQuery#setFirstResult(int)}.
