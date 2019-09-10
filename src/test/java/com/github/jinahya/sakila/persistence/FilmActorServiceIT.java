@@ -182,12 +182,15 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @MethodSource({"actorArgumentsStream"})
     @ParameterizedTest
     void testListFilms(final Actor actor) {
+        log.debug("actor: {}", actor);
         {
             final List<Film> films = serviceInstance().listFilms(actor, null, null);
             assertThat(films)
+                    .isNotNull()
                     .isSortedAccordingTo(comparing(Film::getReleaseYear).reversed())
                     .hasSize(filmCount(actor))
             ;
+            films.forEach(film -> log.debug("film: {}", film));
         }
         {
             int filmCount = 0;
@@ -229,12 +232,15 @@ class FilmActorServiceIT extends EntityServiceIT<FilmActorService, FilmActor> {
     @MethodSource({"filmArgumentsStream"})
     @ParameterizedTest
     void testListActors(final Film film) {
+        log.debug("film: {}", film);
         {
             final List<Actor> actors = serviceInstance().listActors(film, null, null);
             assertThat(actors)
+                    .isNotNull()
                     .isSortedAccordingTo(FullNamed.COMPARING_FIRST_NAME_IGNORE_CASE)
                     .hasSize(actorCount(film))
             ;
+            actors.forEach(actor -> log.debug("actor: {}", actor));
         }
         {
             int actorCount = 0;

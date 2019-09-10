@@ -190,37 +190,37 @@ class FilmActorService extends EntityService<FilmActor> {
             return films;
         }
         if (current().nextBoolean()) {
-            final TypedQuery<Film> typedQuery = entityManager().createQuery(
+            final TypedQuery<Film> typed = entityManager().createQuery(
                     "SELECT fa.film FROM FilmActor AS fa WHERE fa.actor = :actor ORDER BY fa.film.releaseYear DESC",
                     Film.class);
-            typedQuery.setParameter("actor", actor);
-            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultList();
+            typed.setParameter("actor", actor);
+            ofNullable(firstResult).ifPresent(typed::setFirstResult);
+            ofNullable(maxResults).ifPresent(typed::setMaxResults);
+            return typed.getResultList();
         }
         if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Film> criteriaQuery = criteriaBuilder.createQuery(Film.class);
-            final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
-            criteriaQuery.select(from.get(FilmActor.ATTRIBUTE_NAME_FILM));
-            criteriaQuery.where(criteriaBuilder.equal(from.get(FilmActor.ATTRIBUTE_NAME_ACTOR), actor));
-            criteriaQuery.orderBy(criteriaBuilder.desc(
+            final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Film> criteria = builder.createQuery(Film.class);
+            final Root<FilmActor> from = criteria.from(FilmActor.class);
+            criteria.select(from.get(FilmActor.ATTRIBUTE_NAME_FILM));
+            criteria.where(builder.equal(from.get(FilmActor.ATTRIBUTE_NAME_ACTOR), actor));
+            criteria.orderBy(builder.desc(
                     from.get(FilmActor.ATTRIBUTE_NAME_FILM).get(Film.ATTRIBUTE_NAME_RELEASE_YEAR)));
-            final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
-            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultList();
+            final TypedQuery<Film> typed = entityManager().createQuery(criteria);
+            ofNullable(firstResult).ifPresent(typed::setFirstResult);
+            ofNullable(maxResults).ifPresent(typed::setMaxResults);
+            return typed.getResultList();
         }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<Film> criteriaQuery = criteriaBuilder.createQuery(Film.class);
-        final Root<FilmActor> from = criteriaQuery.from(FilmActor.class);
-        criteriaQuery.select(from.get(FilmActor_.film));
-        criteriaQuery.where(criteriaBuilder.equal(from.get(FilmActor_.actor), actor));
-        criteriaQuery.orderBy(criteriaBuilder.desc(from.get(FilmActor_.film).get(Film_.releaseYear)));
-        final TypedQuery<Film> typedQuery = entityManager().createQuery(criteriaQuery);
-        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultList();
+        final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Film> criteria = builder.createQuery(Film.class);
+        final Root<FilmActor> from = criteria.from(FilmActor.class);
+        criteria.select(from.get(FilmActor_.film));
+        criteria.where(builder.equal(from.get(FilmActor_.actor), actor));
+        criteria.orderBy(builder.desc(from.get(FilmActor_.film).get(Film_.releaseYear)));
+        final TypedQuery<Film> typed = entityManager().createQuery(criteria);
+        ofNullable(firstResult).ifPresent(typed::setFirstResult);
+        ofNullable(maxResults).ifPresent(typed::setMaxResults);
+        return typed.getResultList();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -292,36 +292,36 @@ class FilmActorService extends EntityService<FilmActor> {
             return list;
         }
         if (current().nextBoolean()) {
-            final TypedQuery<Actor> typedQuery = entityManager().createQuery(
+            final TypedQuery<Actor> typed = entityManager().createQuery(
                     "SELECT fa.actor FROM FilmActor AS fa WHERE fa.film = :film ORDER BY fa.actor.firstName ASC",
                     Actor.class);
-            typedQuery.setParameter("film", film);
-            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultList();
+            typed.setParameter("film", film);
+            ofNullable(firstResult).ifPresent(typed::setFirstResult);
+            ofNullable(maxResults).ifPresent(typed::setMaxResults);
+            return typed.getResultList();
         }
         if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
-            final Root<FilmActor> filmActor = criteriaQuery.from(FilmActor.class);
-            criteriaQuery.select(filmActor.get(FilmActor.ATTRIBUTE_NAME_ACTOR));
-            criteriaQuery.where(criteriaBuilder.equal(filmActor.get(FilmActor.ATTRIBUTE_NAME_FILM), film));
-            criteriaQuery.orderBy(criteriaBuilder.asc(
-                    filmActor.get(FilmActor.ATTRIBUTE_NAME_ACTOR).get(Actor.ATTRIBUTE_NAME_FIRST_NAME)));
-            final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
-            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultList();
+            final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Actor> criteria = builder.createQuery(Actor.class);
+            final Root<FilmActor> from = criteria.from(FilmActor.class);
+            criteria.select(from.get(FilmActor.ATTRIBUTE_NAME_ACTOR));
+            criteria.where(builder.equal(from.get(FilmActor.ATTRIBUTE_NAME_FILM), film));
+            criteria.orderBy(builder.asc(
+                    from.get(FilmActor.ATTRIBUTE_NAME_ACTOR).get(Actor.ATTRIBUTE_NAME_FIRST_NAME)));
+            final TypedQuery<Actor> typed = entityManager().createQuery(criteria);
+            ofNullable(firstResult).ifPresent(typed::setFirstResult);
+            ofNullable(maxResults).ifPresent(typed::setMaxResults);
+            return typed.getResultList();
         }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<Actor> criteriaQuery = criteriaBuilder.createQuery(Actor.class);
-        final Root<FilmActor> filmActor = criteriaQuery.from(FilmActor.class);
-        criteriaQuery.select(filmActor.get(FilmActor_.actor));
-        criteriaQuery.where(criteriaBuilder.equal(filmActor.get(FilmActor_.film), film));
-        criteriaQuery.orderBy(criteriaBuilder.asc(filmActor.get(FilmActor_.actor).get(Actor_.firstName)));
-        final TypedQuery<Actor> typedQuery = entityManager().createQuery(criteriaQuery);
-        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultList();
+        final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Actor> criteria = builder.createQuery(Actor.class);
+        final Root<FilmActor> from = criteria.from(FilmActor.class);
+        criteria.select(from.get(FilmActor_.actor));
+        criteria.where(builder.equal(from.get(FilmActor_.film), film));
+        criteria.orderBy(builder.asc(from.get(FilmActor_.actor).get(Actor_.firstName)));
+        final TypedQuery<Actor> typed = entityManager().createQuery(criteria);
+        ofNullable(firstResult).ifPresent(typed::setFirstResult);
+        ofNullable(maxResults).ifPresent(typed::setMaxResults);
+        return typed.getResultList();
     }
 }
