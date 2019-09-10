@@ -123,6 +123,13 @@ public class Film extends BaseEntity {
         return natural ? COMPARING_TITLE : COMPARING_TITLE.reversed();
     }
 
+    /**
+     * A comparator for comparing films with their {@link Film#ATTRIBUTE_NAME_TITLE title} attributes {@link
+     * String#compareToIgnoreCase(String) ignoring case}.
+     */
+    public static final Comparator<Film> COMPARING_TITLE_IGNORE_CASE
+            = (f1, f2) -> f1.title.compareToIgnoreCase(f2.title);
+
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
