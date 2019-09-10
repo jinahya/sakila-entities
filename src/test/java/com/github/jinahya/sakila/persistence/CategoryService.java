@@ -63,11 +63,14 @@ class CategoryService extends BaseEntityService<Category> {
      * Finds the category whose {@link Category#ATTRIBUTE_NAME_NAME name} attribute matches to specified value. Note
      * that {@link Category#ATTRIBUTE_NAME_NAME name} attribute is not unique but all values in table are distinct to
      * each other.
+     * <blockquote><pre>{@code
+     * SELECT * FROM category WHERE name = ?
+     * }</pre></blockquote>
      *
      * @param name the value for {@link Category#ATTRIBUTE_NAME_NAME name} attribute to match.
      * @return an optional of found; empty if not found.
      */
-    @NotNull Optional<Category> findByName(@NotBlank final String name) {
+    @NotNull Optional<Category> find(@NotBlank final String name) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery("SELECT c FROM Category AS c WHERE c.name = :name");
             query.setParameter("name", name);
@@ -115,14 +118,17 @@ class CategoryService extends BaseEntityService<Category> {
 
     /**
      * Returns a list of categories sorted by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending order.
+     * <blockquote><pre>{@code
+     * SELECT * FROM category ORDER BY name ASC LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param firstResult the position of the first result to retrieve, numbered from {@code 0}; {@code null} for an
      *                    unspecified result.
      * @param maxResults  the maximum number of results to retrieve; {@code null} for an unspecified result.
      * @return a list of, optionally paged, category.
      */
-    List<Category> listSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
-                                    @Positive @Nullable final Integer maxResults) {
+    @NotNull List<Category> list(@PositiveOrZero @Nullable final Integer firstResult,
+                                 @Positive @Nullable final Integer maxResults) {
         if (current().nextBoolean()) {
             final Query query = entityManager().createQuery("SELECT c FROM Category AS c ORDER BY c.name ASC");
             ofNullable(firstResult).ifPresent(query::setFirstResult);

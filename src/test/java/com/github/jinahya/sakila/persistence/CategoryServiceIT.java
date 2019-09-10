@@ -106,7 +106,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Provides arguments for {@link #testFindByName(String)} method.
+     * Provides arguments for {@link #testFind(String)} method.
      *
      * @return a stream of arguments.
      */
@@ -115,7 +115,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     }
 
     /**
-     * Provides arguments for {@link #testListSortedByName(Integer, Integer)} method.
+     * Provides arguments for {@link #testList(Integer, Integer)} method.
      *
      * @return a stream of arguments.
      */
@@ -132,45 +132,45 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
         super(CategoryService.class, Category.class);
     }
 
-    // ------------------------------------------------------------------------------------------------------ findByName
+    // ------------------------------------------------------------------------------------------------------------ find
 
     /**
-     * Asserts {@link CategoryService#findByName(String)} method returns an empty for an unknown category.
+     * Asserts {@link CategoryService#find(String)} method returns an empty for an unknown name.
      */
     @Test
-    void assertFindByNameReturnsEmptyForUnknown() {
+    void assertFindReturnsEmptyForUnknown() {
         final String name = "周星馳";
-        assertThat(serviceInstance().findByName(name)).isEmpty();
+        assertThat(serviceInstance().find(name)).isEmpty();
     }
 
     /**
-     * Tests {@link CategoryService#findByName(String)} method.
+     * Tests {@link CategoryService#find(String)} method with an existing name.
      *
      * @param name a value for {@code name} parameter.
      */
     @MethodSource({"argumentsForTestFindByName"})
     @ParameterizedTest
-    void testFindByName(@NotNull final String name) {
-        final Optional<Category> found = serviceInstance().findByName(name);
+    void testFind(@NotNull final String name) {
+        final Optional<Category> found = serviceInstance().find(name);
         assertThat(found)
                 .isPresent()
                 .hasValueSatisfying(v -> assertCategory(v).hasName(name))
         ;
     }
 
-    // ------------------------------------------------------------------------------------------------ listSortedByName
+    // ------------------------------------------------------------------------------------------------------------ list
 
     /**
-     * Tests {@link CategoryService#listSortedByName(Integer, Integer)} method.
+     * Tests {@link CategoryService#list(Integer, Integer)} method.
      *
      * @param firstResult a value for {@code firstResult} parameter.
      * @param maxResults  a value for {@code maxResults} parameter.
      */
     @MethodSource({"argumentsForTestListSortedByName"})
     @ParameterizedTest
-    void testListSortedByName(@PositiveOrZero @Nullable final Integer firstResult,
-                              @Positive @Nullable final Integer maxResults) {
-        final List<Category> list = serviceInstance().listSortedByName(firstResult, maxResults);
+    void testList(@PositiveOrZero @Nullable final Integer firstResult,
+                  @Positive @Nullable final Integer maxResults) {
+        final List<Category> list = serviceInstance().list(firstResult, maxResults);
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(Category.COMPARING_NAME)
