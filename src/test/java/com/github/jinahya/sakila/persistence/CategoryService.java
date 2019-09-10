@@ -29,9 +29,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -71,49 +69,45 @@ class CategoryService extends BaseEntityService<Category> {
      */
     @NotNull Optional<Category> findByName(@NotBlank final String name) {
         if (current().nextBoolean()) {
-            final Query query = entityManager().createQuery(
-                    "SELECT c FROM Category AS c WHERE c.name = :name");
+            final Query query = entityManager().createQuery("SELECT c FROM Category AS c WHERE c.name = :name");
             query.setParameter("name", name);
             try {
-                return Optional.of((Category) query.getSingleResult());
+                return Optional.of((Category) query.getSingleResult()); // NonUniqueResultException
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
         }
         if (current().nextBoolean()) {
-            final TypedQuery<Category> typedQuery = entityManager().createQuery(
-                    "SELECT c FROM Category AS c WHERE c.name = :name",
-                    Category.class
-            );
-            typedQuery.setParameter("name", name);
+            final TypedQuery<Category> typed = entityManager().createQuery(
+                    "SELECT c FROM Category AS c WHERE c.name = :name", Category.class);
+            typed.setParameter("name", name);
             try {
-                return Optional.of(typedQuery.getSingleResult());
+                return Optional.of(typed.getSingleResult()); // NonUniqueResultException
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
         }
         if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-            final Root<Category> from = criteriaQuery.from(Category.class);
-            criteriaQuery.select(from);
-            final Path<String> namePath = from.get(Category.ATTRIBUTE_NAME_NAME);
-            criteriaQuery.where(criteriaBuilder.equal(namePath, name));
-            final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
+            final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Category> criteria = builder.createQuery(Category.class);
+            final Root<Category> from = criteria.from(Category.class);
+            criteria.select(from);
+            criteria.where(builder.equal(from.get(Category.ATTRIBUTE_NAME_NAME), name));
+            final TypedQuery<Category> typed = entityManager().createQuery(criteria);
             try {
-                return Optional.of(typedQuery.getSingleResult());
+                return Optional.of(typed.getSingleResult());
             } catch (final NoResultException nre) {
                 return Optional.empty();
             }
         }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-        final Root<Category> from = criteriaQuery.from(Category.class);
-        criteriaQuery.select(from);
-        criteriaQuery.where(criteriaBuilder.equal(from.get(Category_.name), name));
-        final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
+        final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Category> criteria = builder.createQuery(Category.class);
+        final Root<Category> from = criteria.from(Category.class);
+        criteria.select(from);
+        criteria.where(builder.equal(from.get(Category_.name), name));
+        final TypedQuery<Category> typed = entityManager().createQuery(criteria);
         try {
-            return Optional.of(typedQuery.getSingleResult());
+            return Optional.of(typed.getSingleResult());
         } catch (final NoResultException nre) {
             return Optional.empty();
         }
@@ -134,42 +128,36 @@ class CategoryService extends BaseEntityService<Category> {
             ofNullable(firstResult).ifPresent(query::setFirstResult);
             ofNullable(maxResults).ifPresent(query::setMaxResults);
             @SuppressWarnings({"unchecked"})
-            final List<Category> resultList = query.getResultList();
-            return resultList;
+            final List<Category> list = query.getResultList();
+            return list;
         }
         if (current().nextBoolean()) {
-            final TypedQuery<Category> typedQuery = entityManager().createQuery(
-                    "SELECT c FROM Category AS c ORDER BY c.name ASC",
-                    Category.class);
-            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultList();
+            final TypedQuery<Category> typed = entityManager().createQuery(
+                    "SELECT c FROM Category AS c ORDER BY c.name ASC", Category.class);
+            ofNullable(firstResult).ifPresent(typed::setFirstResult);
+            ofNullable(maxResults).ifPresent(typed::setMaxResults);
+            return typed.getResultList();
         }
         if (current().nextBoolean()) {
-            final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-            final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-            final Root<Category> from = criteriaQuery.from(Category.class);
-            criteriaQuery.select(from);
-            final Path<String> namePath = from.get(Category.ATTRIBUTE_NAME_NAME);
-            criteriaQuery.orderBy(criteriaBuilder.asc(namePath));
-            final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
-            ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-            ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-            return typedQuery.getResultList();
+            final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+            final CriteriaQuery<Category> criteria = builder.createQuery(Category.class);
+            final Root<Category> from = criteria.from(Category.class);
+            criteria.select(from);
+            criteria.orderBy(builder.asc(from.get(Category.ATTRIBUTE_NAME_NAME)));
+            final TypedQuery<Category> typed = entityManager().createQuery(criteria);
+            ofNullable(firstResult).ifPresent(typed::setFirstResult);
+            ofNullable(maxResults).ifPresent(typed::setMaxResults);
+            return typed.getResultList();
         }
-        final CriteriaBuilder criteriaBuilder = entityManager().getCriteriaBuilder();
-        final CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-        final Root<Category> from = criteriaQuery.from(Category.class);
-        criteriaQuery.select(from);
-        //final SingularAttribute<Category, String> nameAttribute = Category_.name;
-        final SingularAttribute<? super Category, String> nameAttribute
-                = singularAttribute(Category.ATTRIBUTE_NAME_NAME, String.class);
-        final Path<String> namePath = from.get(nameAttribute);
-        final Order order = criteriaBuilder.asc(namePath);
-        criteriaQuery.orderBy(order);
-        final TypedQuery<Category> typedQuery = entityManager().createQuery(criteriaQuery);
-        ofNullable(firstResult).ifPresent(typedQuery::setFirstResult);
-        ofNullable(maxResults).ifPresent(typedQuery::setMaxResults);
-        return typedQuery.getResultList();
+        final CriteriaBuilder builder = entityManager().getCriteriaBuilder();
+        final CriteriaQuery<Category> criteria = builder.createQuery(Category.class);
+        final Root<Category> from = criteria.from(Category.class);
+        criteria.select(from);
+        final Order order = builder.asc(from.get(Category_.name));
+        criteria.orderBy(order);
+        final TypedQuery<Category> typed = entityManager().createQuery(criteria);
+        ofNullable(firstResult).ifPresent(typed::setFirstResult);
+        ofNullable(maxResults).ifPresent(typed::setMaxResults);
+        return typed.getResultList();
     }
 }
