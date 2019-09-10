@@ -177,6 +177,14 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     /**
      * Lists categories of specified film ordered by {@link Category#ATTRIBUTE_NAME_NAME name} attribute in ascending
      * order.
+     * <blockquote><pre>{@code
+     * SELECT c.*
+     * FROM film_category AS fc
+     *     INNER JOIN category AS c ON fc.category_id = c.id
+     * WHERE fc.film_id = ?
+     * ORDER BY c.name ASC
+     * LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param film        the film whose categories are listed.
      * @param firstResult position of the first result, numbered from {@code 0}; {@code null} for an unspecified
@@ -274,6 +282,14 @@ class FilmCategoryService extends EntityService<FilmCategory> {
     /**
      * Lists all films categorized as specified category ordered by {@link Film#ATTRIBUTE_NAME_TITLE title} attribute in
      * ascending order.
+     * <blockquote><pre>{@code
+     * SELECT f.*
+     * FROM film_category AS fc
+     *     INNER JOIN film AS f ON fc.film_id = fc.id
+     * WHERE fc.category_id = ?
+     * ORDER BY f.title ASC
+     * LIMIT ?, ?
+     * }</pre></blockquote>
      *
      * @param category    the category as which films are categorized.
      * @param firstResult position of the first result, numbered from {@code 0}; {@code null} for an unspecified
