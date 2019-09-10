@@ -219,12 +219,13 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     @ParameterizedTest
     void testListCategories(@NotNull final Film film, @PositiveOrZero @Nullable final Integer firstResult,
                             @Positive @Nullable final Integer maxResults) {
-        final List<Category> list = serviceInstance().listCategories(film, firstResult, maxResults);
-        assertThat(list)
+        final List<Category> categories = serviceInstance().listCategories(film, firstResult, maxResults);
+        assertThat(categories)
                 .isNotNull()
                 .isSortedAccordingTo(Category.COMPARING_NAME)
                 .allSatisfy(c -> assertThat(serviceInstance().find(film, c)).isPresent())
         ;
+        categories.forEach(category -> log.debug("category: {}", category));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -259,11 +260,12 @@ class FilmCategoryServiceIT extends EntityServiceIT<FilmCategoryService, FilmCat
     @ParameterizedTest
     void testListFilms(@NotNull final Category category, @PositiveOrZero @Nullable final Integer firstResult,
                        @Positive @Nullable final Integer maxResults) {
-        final List<Film> list = serviceInstance().listFilms(category, firstResult, maxResults);
-        assertThat(list)
+        final List<Film> films = serviceInstance().listFilms(category, firstResult, maxResults);
+        assertThat(films)
                 .isNotNull()
-                .isSortedAccordingTo(Film.COMPARING_TITLE)
+                .isSortedAccordingTo(Film.COMPARING_TITLE_IGNORE_CASE)
                 .allSatisfy(f -> assertThat(serviceInstance().find(f, category)).isPresent())
         ;
+        films.forEach(film -> log.debug("film: {}", film));
     }
 }
