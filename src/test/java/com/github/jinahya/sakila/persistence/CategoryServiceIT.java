@@ -179,7 +179,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     void testList(@PositiveOrZero @Nullable final Integer firstResult,
                   @Positive @Nullable final Integer maxResults) {
         final List<Category> list = serviceInstance().list(firstResult, maxResults);
-        log.debug("list: {}", list);
+        list.forEach(v -> log.debug("category: {}", v));
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(Category.COMPARING_NAME)
