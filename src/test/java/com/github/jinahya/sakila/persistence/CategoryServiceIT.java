@@ -157,6 +157,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     @ParameterizedTest
     void testFind(@NotNull final String name) {
         final Optional<Category> found = serviceInstance().find(name);
+        log.debug("found: {}", found);
         assertThat(found)
                 .isPresent()
                 .hasValueSatisfying(v -> assertCategory(v).hasName(name))
@@ -178,6 +179,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     void testList(@PositiveOrZero @Nullable final Integer firstResult,
                   @Positive @Nullable final Integer maxResults) {
         final List<Category> list = serviceInstance().list(firstResult, maxResults);
+        log.debug("list: {}", list);
         assertThat(list)
                 .isNotNull()
                 .isSortedAccordingTo(Category.COMPARING_NAME)
