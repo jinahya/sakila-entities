@@ -152,6 +152,7 @@ class CategoryServiceIT extends BaseEntityServiceIT<CategoryService, Category> {
     @ParameterizedTest
     void testFind(@NotNull final String name) {
         final Optional<Category> found = serviceInstance().find(name);
+        log.debug("found: {}", found);
         assertThat(found)
                 .isPresent()
                 .hasValueSatisfying(v -> assertCategory(v).hasName(name))

@@ -47,9 +47,9 @@ import static java.util.Comparator.comparing;
  * film_category}</code> table.
  * </blockquote>
  */
-@Entity
 @AttributeOverride(name = ATTRIBUTE_NAME_ID, column = @Column(name = COLUMN_NAME_CATEGORY_ID, nullable = false))
 @Table(name = TABLE_NAME)
+@Entity
 public class Category extends BaseEntity {
 
     // -----------------------------------------------------------------------------------------------------------------
