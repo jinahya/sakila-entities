@@ -33,7 +33,7 @@ import java.util.List;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
+public class ActorService extends AbstractFullNamedBaseEntityService<Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
