@@ -73,7 +73,7 @@ public class Actor extends FullNamedBaseEntity {
     @Deprecated // forRemoval = true
     public static final String ATTRIBUTE_NAME_FILMS = "films";
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // ---------------------------------nstall s--------------------------------------------------------------------------------
 
     /**
      * Creates a new instance.

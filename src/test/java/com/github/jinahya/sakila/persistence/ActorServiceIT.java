@@ -52,7 +52,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  * @author Jin Kwon &lt;onacit_at_gmail.com&gt;
  */
 @Slf4j
-class ActorServiceIT extends FullNamedBaseEntityServiceIT<ActorService, Actor> {
+public class ActorServiceIT extends FullNamedBaseEntityServiceIT<ActorService, Actor> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
